@@ -44,14 +44,60 @@ class StudentService {
             if (!result) {
                 throw new Error('Student not found');
             }
-            
-            return result;
-        }
+        }   
         catch (error) {
             console.log('Error deleting student: ', error);
             throw error;
         }
+    }
 
+    async updateStudent(studentId, updateData) {
+        try {
+            if (!studentId || !updateData) {
+                throw new Error('Missing required fields');
+            }
+
+            const result = await Student.findOneAndUpdate({ studentId }, updateData, { new: true });
+
+            if (!result) {
+                throw new Error('Student not found');
+            }
+
+            return result;
+        }
+        catch {
+            console.log('Error updating student: ', error);
+            throw error;
+        }
+    }   
+
+    async searchStudents(filter) {
+        try {
+            if (!filter) {
+                throw new Error('Missing search criteria');
+            }
+            const { studentId, fullName } = filter;
+
+            const searchCriteria = { $and: [] };
+
+            if (studentId) {
+                searchCriteria.$and.push({ studentId: String(studentId) }); 
+            }
+            if (fullName) {
+                searchCriteria.$and.push({ fullName: { $regex: fullName, $options: 'i' } });
+            }
+
+            if (searchCriteria.$and.length === 0) {
+                return [];
+            }
+
+            const students = await Student.find(searchCriteria);
+            return students;
+        }
+        catch (error) {
+            console.log('Error searching students: ', error);
+            throw error;
+        }
     }
 }
 

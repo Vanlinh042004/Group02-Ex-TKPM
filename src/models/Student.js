@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const studentSchema = new mongoose.Schema(
   {
-    studentId: { type: String, required: true }, // Mã số sinh viên
+    studentId: { type: String, required: true, unique: true }, // Mã số sinh viên
     fullName: { type: String, required: true }, // Họ tên
     dateOfBirth: { type: Date, required: true }, // Ngày tháng năm sinh
     gender: { type: String, enum: ['Nam', 'Nữ'], required: true }, // Giới tính
