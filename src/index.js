@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const path = require('path');
 
-//const route = require('./routes');
+const route = require('./routes');
 
 const db = require('./config/db');
 // Connect to DB
@@ -20,7 +20,7 @@ app.use(
 app.use(express.json());
 
 // route init
-//route(app);
+route(app);
 
 app.listen(port, () => {
   console.log(`App listening at http://localhost:${port}`);
