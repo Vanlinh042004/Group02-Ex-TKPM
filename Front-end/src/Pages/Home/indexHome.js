@@ -1,11 +1,6 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../../Style/Home.scss";
-import Modal from "react-modal";
-import {
-  DeleteOutlined,
-  FullscreenOutlined,
-  PlusOutlined,
-} from "@ant-design/icons";
+import { DeleteOutlined, PlusOutlined, EditOutlined } from "@ant-design/icons";
 import { Button } from "antd";
 import { useState, useEffect } from "react";
 import {
@@ -13,23 +8,44 @@ import {
   getStudent,
   deleteStudent,
 } from "../../Services/studentService";
+import AddStudentModal from "../Home/AddStudentModal";
+import EditStudentModal from "../Home/EditStudentModal";
 import swal from "sweetalert";
 function Home() {
   const [students, setStudents] = useState([]);
   const [check, setCheck] = useState(false);
-  const customStyles = {
-    content: {
-      top: "50%",
-      left: "50%",
-      right: "auto",
-      bottom: "auto",
-      marginRight: "-50%",
-      transform: "translate(-50%, -50%)",
-      backgroundColor: "#d6dadf",
-    },
-  };
-  const [showModal, setShowModal] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+  const [studentToEdit, setStudentToEdit] = useState(null);
   const [search, setSearch] = useState("");
+
+  const handerSearch = (e) => {
+    e.preventDefault();
+    setSearch(e.target[0].value);
+  };
+  const handleDelete = async (id) => {
+    try {
+      await deleteStudent(id);
+      //console.log(id);
+      swal("Xóa thành công", "Sinh viên đã được xóa", "success");
+      setCheck(!check);
+    } catch (error) {
+      console.error(
+        "There was a problem with the delete student operation:",
+        error
+      );
+    }
+  };
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
+
+  // Hiển thị modal chỉnh sửa
+  const showEditModal = (student) => {
+    setStudentToEdit(student);
+    setIsEditModalVisible(true);
+  };
+
   useEffect(() => {
     const fetchStudents = async () => {
       try {
@@ -55,30 +71,6 @@ function Home() {
     fetchStudents();
   }, [search, check]);
 
-  const handerSearch = (e) => {
-    e.preventDefault();
-    setSearch(e.target[0].value);
-  };
-  const handleDelete = async (id) => {
-    try {
-      await deleteStudent(id);
-      //console.log(id);
-      swal("Xóa thành công", "Sinh viên đã được xóa", "success");
-      setCheck(!check);
-    } catch (error) {
-      console.error(
-        "There was a problem with the delete student operation:",
-        error
-      );
-    }
-  };
-  function openModal() {
-    setShowModal(true);
-  }
-
-  function closeModal() {
-    setShowModal(false);
-  }
   return (
     <>
       <section className=" mt-5">
@@ -120,125 +112,23 @@ function Home() {
             backgroundColor: "red",
             fontSize: "20px",
           }}
-          onClick={openModal}
+          onClick={showModal}
         >
           Thêm Sinh viên
         </Button>
-        <Modal
-          isOpen={showModal}
-          onRequestClose={closeModal}
-          style={customStyles}
-          contentLabel="Example Modal"
-        >
-          <form className=" px-3">
-            <h2 className="text-center mb-4">Thông tin sinh viên</h2>
-            <div className="grid grid-cols-2 gap-4 mb-4">
-              <input
-                type="text"
-                name="student_id"
-                className="w-full border rounded-lg py-3 px-5"
-                placeholder="Mã số sinh viên"
-              />
-              <input
-                type="text"
-                name="name"
-                className="w-full border rounded-lg py-3 px-5"
-                placeholder="Họ tên"
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-4 mb-4">
-              <input
-                type="date"
-                name="dob"
-                className="w-full border rounded-lg py-3 px-5"
-                placeholder="Ngày sinh"
-              />
-              <select
-                name="gender"
-                className="w-full border rounded-lg py-3 px-5"
-              >
-                <option value="">Giới tính</option>
-                <option value="male">Nam</option>
-                <option value="female">Nữ</option>
-                <option value="other">Khác</option>
-              </select>
-            </div>
-            <div className="grid grid-cols-2 gap-4 mb-4">
-              <input
-                type="text"
-                name="faculty"
-                className="w-full border rounded-lg py-3 px-5"
-                placeholder="Khoa"
-              />
-              <input
-                type="text"
-                name="course"
-                className="w-full border rounded-lg py-3 px-5"
-                placeholder="Khóa"
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-4 mb-4">
-              <input
-                type="text"
-                name="program"
-                className="w-full border rounded-lg py-3 px-5"
-                placeholder="Chương trình"
-              />
-              <select
-                name="status"
-                className="w-full border rounded-lg py-3 px-5"
-              >
-                <option value="">Tình trạng</option>
-                <option value="active">Đang học</option>
-                <option value="graduated">Đã tốt nghiệp</option>
-                <option value="suspended">Bảo lưu</option>
-              </select>
-            </div>
-            <div className="mb-4">
-              <input
-                type="text"
-                name="address"
-                className="w-full border rounded-lg py-3 px-5"
-                placeholder="Địa chỉ"
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-4 mb-4">
-              <input
-                type="email"
-                name="email"
-                className="w-full border rounded-lg py-3 px-5"
-                placeholder="Email"
-              />
-              <input
-                type="text"
-                name="phone"
-                className="w-full border rounded-lg py-3 px-5"
-                placeholder="Số điện thoại"
-              />
-            </div>
-            <div className="d-flex justify-content-between">
-              <Button
-                type="primary"
-                size="large"
-                shape="round"
-                danger
-                onClick={closeModal}
-              >
-                <span>Hủy</span>
-              </Button>
-              <Button
-                className="btn-delete"
-                type="primary"
-                icon={<PlusOutlined />}
-                size="large"
-                shape="round"
-                style={{ color: "yellow !important" }}
-              >
-                Thêm sinh viên
-              </Button>
-            </div>
-          </form>
-        </Modal>
+        <AddStudentModal
+          isModalVisible={isModalVisible}
+          setIsModalVisible={setIsModalVisible}
+          students={students}
+          setStudents={setStudents}
+        />
+
+        <EditStudentModal
+          isModalVisible={isEditModalVisible}
+          setIsModalVisible={setIsEditModalVisible}
+          student={studentToEdit}
+          setStudents={setStudents}
+        />
       </div>
 
       <section className="ftco-section">
@@ -252,7 +142,8 @@ function Home() {
                     <b>Mã số sinh viên:</b> {student.studentId}
                   </p>
                   <p>
-                    <b>Ngày sinh:</b> {student.dateOfBirth}
+                    <b>Ngày sinh:</b>{" "}
+                    {new Date(student.dateOfBirth).toLocaleDateString()}
                   </p>
                   <p>
                     <b>Giới tính:</b> {student.gender}
@@ -282,10 +173,10 @@ function Home() {
                     <Button
                       className="btn-delete"
                       type="primary"
-                      icon={<FullscreenOutlined />}
+                      icon={<EditOutlined />}
                       size="large"
                       shape="round"
-                      style={{ color: "yellow !important" }}
+                      onClick={() => showEditModal(student)}
                     >
                       Sửa thông tin
                     </Button>
