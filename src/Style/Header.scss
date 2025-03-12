@@ -1,0 +1,18 @@
+nav {
+  background: #6c717a45;
+  padding: 10px 0 !important;
+}
+
+.navbar {
+  font-size: 20px;
+  line-height: 1.8;
+  font-weight: 400;
+
+  &__item {
+    margin-left: 15px;
+
+    &.active {
+      color: #167ce9 !important;
+    }
+  }
+}
