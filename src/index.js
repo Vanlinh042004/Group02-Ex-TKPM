@@ -8,11 +8,11 @@ const db = require('./config/db');
 // Connect to DB
 db.connect();
 
-// Sử dụng CORS cho tất cả các route
-app.use(cors());
-
 const port = process.env.PORT || 3000;
 const app = express();
+
+// Sử dụng CORS cho tất cả các route
+app.use(cors());
 
 app.use(
   express.urlencoded({
