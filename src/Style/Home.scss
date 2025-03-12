@@ -10,48 +10,10 @@
 span {
   color: #e4e7ea;
 }
-.pagination {
-  display: flex;
-  justify-content: center;
-  padding-left: 0;
-  list-style: none;
-  border-radius: 0.25rem;
-  margin-top: -100px;
-  background-color: #f3f4f4 !important;
-  &__item {
-    margin: 0 0.25rem;
-
-    & .pagination__link {
-      position: relative;
-      display: block;
-      padding: 0.5rem 0.75rem;
-      margin-left: -1px;
-      line-height: 1.25;
-      color: #010101;
-      background-color: #fff;
-      border: 1px solid #dee2e6;
-      border-radius: 0.25rem;
-    }
-
-    &--disabled .pagination__link {
-      color: #f3f4f4;
-      pointer-events: none;
-      background-color: #fff;
-      border-color: #dee2e6;
-    }
-
-    &--active .pagination__link {
-      z-index: 1;
-      color: #fff;
-      background-color: #007bff;
-      border-color: #007bff;
-    }
-  }
-
-  .pagination__link:hover {
-    color: #0056b3;
-    text-decoration: none;
-    background-color: #e9ecef;
-    border-color: #dee2e6;
-  }
+form {
+  margin: 0 auto;
+}
+.info-student input {
+  margin: 10px;
+  height: 20%;
 }
