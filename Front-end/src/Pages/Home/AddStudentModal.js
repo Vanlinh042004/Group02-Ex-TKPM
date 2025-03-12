@@ -2,6 +2,11 @@ import React, { useState } from "react";
 import { Modal, Input, Form, Select, Button, message } from "antd";
 import axios from "axios";
 
+// Biểu thức chính quy kiểm tra email hợp lệ
+const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+// Biểu thức chính quy kiểm tra số điện thoại hợp lệ (chỉ có chữ số và ít nhất 10 chữ số)
+const phoneRegex = /^[0-9]{10,}$/;
+
 const AddStudentModal = ({
   isModalVisible,
   setIsModalVisible,
@@ -61,21 +66,33 @@ const AddStudentModal = ({
       onOk={handleAddStudent}
     >
       <Form layout="vertical">
-        <Form.Item label="Mã sinh viên">
+        <Form.Item
+          label="Mã sinh viên"
+          name="studentId"
+          rules={[{ required: true, message: "Vui lòng nhập mã sinh viên!" }]}
+        >
           <Input
             name="studentId"
             value={newStudent.studentId}
             onChange={handleInputChange}
           />
         </Form.Item>
-        <Form.Item label="Tên sinh viên">
+        <Form.Item
+          label="Tên sinh viên"
+          name="fullName"
+          rules={[{ required: true, message: "Vui lòng nhập tên sinh viên!" }]}
+        >
           <Input
             name="fullName"
             value={newStudent.fullName}
             onChange={handleInputChange}
           />
         </Form.Item>
-        <Form.Item label="Ngày sinh">
+        <Form.Item
+          label="Ngày sinh"
+          name="dateOfBirth"
+          rules={[{ required: true, message: "Vui lòng chọn ngày sinh!" }]}
+        >
           <Input
             name="dateOfBirth"
             type="date"
@@ -83,7 +100,11 @@ const AddStudentModal = ({
             onChange={handleInputChange}
           />
         </Form.Item>
-        <Form.Item label="Giới tính">
+        <Form.Item
+          label="Giới tính"
+          name="gender"
+          rules={[{ required: true, message: "Vui lòng chọn giới tính!" }]}
+        >
           <Select
             name="gender"
             value={newStudent.gender}
@@ -95,7 +116,11 @@ const AddStudentModal = ({
             <Select.Option value="Nữ">Nữ</Select.Option>
           </Select>
         </Form.Item>
-        <Form.Item label="Khoa">
+        <Form.Item
+          label="Khoa"
+          name="faculty"
+          rules={[{ required: true, message: "Vui lòng chọn khoa!" }]}
+        >
           <Select
             name="faculty"
             value={newStudent.faculty}
@@ -115,42 +140,72 @@ const AddStudentModal = ({
             </Select.Option>
           </Select>
         </Form.Item>
-        <Form.Item label="Khóa">
+        <Form.Item
+          label="Khóa"
+          name="course"
+          rules={[{ required: true, message: "Vui lòng nhập khóa!" }]}
+        >
           <Input
             name="course"
             value={newStudent.course}
             onChange={handleInputChange}
           />
         </Form.Item>
-        <Form.Item label="Chương trình">
+        <Form.Item
+          label="Chương trình"
+          name="program"
+          rules={[{ required: true, message: "Vui lòng nhập chương trình!" }]}
+        >
           <Input
             name="program"
             value={newStudent.program}
             onChange={handleInputChange}
           />
         </Form.Item>
-        <Form.Item label="Địa chỉ">
+        <Form.Item
+          label="Địa chỉ"
+          name="address"
+          rules={[{ required: true, message: "Vui lòng nhập địa chỉ!" }]}
+        >
           <Input
             name="address"
             value={newStudent.address}
             onChange={handleInputChange}
           />
         </Form.Item>
-        <Form.Item label="Email">
+        <Form.Item
+          label="Email"
+          name="email"
+          rules={[
+            { required: true, message: "Vui lòng nhập email!" },
+            { pattern: emailRegex, message: "Email không hợp lệ!" },
+          ]}
+        >
           <Input
             name="email"
             value={newStudent.email}
             onChange={handleInputChange}
           />
         </Form.Item>
-        <Form.Item label="Số điện thoại">
+        <Form.Item
+          label="Số điện thoại"
+          name="phone"
+          rules={[
+            { required: true, message: "Vui lòng nhập số điện thoại!" },
+            { pattern: phoneRegex, message: "Số điện thoại không hợp lệ!" },
+          ]}
+        >
           <Input
             name="phone"
             value={newStudent.phone}
             onChange={handleInputChange}
           />
         </Form.Item>
-        <Form.Item label="Trạng thái">
+        <Form.Item
+          label="Trạng thái"
+          name="status"
+          rules={[{ required: true, message: "Vui lòng chọn trạng thái!" }]}
+        >
           <Select
             name="status"
             value={newStudent.status}
