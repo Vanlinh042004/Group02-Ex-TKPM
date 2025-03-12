@@ -2,6 +2,11 @@ import React, { useState, useEffect } from "react";
 import { Modal, Input, Form, Select, Button, message } from "antd";
 import axios from "axios";
 
+// Biểu thức chính quy kiểm tra email hợp lệ
+const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+// Biểu thức chính quy kiểm tra số điện thoại hợp lệ (ví dụ: (012) 345-6789)
+const phoneRegex = /^[0-9]{10,}$/;
+
 const EditStudentModal = ({ isModalVisible, setIsModalVisible, student, setStudents }) => {
   const [updatedStudent, setUpdatedStudent] = useState({
     studentId: "",
@@ -41,9 +46,27 @@ const EditStudentModal = ({ isModalVisible, setIsModalVisible, student, setStude
   };
 
   const handleUpdateStudent = () => {
+    // Kiểm tra tính hợp lệ của email và số điện thoại
+    console.log("Updated student data:", updatedStudent); // Log dữ liệu sinh viên để kiểm tra
+  
+   // Kiểm tra email hợp lệ
+if (!emailRegex.test(updatedStudent.email)) {
+    alert("Email không hợp lệ. Vui lòng nhập lại.");
+    console.error("Invalid email:", updatedStudent.email); // Log lỗi
+    return;
+  }
+  
+  // Kiểm tra số điện thoại hợp lệ
+  if (!phoneRegex.test(updatedStudent.phone)) {
+    alert("Số điện thoại không hợp lệ. Vui lòng nhập lại.");
+    console.error("Invalid phone:", updatedStudent.phone); // Log lỗi
+    return;
+  }
+  
+  
     // Đảm bảo chuyển đổi ngày tháng sang định dạng ISO chuẩn
     const formattedDate = new Date(updatedStudent.dateOfBirth).toISOString();
-  
+    
     const studentData = {
       ...updatedStudent,
       dateOfBirth: formattedDate,  // Đảm bảo rằng ngày sinh đã được chuyển đổi đúng
@@ -62,7 +85,7 @@ const EditStudentModal = ({ isModalVisible, setIsModalVisible, student, setStude
         setIsModalVisible(false);
       })
       .catch((error) => {
-        console.error("Lỗi khi cập nhật sinh viên:", error.response?.data);
+        console.error("Lỗi khi cập nhật sinh viên:", error.response?.data);  // Log lỗi chi tiết
         message.error(error.response?.data?.message || "Cập nhật sinh viên thất bại.");
       });
   };
