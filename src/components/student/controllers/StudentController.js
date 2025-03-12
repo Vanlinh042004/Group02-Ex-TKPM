@@ -41,6 +41,15 @@ class StudentController {
       return res.status(400).json({ message: error.message });
     }
   }
+
+  async getAllStudent(req, res) {
+    try {
+      const result = await StudentService.getAllStudent();
+      return res.status(200).json(result);
+    } catch (error) {
+      return res.status(400).json({ message: error.message });
+    }
+  }
 }
 
 module.exports = new StudentController();

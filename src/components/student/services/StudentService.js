@@ -107,6 +107,16 @@ class StudentService {
       throw error;
     }
   }
+
+  async getAllStudent() {
+    try {
+      const result = await Student.find({});
+      return result;
+    } catch (error) {
+      console.log('Error retrieving all students: ', error);
+      throw error;
+    }
+  }
 }
 
 module.exports = new StudentService();

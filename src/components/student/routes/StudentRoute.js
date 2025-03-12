@@ -13,5 +13,5 @@ router.patch(
   StudentController.updateStudent
 );
 router.get('/search', StudentController.searchStudent);
-
+router.get('/list', StudentController.getAllStudent);
 module.exports = router;
