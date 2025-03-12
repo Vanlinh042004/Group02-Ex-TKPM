@@ -5,29 +5,77 @@
 - Chia Project thành hai phần: Back-end và Front-end
   - Back-end
     ```
-    ├───components
-    |     └───student
-    |          ├───controllers
-    |          ├───middlewares
-    |          ├───models
-    |          ├───routes
-    |          ├───seeds
-    |          └───services
-    ├───config
-    ├───routes
-    └───utils
+    |   index.js
+    |
+    +---components
+    |   \---student
+    |       +---controllers
+    |       |       StudentController.js
+    |       |
+    |       +---middlewares
+    |       |       validateStudent.js
+    |       |
+    |       +---models
+    |       |       Student.js
+    |       |
+    |       +---routes
+    |       |       StudentRoute.js
+    |       |
+    |       +---seeds
+    |       |       studentSeed.js
+    |       |
+    |       \---services
+    |               StudentService.js
+    |
+    +---config
+    |       database.js
+    |
+    +---routes
+    |       index.js
+    |
+    \---utils
+        mongoose.js
     ```
   - Front-end
     ```
-    ├───LayoutDefaut
-    │     ├───Footer
-    │     └───Header
-    ├───Pages
-    │     └───Home
-    ├───Routes
-    ├───Services
-    ├───Style
-    └───Utils
+    |   App.css
+    |   App.js
+    |   App.test.js
+    |   index.css
+    |   index.js
+    |   logo.svg
+    |   reportWebVitals.js
+    |   setupTests.js
+    |
+    +---LayoutDefaut
+    |   |   Layout.js
+    |   |
+    |   +---Footer
+    |   |       indexFooter.js
+    |   |
+    |   \---Header
+    |           indexHeader.js
+    |
+    +---Pages
+    |   \---Home
+    |           AddStudentModal.js
+    |           EditStudentModal.js
+    |           indexHome.js
+    |
+    +---Routes
+    |       indexRoutes.js
+    |       Routes.js
+    |
+    +---Services
+    |       studentService.js
+    |
+    +---Style
+    |       Header.scss
+    |       Home.scss
+    |       style.css
+    |
+    \---Utils
+            request.js
     ```
 
 ## Hướng dẫn cài đặt & chạy chương trình
