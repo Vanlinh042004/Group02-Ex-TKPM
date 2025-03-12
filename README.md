@@ -4,27 +4,31 @@
 
 - Chia Project thành hai phần: Back-end và Front-end
   - Back-end
+    ```
     ├───components
-    │ └───student
-    │ ├───controllers
-    │ ├───middlewares
-    │ ├───models
-    │ ├───routes
-    │ ├───seeds
-    │ └───services
+    |     └───student
+    |          ├───controllers
+    |          ├───middlewares
+    |          ├───models
+    |          ├───routes
+    |          ├───seeds
+    |          └───services
     ├───config
     ├───routes
     └───utils
+    ```
   - Front-end
+    ```
     ├───LayoutDefaut
-    │ ├───Footer
-    │ └───Header
+    │     ├───Footer
+    │     └───Header
     ├───Pages
-    │ └───Home
+    │     └───Home
     ├───Routes
     ├───Services
     ├───Style
     └───Utils
+    ```
 
 ## Hướng dẫn cài đặt & chạy chương trình
 
@@ -38,13 +42,13 @@ MONGODB_URI=mongodb+srv://donalmun:eqia8yO1F0G3oBVx@tkpm.vufuh.mongodb.net/ex01?
 ```
 
 2. Cài đặt các package cần thiêt:
-   ```bash
-   npm install
-   ```
+```bash
+npm install
+```
 3. Chạy chương trình:
-   ```bash
-   npm start
-   ```
+```bash
+npm start
+```
 
 **FRONT - END**
 
