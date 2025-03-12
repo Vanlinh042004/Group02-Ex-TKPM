@@ -4,7 +4,8 @@ function validateStudent(req, res, next) {
   // Kiểm tra định dạng email
   if (email !== undefined) {
     const emailRegex =
-      /^[a-z0-9!#$%&'*+/=?^_{|}~-]+(?:.[a-z0-9!#$%&'*+/=?^_{|}~-]+)_@(?:[a-z0-9](?:[a-z0-9-]_[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/i;
+      /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z]{2,}$/i;
+
     if (!email || !emailRegex.test(email)) {
       return res.status(400).json({ message: 'Invalid email format ' });
     }
@@ -39,7 +40,7 @@ function validateStudent(req, res, next) {
       'Đã thôi học',
       'Tạm dừng học',
     ];
-    if (!status || !validStatuses.test(status)) {
+    if (!status || !validStatuses.includes(status)) {
       return res.status(400).json({ message: 'Invalid status' });
     }
   }
