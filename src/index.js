@@ -1,12 +1,15 @@
 require('dotenv').config();
 const express = require('express');
 const path = require('path');
-
+const cors = require('cors');
 const route = require('./routes');
 
 const db = require('./config/db');
 // Connect to DB
 db.connect();
+
+// Sử dụng CORS cho tất cả các route
+app.use(cors());
 
 const port = process.env.PORT || 3000;
 const app = express();
