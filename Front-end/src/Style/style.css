@@ -84,7 +84,7 @@ body {
   text-align: left;
   background-color: #fff;
   padding-top: 76px;
-  max-width: 100%;
+  max-width: 99%;
 }
 
 [tabindex="-1"]:focus {
@@ -12256,10 +12256,7 @@ textarea.form-control {
     stroke-dasharray: 89, 200;
     stroke-dashoffset: -136px;
   }
-
-  
 }
-
 
 .chat-container {
   position: fixed;

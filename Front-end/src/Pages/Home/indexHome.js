@@ -69,7 +69,7 @@ function Home() {
       }
     };
     fetchStudents();
-  }, [search, check]);
+  }, [search, check, isEditModalVisible]);
 
   return (
     <>
@@ -134,8 +134,8 @@ function Home() {
       <section className="ftco-section">
         <div className="container">
           <div className="row">
-            {students.map((student) => (
-              <div className="col-md-4 d-flex" key={student._id}>
+            {students.map((student, index) => (
+              <div className="col-md-4 d-flex" key={index}>
                 <div className="student-card align-self-stretch p-4 mb-4">
                   <h4 className="mb-3">{student.fullName}</h4>
                   <p>
