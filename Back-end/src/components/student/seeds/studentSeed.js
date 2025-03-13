@@ -5,11 +5,9 @@ const { faker } = require('@faker-js/faker');
 
 dotenv.config(); 
 
-const START_STUDENT_ID = 10000000; 
-
 const generateRandomStudent = (index) => {
     return {
-        studentId: (START_STUDENT_ID + index).toString(), 
+        studentId: `SV${String(index + 1).padStart(4, '0')}`,
         fullName: faker.person.fullName(), 
         dateOfBirth: faker.date.birthdate({ min: 18, max: 25, mode: 'age' }).toISOString().split('T')[0], 
         gender: faker.helpers.arrayElement(['Nam', 'Nữ']), 
@@ -18,12 +16,12 @@ const generateRandomStudent = (index) => {
             'Khoa Tiếng Anh thương mại',
             'Khoa Tiếng Nhật',
             'Khoa Tiếng Pháp',
-        ]), // Khoa
+        ]), 
         course: faker.string.numeric(4), 
         program: faker.helpers.arrayElement(['Cử nhân', 'Thạc sĩ', 'Tiến sĩ']), 
         address: faker.location.streetAddress({ useFullAddress: true }), 
         email: faker.internet.email(), 
-        phone: faker.phone.number('0#########'), 
+        phone: `0${faker.string.numeric(9)}`,
         status: faker.helpers.arrayElement([
             'Đang học',
             'Đã tốt nghiệp',
