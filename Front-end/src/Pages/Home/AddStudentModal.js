@@ -1,12 +1,9 @@
 import React, { useState } from "react";
 import { Modal, Input, Form, Select, Button, message } from "antd";
 import axios from "axios";
-
-// Biểu thức chính quy kiểm tra email hợp lệ
+import swal from "sweetalert";
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-// Biểu thức chính quy kiểm tra số điện thoại hợp lệ (chỉ có chữ số và ít nhất 10 chữ số)
 const phoneRegex = /^[0-9]{10,}$/;
-
 const AddStudentModal = ({
   isModalVisible,
   setIsModalVisible,
@@ -26,10 +23,7 @@ const AddStudentModal = ({
     phone: "",
     status: "Đang học",
   });
-
-  // Kiểm tra trùng ID sinh viên trước khi thêm
   const checkIfIdExists = (id) => {
-    // Kiểm tra xem ID đã tồn tại trong danh sách sinh viên chưa
     return students.some((student) => student.studentId === id);
   };
 
@@ -39,22 +33,21 @@ const AddStudentModal = ({
   };
 
   const handleAddStudent = () => {
-    // Kiểm tra trùng ID sinh viên trước khi thêm vào
     if (checkIfIdExists(newStudent.studentId)) {
-      // Nếu trùng ID, hiển thị thông báo lỗi
-      message.error("Mã sinh viên đã tồn tại.");
+      swal("Mã sinh viên đã tồn tại", "Vui lòng thử lại", "error");
+      //message.error("Mã sinh viên đã tồn tại.");
       return;
     }
-
-    // Nếu không trùng ID, gửi yêu cầu thêm sinh viên mới
     axios
       .post("http://localhost:5000/api/student/add", newStudent)
       .then((response) => {
-        setStudents([...students, response.data]); // Thêm sinh viên mới vào danh sách
-        setIsModalVisible(false); // Đóng modal
+        setStudents([...students, response.data]);
+        setIsModalVisible(false);
+        swal("Thêm sinh viên thành công", "Sinh viên đã được thêm", "success");
       })
       .catch((error) => {
-        console.error("Lỗi khi thêm sinh viên:", error);
+        swal("Lỗi khi thêm sinh viên", "Vui lòng thử lại", "error");
+        //console.error("Lỗi khi thêm sinh viên:", error);
       });
   };
 
