@@ -69,7 +69,7 @@ function Home() {
       }
     };
     fetchStudents();
-  }, [search, check, isEditModalVisible]);
+  }, [search, check, isEditModalVisible, isModalVisible]);
 
   return (
     <>

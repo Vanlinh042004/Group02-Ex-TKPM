@@ -3,9 +3,7 @@ import { Modal, Input, Form, Select, Button, message } from "antd";
 import axios from "axios";
 import swal from "sweetalert";
 
-// Biểu thức chính quy kiểm tra email hợp lệ
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-// Biểu thức chính quy kiểm tra số điện thoại hợp lệ (ví dụ: (012) 345-6789)
 const phoneRegex = /^[0-9]{10,}$/;
 
 const EditStudentModal = ({
@@ -52,40 +50,35 @@ const EditStudentModal = ({
   };
 
   const handleUpdateStudent = () => {
-    // Kiểm tra tính hợp lệ của email và số điện thoại
-    console.log("Updated student data:", updatedStudent); // Log dữ liệu sinh viên để kiểm tra
-
-    // Kiểm tra email hợp lệ
+    //console.log("Updated student data:", updatedStudent);
     if (!emailRegex.test(updatedStudent.email)) {
       swal("Email không hợp lệ", "Vui lòng thử lại", "error");
-
-      console.error("Invalid email:", updatedStudent.email); // Log lỗi
+      console.error("Invalid email:", updatedStudent.email);
       return;
     }
-
-    // Kiểm tra số điện thoại hợp lệ
     if (!phoneRegex.test(updatedStudent.phone)) {
       swal("Số điện thoại không hợp lệ", "Vui lòng thử lại", "error");
-      console.error("Invalid phone:", updatedStudent.phone); // Log lỗi
+      console.error("Invalid phone:", updatedStudent.phone);
       return;
     }
-
-    // Đảm bảo chuyển đổi ngày tháng sang định dạng ISO chuẩn
     const formattedDate = new Date(updatedStudent.dateOfBirth).toISOString();
 
     const studentData = {
       ...updatedStudent,
-      dateOfBirth: formattedDate, // Đảm bảo rằng ngày sinh đã được chuyển đổi đúng
+      dateOfBirth: formattedDate,
     };
-
-    // Gửi yêu cầu PATCH tới API để cập nhật sinh viên
     axios
       .patch(
         `http://localhost:5000/api/student/update/${studentData.studentId}`,
         studentData
       )
       .then((response) => {
-        message.success("Cập nhật sinh viên thành công!");
+        swal(
+          "Cập nhật sinh viên thành công",
+          "Sinh viên đã được cập nhật",
+          "success"
+        );
+        //message.success("Cập nhật sinh viên thành công!");
         setStudents((prevStudents) =>
           prevStudents.map((s) =>
             s.studentId === studentData.studentId ? response.data : s
@@ -94,7 +87,8 @@ const EditStudentModal = ({
         setIsModalVisible(false);
       })
       .catch((error) => {
-        console.error("Lỗi khi cập nhật sinh viên:", error.response?.data); // Log lỗi chi tiết
+        swal("Cập nhật sinh viên thất bại", "Vui lòng thử lại", "error");
+        //console.error("Lỗi khi cập nhật sinh viên:", error.response?.data);
         message.error(
           error.response?.data?.message || "Cập nhật sinh viên thất bại."
         );
