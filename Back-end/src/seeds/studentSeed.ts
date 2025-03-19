@@ -3,9 +3,9 @@ import Student, {
   IdentityDocumentType, 
   Gender, 
   StudentStatus 
-} from '../models/Student';
-import Faculty from '../../faculty/models/Faculty';
-import Program from '../../program/models/Program';
+} from '../components/student/models/Student';
+import Faculty from '../components/faculty/models/Faculty';
+import Program from '../components/program/models/Program';
 import dotenv from 'dotenv';
 import { faker } from '@faker-js/faker';
 
@@ -139,5 +139,4 @@ const seedStudents = async () => {
   }
 };
 
-// Chạy hàm seed
-seedStudents();
+export default seedStudents;

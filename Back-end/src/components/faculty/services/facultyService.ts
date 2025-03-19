@@ -2,7 +2,6 @@ import Faculty, { IFaculty } from '../models/Faculty';
 
 export interface ICreateFacultyDTO {
     name: string;
-    description?: string;
     abbreviation: string;
 }
 
