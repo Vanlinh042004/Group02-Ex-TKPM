@@ -1,9 +1,8 @@
-import { I } from '@faker-js/faker/dist/airline-CBNP41sR';
 import Faculty, { IFaculty } from '../models/Faculty';
 
 export interface ICreateFacultyDTO {
     name: string;
-    description: string;
+    description?: string;
     abbreviation: string;
 }
 
@@ -20,7 +19,7 @@ class FacultyService {
     }
 
     async addFaculty(data: ICreateFacultyDTO): Promise<IFaculty> {
-        if (!data.name || !data.description || !data.abbreviation) {
+        if (!data.name || !data.abbreviation) {
             throw new Error('Missing required fields');
         }
 

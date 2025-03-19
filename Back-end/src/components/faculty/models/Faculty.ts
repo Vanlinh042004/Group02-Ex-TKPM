@@ -20,6 +20,7 @@ const facultySchema = new Schema<IFaculty>(
     },
     abbreviation: { 
       type: String ,
+      required: true,
       unique: true
     }
   },

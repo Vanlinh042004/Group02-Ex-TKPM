@@ -5,6 +5,7 @@ import Student, {
   StudentStatus 
 } from '../models/Student';
 import Faculty from '../../faculty/models/Faculty';
+import Program from '../../program/models/Program';
 import dotenv from 'dotenv';
 import { faker } from '@faker-js/faker';
 
@@ -68,6 +69,12 @@ const seedStudents = async () => {
       throw new Error('No faculties found. Please initialize faculties first.');
     }
 
+    // Lấy danh sách chương trình
+    const programs = await Program.find({});
+    if (programs.length === 0) {
+      throw new Error('No programs found. Please initialize programs first.');
+    }
+
     // Xóa dữ liệu cũ
     await Student.deleteMany({});
     console.log('🗑️ Deleted old students data');
@@ -79,6 +86,7 @@ const seedStudents = async () => {
     for (let i = 0; i < totalStudents; i++) {
       // Chọn ngẫu nhiên một khoa
       const faculty = faker.helpers.arrayElement(faculties);
+      const program = faker.helpers.arrayElement(programs);
 
       const permanentAddress = generateRandomAddress();
       const temporaryAddress = faker.helpers.maybe(() => generateRandomAddress(), { probability: 0.7 });
@@ -95,7 +103,7 @@ const seedStudents = async () => {
         nationality: faker.helpers.maybe(() => faker.location.country(), { probability: 0.1 }) || 'Việt Nam',
         faculty: faculty._id, // Sử dụng ID của khoa
         course: faker.string.numeric(4),
-        program: faker.helpers.arrayElement(['Cử nhân', 'Thạc sĩ', 'Tiến sĩ']),
+        program: program._id,
         
         // Địa chỉ
         permanentAddress,

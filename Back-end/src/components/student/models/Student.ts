@@ -62,7 +62,7 @@ export interface IStudent extends Document {
   nationality: string; // Quốc tịch
   faculty: mongoose.Types.ObjectId; // Reference to Faculty
   course: string;
-  program: string;
+  program: mongoose.Types.ObjectId; // Reference to Program
   
   // Địa chỉ
   permanentAddress?: IAddress; // Địa chỉ thường trú (nếu có)
@@ -139,8 +139,9 @@ const studentSchema = new Schema<IStudent>(
       required: true 
     },
     program: { 
-      type: String, 
-      required: true 
+      type: Schema.Types.ObjectId, 
+      ref: 'Program', 
+      required: true
     },
     
     // Địa chỉ

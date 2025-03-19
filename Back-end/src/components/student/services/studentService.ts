@@ -1,5 +1,6 @@
 import Student, { IStudent } from '../models/Student';
 import Faculty from '../../faculty/models/Faculty';
+import Program from '../../program/models/Program';
 import mongoose from 'mongoose';
 
 // Interface cho địa chỉ DTO
@@ -46,7 +47,7 @@ export interface ICreateStudentDTO {
   nationality: string;
   faculty: string; // Faculty name or ID
   course: string;
-  program: string;
+  program: string; // Program name or ID
   
   // Địa chỉ
   permanentAddress?: IAddressDTO;
@@ -135,6 +136,19 @@ class StudentService {
         throw new Error('Faculty not found');
       }
 
+      // Tìm program bằng tên hoặc ID
+      let programDoc;
+      if (mongoose.Types.ObjectId.isValid(program)) {
+        programDoc = await Program.findById(program);
+      } else {
+        programDoc = await Program.findOne
+        ({ name: program });
+      }
+
+      if (!programDoc) {
+        throw new Error('Program not found');
+      }
+
       // Tạo sinh viên mới
       const newStudent = new Student({
         studentId,
@@ -144,7 +158,7 @@ class StudentService {
         nationality: nationality || 'Việt Nam',
         faculty: facultyDoc._id,
         course,
-        program,
+        program: programDoc._id,
         permanentAddress,
         temporaryAddress,
         mailingAddress,
@@ -284,51 +298,10 @@ class StudentService {
    */
   async getAllStudent(): Promise<IStudent[]> {
     try {
-      const result = await Student.find({}).populate('faculty');
+      const result = await Student.find({}).populate('faculty').populate('program');
       return result;
     } catch (error) {
       console.log('Error retrieving all students: ', error);
-      throw error;
-    }
-  }
-
-  /**
-   * Lấy sinh viên theo mã số
-   * @param studentId Mã số sinh viên
-   * @returns Promise<IStudent> Thông tin sinh viên
-   */
-  async getStudentById(studentId: string): Promise<IStudent | null> {
-    try {
-      const student = await Student.findOne({ studentId }).populate('faculty');
-      return student;
-    } catch (error) {
-      console.log('Error retrieving student: ', error);
-      throw error;
-    }
-  }
-
-  /**
-   * Lấy danh sách sinh viên theo khoa
-   * @param facultyId Mã hoặc tên khoa
-   * @returns Promise<IStudent[]> Danh sách sinh viên của khoa
-   */
-  async getStudentsByFaculty(facultyId: string): Promise<IStudent[]> {
-    try {
-      let facultyDoc;
-      if (mongoose.Types.ObjectId.isValid(facultyId)) {
-        facultyDoc = await Faculty.findById(facultyId);
-      } else {
-        facultyDoc = await Faculty.findOne({ name: facultyId });
-      }
-
-      if (!facultyDoc) {
-        throw new Error('Faculty not found');
-      }
-
-      const students = await Student.find({ faculty: facultyDoc._id }).populate('faculty');
-      return students;
-    } catch (error) {
-      console.log('Error retrieving students by faculty: ', error);
       throw error;
     }
   }
