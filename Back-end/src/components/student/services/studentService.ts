@@ -1,5 +1,5 @@
 import Student, { IStudent } from '../models/Student';
-import Faculty, { IFaculty } from '../../faculty/models/Faculty';
+import Faculty from '../../faculty/models/Faculty';
 import mongoose from 'mongoose';
 
 // Interface cho địa chỉ DTO

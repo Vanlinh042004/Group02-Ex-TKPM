@@ -19,7 +19,8 @@ const facultySchema = new Schema<IFaculty>(
       type: String 
     },
     abbreviation: { 
-      type: String 
+      type: String ,
+      unique: true
     }
   },
   {
