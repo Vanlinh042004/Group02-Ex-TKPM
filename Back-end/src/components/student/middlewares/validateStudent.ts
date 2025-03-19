@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { Faculty, StudentStatus } from '../models/Student';
+import { StudentStatus } from '../models/Student';
 
 /**
  * Middleware để xác thực dữ liệu sinh viên trước khi xử lý
@@ -31,13 +31,13 @@ function validateStudent(req: Request, res: Response, next: NextFunction): void 
   }
 
   // Kiểm tra tên khoa
-  if (faculty !== undefined) {
-    const validFaculties = Object.values(Faculty);
-    if (!faculty || !validFaculties.includes(faculty)) {
-      res.status(400).json({ message: 'Invalid faculty' });
-      return;
-    }
-  }
+  // if (faculty !== undefined) {
+  //   const validFaculties = Object.values(Faculty);
+  //   if (!faculty || !validFaculties.includes(faculty)) {
+  //     res.status(400).json({ message: 'Invalid faculty' });
+  //     return;
+  //   }
+  // }
 
   // Kiểm tra status
   if (status !== undefined) {

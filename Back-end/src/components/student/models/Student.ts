@@ -1,16 +1,8 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
-// Định nghĩa enum cho các giá trị cố định
 export enum Gender {
   MALE = 'Nam',
   FEMALE = 'Nữ'
-}
-
-export enum Faculty {
-  LAW = 'Khoa Luật',
-  BUSINESS_ENGLISH = 'Khoa Tiếng Anh thương mại',
-  JAPANESE = 'Khoa Tiếng Nhật',
-  FRENCH = 'Khoa Tiếng Pháp'
 }
 
 export enum StudentStatus {
@@ -68,7 +60,7 @@ export interface IStudent extends Document {
   dateOfBirth: Date;
   gender: Gender;
   nationality: string; // Quốc tịch
-  faculty: Faculty;
+  faculty: mongoose.Types.ObjectId; // Reference to Faculty
   course: string;
   program: string;
   
@@ -112,50 +104,83 @@ const identityDocumentSchema = new Schema<IIdentityBase>({
 });
 
 // Schema cho Student
-const studentSchema = new Schema<IStudent>({
-  studentId: { type: String, required: true, unique: true },
-  fullName: { type: String, required: true },
-  dateOfBirth: { type: Date, required: true },
-  gender: { 
-    type: String, 
-    enum: Object.values(Gender),
-    required: true 
+const studentSchema = new Schema<IStudent>(
+  {
+    studentId: { 
+      type: String, 
+      required: true, 
+      unique: true 
+    },
+    fullName: { 
+      type: String, 
+      required: true 
+    },
+    dateOfBirth: { 
+      type: Date, 
+      required: true 
+    },
+    gender: { 
+      type: String, 
+      enum: Object.values(Gender),
+      required: true 
+    },
+    nationality: { 
+      type: String, 
+      required: true, 
+      default: 'Việt Nam' 
+    },
+    faculty: {
+      type: Schema.Types.ObjectId,
+      ref: 'Faculty',
+      required: true
+    },
+    course: { 
+      type: String, 
+      required: true 
+    },
+    program: { 
+      type: String, 
+      required: true 
+    },
+    
+    // Địa chỉ
+    permanentAddress: addressSchema,
+    temporaryAddress: addressSchema,
+    mailingAddress: { 
+      type: addressSchema, 
+      required: true 
+    },
+    
+    // Giấy tờ tùy thân
+    identityDocument: { 
+      type: identityDocumentSchema, 
+      required: true 
+    },
+    
+    email: { 
+      type: String, 
+      required: true, 
+      unique: true 
+    },
+    phone: { 
+      type: String, 
+      required: true 
+    },
+    status: {
+      type: String,
+      required: true,
+      enum: Object.values(StudentStatus)
+    }
   },
-  nationality: { type: String, required: true, default: 'Việt Nam' },
-  faculty: {
-    type: String,
-    required: true,
-    enum: Object.values(Faculty)
-  },
-  course: { type: String, required: true },
-  program: { type: String, required: true },
-  
-  // Địa chỉ
-  permanentAddress: addressSchema,
-  temporaryAddress: addressSchema,
-  mailingAddress: { 
-    type: addressSchema, 
-    required: true 
-  },
-  
-  // Giấy tờ tùy thân
-  identityDocument: identityDocumentSchema,
-  
-  email: { type: String, required: true, unique: true },
-  phone: { type: String, required: true },
-  status: {
-    type: String,
-    required: true,
-    enum: Object.values(StudentStatus)
+  {
+    timestamps: true,
   }
-}, {
-  timestamps: true
-});
+);
 
-// Tạo và export model Student
-const StudentModel = mongoose.model<IStudent>('Student', studentSchema);
+// Tạo index cho tìm kiếm nhanh hơn
+studentSchema.index({ fullName: 'text', studentId: 1 });
 
-// Tạo discriminator cho các loại giấy tờ
+// Tạo discriminator cho các loại giấy tờ tùy thân
 // @ts-ignore - Để tránh lỗi TypeScript với discriminator
 studentSchema.path('identityDocument').discriminator(
   IdentityDocumentType.CMND, 
@@ -179,4 +204,4 @@ studentSchema.path('identityDocument').discriminator(
   })
 );
 
-export default StudentModel;
+export default mongoose.model<IStudent>('Student', studentSchema);

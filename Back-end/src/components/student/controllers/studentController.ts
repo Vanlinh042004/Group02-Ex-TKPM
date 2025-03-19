@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import StudentService, { ICreateStudentDTO, IUpdateStudentDTO } from '../services/studentService';
+import StudentService, { ICreateStudentDTO, IUpdateStudentDTO, IStudentSearchTermsDTO } from '../services/studentService';
 
 class StudentController {
   /**
@@ -55,9 +55,27 @@ class StudentController {
    */
   async searchStudent(req: Request, res: Response): Promise<void> {
     try {
-      const searchTerm = (req.query.searchTerm as string) || req.params.studentId;
-      const result = await StudentService.searchStudent(searchTerm);
-      res.status(200).json(result);
+      const searchParams: IStudentSearchTermsDTO = {
+        studentId: req.query.studentId as string,
+        fullName: req.query.fullName as string,
+        faculty: req.query.faculty as string
+      };
+      
+      const hasSearchParams = Object.values(searchParams).some(param => param !== undefined);
+      
+      if (!hasSearchParams) {
+        res.status(400).json({ message: 'At least one search parameter is required' });
+        return;
+      }
+
+      const result = await StudentService.searchStudent(searchParams);
+      
+      // Trả về kết quả, nếu không tìm thấy sinh viên nào
+      if (result.length === 0) {
+        res.status(404).json({ message: 'No students found', data: [] });
+      } else {
+        res.status(200).json(result);
+      }
     } catch (error: any) {
       res.status(400).json({ message: error.message });
     }
@@ -76,6 +94,8 @@ class StudentController {
       res.status(400).json({ message: error.message });
     }
   }
+  //async updateStudentName(req: Request, res: Response): Promise<void> {
+
 }
 
 export default new StudentController();

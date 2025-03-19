@@ -13,5 +13,6 @@ router.patch(
 );
 router.get('/search', StudentController.searchStudent);
 router.get('/list', StudentController.getAllStudent);
+//router.patch('/update/')
 
 export default router;
