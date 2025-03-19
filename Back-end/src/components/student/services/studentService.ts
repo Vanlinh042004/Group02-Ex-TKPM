@@ -1,15 +1,59 @@
 import Student, { IStudent } from '../models/Student';
 
+// Interface cho địa chỉ DTO
+export interface IAddressDTO {
+  streetAddress?: string;
+  ward?: string;
+  district?: string;
+  city?: string;
+  country: string;
+}
+
+// Interface cho các loại giấy tờ DTO
+export interface IIdentityBaseDTO {
+  type: string;
+  number: string;
+  issueDate: Date | string;
+  issuePlace: string;
+  expiryDate: Date | string;
+}
+
+export interface ICMND_DTO extends IIdentityBaseDTO {
+  type: 'CMND';
+}
+
+export interface ICCCD_DTO extends IIdentityBaseDTO {
+  type: 'CCCD';
+  hasChip: boolean;
+}
+
+export interface IPassport_DTO extends IIdentityBaseDTO {
+  type: 'Hộ chiếu';
+  issuingCountry: string;
+  notes?: string;
+}
+
+export type IdentityDocumentDTO = ICMND_DTO | ICCCD_DTO | IPassport_DTO;
+
 // Interface cho dữ liệu tạo student mới
 export interface ICreateStudentDTO {
   studentId: string;
   fullName: string;
   dateOfBirth: Date | string;
   gender: string;
+  nationality: string;
   faculty: string;
   course: string;
   program: string;
-  address: string;
+  
+  // Địa chỉ
+  permanentAddress?: IAddressDTO;
+  temporaryAddress?: IAddressDTO;
+  mailingAddress: IAddressDTO;
+  
+  // Giấy tờ tùy thân
+  identityDocument: IdentityDocumentDTO;
+  
   email: string;
   phone: string;
   status: string;
@@ -31,15 +75,20 @@ class StudentService {
         fullName,
         dateOfBirth,
         gender,
+        nationality,
         faculty,
         course,
         program,
-        address,
+        permanentAddress,
+        temporaryAddress,
+        mailingAddress,
+        identityDocument,
         email,
         phone,
         status,
       } = student;
 
+      // Kiểm tra các trường bắt buộc
       if (
         !studentId ||
         !fullName ||
@@ -48,7 +97,10 @@ class StudentService {
         !faculty ||
         !course ||
         !program ||
-        !address ||
+        !mailingAddress ||
+        !mailingAddress.country ||
+        !identityDocument ||
+        !identityDocument.number ||
         !email ||
         !phone ||
         !status
@@ -56,20 +108,26 @@ class StudentService {
         throw new Error('Missing required fields');
       }
 
+      // Kiểm tra sinh viên đã tồn tại
       const existingStudent = await Student.findOne({ studentId });
       if (existingStudent) {
         throw new Error('Student already exists');
       }
 
+      // Tạo sinh viên mới
       const newStudent = new Student({
         studentId,
         fullName,
         dateOfBirth,
         gender,
+        nationality: nationality || 'Việt Nam',
         faculty,
         course,
         program,
-        address,
+        permanentAddress,
+        temporaryAddress,
+        mailingAddress,
+        identityDocument,
         email,
         phone,
         status,
@@ -137,6 +195,9 @@ class StudentService {
         $or: [
           { studentId: { $regex: searchTerm, $options: 'i' } },
           { fullName: { $regex: searchTerm, $options: 'i' } },
+          { email: { $regex: searchTerm, $options: 'i' } },
+          { phone: { $regex: searchTerm, $options: 'i' } },
+          { 'identityDocument.number': { $regex: searchTerm, $options: 'i' } }
         ],
       });
       return result;
@@ -159,6 +220,7 @@ class StudentService {
       throw error;
     }
   }
+
 }
 
 export default new StudentService();
