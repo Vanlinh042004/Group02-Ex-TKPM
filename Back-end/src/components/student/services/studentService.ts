@@ -1,7 +1,30 @@
-const Student = require('../models/Student');
+import Student, { IStudent } from '../models/Student';
+
+// Interface cho dữ liệu tạo student mới
+export interface ICreateStudentDTO {
+  studentId: string;
+  fullName: string;
+  dateOfBirth: Date | string;
+  gender: string;
+  faculty: string;
+  course: string;
+  program: string;
+  address: string;
+  email: string;
+  phone: string;
+  status: string;
+}
+
+// Interface cho dữ liệu cập nhật student
+export interface IUpdateStudentDTO extends Partial<ICreateStudentDTO> {}
 
 class StudentService {
-  async addStudent(student) {
+  /**
+   * Thêm sinh viên mới
+   * @param student Thông tin sinh viên cần thêm
+   * @returns Promise<IStudent> Thông tin sinh viên đã được lưu
+   */
+  async addStudent(student: ICreateStudentDTO): Promise<IStudent> {
     try {
       const {
         studentId,
@@ -59,7 +82,11 @@ class StudentService {
     }
   }
 
-  async deleteStudent(studentId) {
+  /**
+   * Xóa sinh viên theo mã số
+   * @param studentId Mã số sinh viên
+   */
+  async deleteStudent(studentId: string): Promise<void> {
     try {
       const result = await Student.findOneAndDelete({ studentId });
 
@@ -72,7 +99,13 @@ class StudentService {
     }
   }
 
-  async updateStudent(studentId, updateData) {
+  /**
+   * Cập nhật thông tin sinh viên
+   * @param studentId Mã số sinh viên
+   * @param updateData Dữ liệu cần cập nhật
+   * @returns Promise<IStudent> Thông tin sinh viên sau khi cập nhật
+   */
+  async updateStudent(studentId: string, updateData: IUpdateStudentDTO): Promise<IStudent> {
     try {
       if (!studentId || !updateData) {
         throw new Error('Missing required fields');
@@ -87,13 +120,18 @@ class StudentService {
       }
 
       return result;
-    } catch {
+    } catch (error: any) {
       console.log('Error updating student: ', error);
       throw error;
     }
   }
 
-  async searchStudent(searchTerm) {
+  /**
+   * Tìm kiếm sinh viên theo từ khóa
+   * @param searchTerm Từ khóa tìm kiếm
+   * @returns Promise<IStudent[]> Danh sách sinh viên phù hợp
+   */
+  async searchStudent(searchTerm: string): Promise<IStudent[]> {
     try {
       const result = await Student.find({
         $or: [
@@ -108,7 +146,11 @@ class StudentService {
     }
   }
 
-  async getAllStudent() {
+  /**
+   * Lấy danh sách tất cả sinh viên
+   * @returns Promise<IStudent[]> Danh sách tất cả sinh viên
+   */
+  async getAllStudent(): Promise<IStudent[]> {
     try {
       const result = await Student.find({});
       return result;
@@ -119,4 +161,4 @@ class StudentService {
   }
 }
 
-module.exports = new StudentService();
+export default new StudentService();

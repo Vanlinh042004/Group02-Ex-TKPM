@@ -1,9 +1,8 @@
-const express = require('express');
+import express from 'express';
+import StudentController from '../controllers/studentController';
+import validateStudent from '../middlewares/validateStudent';
+
 const router = express.Router();
-
-const StudentController = require('../controllers/StudentController');
-
-const validateStudent = require('../middlewares/validateStudent');
 
 router.post('/add', validateStudent, StudentController.addStudent);
 router.delete('/delete/:studentId', StudentController.deleteStudent);
@@ -14,4 +13,5 @@ router.patch(
 );
 router.get('/search', StudentController.searchStudent);
 router.get('/list', StudentController.getAllStudent);
-module.exports = router;
+
+export default router;
