@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import Program from '../components/program/models/Program';
 dotenv.config();
 
+// Hàm này sẽ thêm dữ liệu mẫu cho bảng chương trình
 const seedPrograms = async () => {
   try {
     // Kết nối MongoDB

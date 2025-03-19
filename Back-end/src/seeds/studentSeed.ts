@@ -1,11 +1,11 @@
 import mongoose from 'mongoose';
 import Student, { 
   IdentityDocumentType, 
-  Gender, 
-  StudentStatus 
+  Gender 
 } from '../components/student/models/Student';
 import Faculty from '../components/faculty/models/Faculty';
 import Program from '../components/program/models/Program';
+import Status from '../components/status/models/Status';
 import dotenv from 'dotenv';
 import { faker } from '@faker-js/faker';
 
@@ -57,6 +57,7 @@ const generateRandomIdentityDocument = () => {
   }
 };
 
+// Hàm này sẽ thêm dữ liệu mẫu cho bảng sinh viên
 const seedStudents = async () => {
   try {
     // Kết nối MongoDB
@@ -75,6 +76,12 @@ const seedStudents = async () => {
       throw new Error('No programs found. Please initialize programs first.');
     }
 
+    // Lấy danh sách trạng thái
+    const statuses = await Status.find({});
+    if (statuses.length === 0) {
+      throw new Error('No statuses found. Please initialize statuses first.');
+    }
+
     // Xóa dữ liệu cũ
     await Student.deleteMany({});
     console.log('🗑️ Deleted old students data');
@@ -87,6 +94,7 @@ const seedStudents = async () => {
       // Chọn ngẫu nhiên một khoa
       const faculty = faker.helpers.arrayElement(faculties);
       const program = faker.helpers.arrayElement(programs);
+      const status = faker.helpers.arrayElement(statuses);
 
       const permanentAddress = generateRandomAddress();
       const temporaryAddress = faker.helpers.maybe(() => generateRandomAddress(), { probability: 0.7 });
@@ -95,14 +103,17 @@ const seedStudents = async () => {
         { probability: 0.3 }
       ) || permanentAddress;
       
+      const fullName = faker.person.fullName();
+      const email = `${fullName.toLowerCase().replace(/ /g, '.')}@example.com`;
+
       students.push({
         studentId: `SV${String(i + 1).padStart(4, '0')}`,
-        fullName: faker.person.fullName(),
+        fullName,
         dateOfBirth: faker.date.birthdate({ min: 18, max: 25, mode: 'age' }),
         gender: faker.helpers.arrayElement(Object.values(Gender)),
         nationality: faker.helpers.maybe(() => faker.location.country(), { probability: 0.1 }) || 'Việt Nam',
         faculty: faculty._id, // Sử dụng ID của khoa
-        course: faker.string.numeric(4),
+        course: faker.number.int({ min: 2000, max: 2025 }),
         program: program._id,
         
         // Địa chỉ
@@ -113,9 +124,9 @@ const seedStudents = async () => {
         // Giấy tờ tùy thân
         identityDocument: generateRandomIdentityDocument(),
         
-        email: faker.internet.email(),
+        email,
         phone: `0${faker.string.numeric(9)}`,
-        status: faker.helpers.arrayElement(Object.values(StudentStatus)),
+        status: status._id
       });
     }
 

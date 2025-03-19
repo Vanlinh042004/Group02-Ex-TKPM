@@ -94,7 +94,6 @@ class StudentController {
       res.status(400).json({ message: error.message });
     }
   }
-  //async updateStudentName(req: Request, res: Response): Promise<void> {
 
 }
 

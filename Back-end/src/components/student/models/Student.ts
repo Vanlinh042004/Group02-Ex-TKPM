@@ -5,13 +5,6 @@ export enum Gender {
   FEMALE = 'Nữ'
 }
 
-export enum StudentStatus {
-  STUDYING = 'Đang học',
-  GRADUATED = 'Đã tốt nghiệp',
-  DROPPED = 'Đã thôi học',
-  PAUSED = 'Tạm dừng học'
-}
-
 export enum IdentityDocumentType {
   CMND = 'CMND',
   CCCD = 'CCCD',
@@ -74,7 +67,7 @@ export interface IStudent extends Document {
   
   email: string;
   phone: string;
-  status: StudentStatus;
+  status: mongoose.Types.ObjectId; // Reference to student Status
   createdAt: Date;
   updatedAt: Date;
 }
@@ -168,9 +161,9 @@ const studentSchema = new Schema<IStudent>(
       required: true 
     },
     status: {
-      type: String,
-      required: true,
-      enum: Object.values(StudentStatus)
+      type: Schema.Types.ObjectId,
+      ref: 'Status',
+      required: true
     }
   },
   {

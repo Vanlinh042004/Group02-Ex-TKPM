@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from 'express';
-import { StudentStatus } from '../models/Student';
 
 /**
  * Middleware để xác thực dữ liệu sinh viên trước khi xử lý
@@ -40,13 +39,13 @@ function validateStudent(req: Request, res: Response, next: NextFunction): void 
   // }
 
   // Kiểm tra status
-  if (status !== undefined) {
-    const validStatuses = Object.values(StudentStatus);
-    if (!status || !validStatuses.includes(status)) {
-      res.status(400).json({ message: 'Invalid status' });
-      return;
-    }
-  }
+  // if (status !== undefined) {
+  //   const validStatuses = Object.values(StudentStatus);
+  //   if (!status || !validStatuses.includes(status)) {
+  //     res.status(400).json({ message: 'Invalid status' });
+  //     return;
+  //   }
+  // }
 
   next();
 }

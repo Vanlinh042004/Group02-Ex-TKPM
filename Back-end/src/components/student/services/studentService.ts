@@ -1,6 +1,7 @@
 import Student, { IStudent } from '../models/Student';
 import Faculty from '../../faculty/models/Faculty';
 import Program from '../../program/models/Program';
+import Status from '../../status/models/Status';
 import mongoose from 'mongoose';
 
 // Interface cho địa chỉ DTO
@@ -38,6 +39,13 @@ export interface IPassport_DTO extends IIdentityBaseDTO {
 
 export type IdentityDocumentDTO = ICMND_DTO | ICCCD_DTO | IPassport_DTO;
 
+// Interface cho dữ liệu tìm kiếm
+export interface IStudentSearchTermsDTO {
+  studentId?: string;
+  fullName?: string;
+  faculty?: string;
+}
+
 // Interface cho dữ liệu tạo student mới
 export interface ICreateStudentDTO {
   studentId: string;
@@ -45,9 +53,9 @@ export interface ICreateStudentDTO {
   dateOfBirth: Date | string;
   gender: string;
   nationality: string;
-  faculty: string; // Faculty name or ID
+  faculty: string; // Faculty name or facultyId
   course: string;
-  program: string; // Program name or ID
+  program: string; // Program name or programId
   
   // Địa chỉ
   permanentAddress?: IAddressDTO;
@@ -60,13 +68,6 @@ export interface ICreateStudentDTO {
   email: string;
   phone: string;
   status: string;
-}
-
-// Interface cho các từ khóa tìm kiếm
-export interface IStudentSearchTermsDTO {
-  studentId?: string;
-  fullName?: string;
-  faculty?: string;
 }
 
 // Interface cho dữ liệu cập nhật student
@@ -124,29 +125,36 @@ class StudentService {
         throw new Error('Student already exists');
       }
 
-      // Tìm faculty bằng tên hoặc ID
-      let facultyDoc;
-      if (mongoose.Types.ObjectId.isValid(faculty)) {
-        facultyDoc = await Faculty.findById(faculty);
-      } else {
-        facultyDoc = await Faculty.findOne({ name: faculty });
-      }
+      // Tìm faculty bằng tên hoặc facultyId
+      const facultyDoc = await Faculty.findOne({ 
+        $or: [
+          { name: faculty },
+          { facultyId: faculty }
+        ]
+      });
 
       if (!facultyDoc) {
         throw new Error('Faculty not found');
       }
 
-      // Tìm program bằng tên hoặc ID
-      let programDoc;
-      if (mongoose.Types.ObjectId.isValid(program)) {
-        programDoc = await Program.findById(program);
-      } else {
-        programDoc = await Program.findOne
-        ({ name: program });
-      }
+      // Tìm program bằng tên hoặc programId
+      const programDoc = await Program.findOne({
+        $or: [
+          { name: program },
+          { programId: program }
+        ]
+      });
 
       if (!programDoc) {
         throw new Error('Program not found');
+      }
+
+      // Tìm status bằng tên
+      const statusDoc = await Status
+        .findOne({ name: status });
+
+      if (!statusDoc) {
+        throw new Error('Status not found');
       }
 
       // Tạo sinh viên mới
@@ -165,7 +173,7 @@ class StudentService {
         identityDocument,
         email,
         phone,
-        status,
+        status: statusDoc._id,
       });
 
       return await newStudent.save();
@@ -204,21 +212,53 @@ class StudentService {
         throw new Error('Missing required fields');
       }
 
-      // Nếu update faculty, kiểm tra và chuyển đổi thành faculty ID
+      // Nếu update faculty, kiểm tra và chuyển đổi
       if (updateData.faculty) {
-        let facultyDoc;
-        if (mongoose.Types.ObjectId.isValid(updateData.faculty)) {
-          facultyDoc = await Faculty.findById(updateData.faculty);
-        } else {
-          facultyDoc = await Faculty.findOne({ name: updateData.faculty });
-        }
+        const facultyDoc = await Faculty.findOne({ 
+          $or: [
+            { name: updateData.faculty },
+            { facultyId: updateData.faculty }
+          ]
+        });
 
         if (!facultyDoc) {
           throw new Error('Faculty not found');
         }
 
-        // Thay thế tên faculty bằng faculty ID
+        // Thay thế bằng ObjectId của faculty
         updateData.faculty = facultyDoc._id.toString();
+      }
+
+      // Tương tự cho program nếu cần update
+      if (updateData.program) {
+        const programDoc = await Program.findOne({
+          $or: [
+            { name: updateData.program },
+            { programId: updateData.program }
+          ]
+        });
+
+        if (!programDoc) {
+          throw new Error('Program not found');
+        }
+
+        // Thay thế bằng ObjectId của program
+        updateData.program = programDoc._id.toString();
+      }
+
+      // Tương tự cho status nếu cần update
+      if (updateData.status) {
+        const statusDoc = await
+          Status.findOne({
+            name: updateData.status
+          });
+
+        if (!statusDoc) {
+          throw new Error('Status not found');
+        }
+
+        // Thay thế bằng ObjectId của status
+        updateData.status = statusDoc._id.toString();
       }
 
       const result = await Student.findOneAndUpdate({ studentId }, updateData, {
@@ -238,7 +278,7 @@ class StudentService {
 
   /**
    * Tìm kiếm sinh viên theo từ khóa
-   * @param searchTerm Từ khóa tìm kiếm
+   * @param searchParams Các tham số tìm kiếm
    * @returns Promise<IStudent[]> Danh sách sinh viên phù hợp
    */
   async searchStudent(searchParams: IStudentSearchTermsDTO): Promise<IStudent[]> {
@@ -269,7 +309,10 @@ class StudentService {
       if (searchParams.faculty) {
         // Tìm ID của khoa
         const faculty = await Faculty.findOne({ 
-          name: { $regex: searchParams.faculty.toString(), $options: 'i' } 
+          $or: [
+            { name: { $regex: searchParams.faculty.toString(), $options: 'i' } },
+            { facultyId: searchParams.faculty }
+          ]
         });
 
         if (faculty) {
@@ -283,7 +326,10 @@ class StudentService {
       // Thực hiện tìm kiếm
       const result = await Student.find({
         $and: searchConditions
-      }).populate('faculty');
+      })
+      .populate('faculty')
+      .populate('program')
+      .populate('status');
 
       return result;
     } catch (error) {
@@ -298,10 +344,30 @@ class StudentService {
    */
   async getAllStudent(): Promise<IStudent[]> {
     try {
-      const result = await Student.find({}).populate('faculty').populate('program');
+      const result = await Student.find({})
+        .populate('faculty')
+        .populate('program')
+        .populate('status');
       return result;
     } catch (error) {
       console.log('Error retrieving all students: ', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Lấy sinh viên theo mã số
+   * @param studentId Mã số sinh viên
+   * @returns Promise<IStudent | null> Thông tin sinh viên
+   */
+  async getStudentById(studentId: string): Promise<IStudent | null> {
+    try {
+      const student = await Student.findOne({ studentId })
+        .populate('faculty')
+        .populate('program');
+      return student;
+    } catch (error) {
+      console.log('Error retrieving student: ', error);
       throw error;
     }
   }

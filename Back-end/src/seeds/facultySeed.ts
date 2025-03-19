@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import Faculty from '../components/faculty/models/Faculty';
 dotenv.config();
 
+// Hàm này sẽ thêm dữ liệu mẫu cho bảng khoa
 const seedFaculties = async () => {
   try {
     // Kết nối MongoDB
