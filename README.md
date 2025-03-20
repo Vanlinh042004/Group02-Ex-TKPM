@@ -152,10 +152,12 @@ npm start
 **1.Cho phép đổi tên & thêm mới: khoa, tình trạng sinh viên, chương trình**
 
 **2.Thêm chức năng tìm kiếm: tìm theo khoa, khoa + tên**
-<img src="/FeatureImg/SearchFaculty.png" alt="Search Faculty" width="500" height="300"/> <img src="/FeatureImg/SearchName+Faculty.png" alt="Search Faculty" width="500" height="300"/>
+<img src="/FeatureImg/SearchFaculty.png" alt="Search Faculty" width="500" height="300"/> 
+<img src="/FeatureImg/SearchName+Faculty.png" alt="Search Faculty" width="500" height="300"/>
 
 **3.Hỗ trợ import/export dữ liệu: CSV, JSON, XML, Excel (chọn ít nhất 2)**
 <img src="/FeatureImg/Feature3.png" alt="Feature3" />
-<img src="/FeatureImg/Export.png" alt="Export" width="500" height="300"/> <img src="/FeatureImg/Import.png" alt="Import" width="500" height="300"/>
+<img src="/FeatureImg/Export.png" alt="Export" width="500" height="300"/> 
+<img src="/FeatureImg/Import.png" alt="Import" width="500" height="300"/>
 
 **4.Thêm logging mechanism để troubleshooting production issue & audit purposes**
