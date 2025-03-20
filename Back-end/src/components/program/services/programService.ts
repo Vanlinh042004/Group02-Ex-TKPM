@@ -1,4 +1,4 @@
-import Program, { IProgram } from '../models/Program';
+import Program, { IProgram } from '../models/program';
 import Faculty from '../../faculty/models/Faculty';
 import mongoose from 'mongoose';
 

@@ -5,7 +5,7 @@ import Student, {
   StudentStatus 
 } from '../models/Student';
 import Faculty from '../../faculty/models/Faculty';
-import Program from '../../program/models/Program';
+import Program from '../../program/models/program';
 import dotenv from 'dotenv';
 import { faker } from '@faker-js/faker';
 

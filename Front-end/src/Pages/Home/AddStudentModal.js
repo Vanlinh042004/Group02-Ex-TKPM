@@ -2,14 +2,11 @@ import React, { useState } from "react";
 import { Modal, Input, Form, Select, Button, message } from "antd";
 import axios from "axios";
 import swal from "sweetalert";
+
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const phoneRegex = /^[0-9]{10,}$/;
-const AddStudentModal = ({
-  isModalVisible,
-  setIsModalVisible,
-  students,
-  setStudents,
-}) => {
+
+const AddStudentModal = ({ isModalVisible, setIsModalVisible, students, setStudents }) => {
   const [newStudent, setNewStudent] = useState({
     studentId: "",
     fullName: "",
@@ -18,14 +15,23 @@ const AddStudentModal = ({
     faculty: "",
     course: "",
     program: "",
-    address: "",
+    addressPermanent: "",
+    addressTemporary: "",
+    addressMailing: "",
+    idType: "",
+    idNumber: "",
+    idIssueDate: "",
+    idExpiryDate: "",
+    idIssuePlace: "",
+    idChip: "",
+    nationality: "",
+    passportNote: "",
     email: "",
     phone: "",
     status: "Đang học",
   });
-  const checkIfIdExists = (id) => {
-    return students.some((student) => student.studentId === id);
-  };
+
+  const checkIfIdExists = (id) => students.some((student) => student.studentId === id);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -35,11 +41,9 @@ const AddStudentModal = ({
   const handleAddStudent = () => {
     if (checkIfIdExists(newStudent.studentId)) {
       swal("Mã sinh viên đã tồn tại", "Vui lòng thử lại", "error");
-      //message.error("Mã sinh viên đã tồn tại.");
       return;
     }
-    axios
-      .post("http://localhost:5000/api/student/add", newStudent)
+    axios.post("http://localhost:5000/api/student/add", newStudent)
       .then((response) => {
         setStudents([...students, response.data]);
         setIsModalVisible(false);
@@ -47,7 +51,6 @@ const AddStudentModal = ({
       })
       .catch((error) => {
         swal("Lỗi khi thêm sinh viên", "Vui lòng thử lại", "error");
-        //console.error("Lỗi khi thêm sinh viên:", error);
       });
   };
 
@@ -59,158 +62,58 @@ const AddStudentModal = ({
       onOk={handleAddStudent}
     >
       <Form layout="vertical">
-        <Form.Item
-          label="Mã sinh viên"
-          name="studentId"
-          rules={[{ required: true, message: "Vui lòng nhập mã sinh viên!" }]}
-        >
-          <Input
-            name="studentId"
-            value={newStudent.studentId}
-            onChange={handleInputChange}
-          />
+        <Form.Item label="Mã sinh viên" required>
+          <Input name="studentId" value={newStudent.studentId} onChange={handleInputChange} />
         </Form.Item>
-        <Form.Item
-          label="Tên sinh viên"
-          name="fullName"
-          rules={[{ required: true, message: "Vui lòng nhập tên sinh viên!" }]}
-        >
-          <Input
-            name="fullName"
-            value={newStudent.fullName}
-            onChange={handleInputChange}
-          />
+        <Form.Item label="Tên sinh viên" required>
+          <Input name="fullName" value={newStudent.fullName} onChange={handleInputChange} />
         </Form.Item>
-        <Form.Item
-          label="Ngày sinh"
-          name="dateOfBirth"
-          rules={[{ required: true, message: "Vui lòng chọn ngày sinh!" }]}
-        >
-          <Input
-            name="dateOfBirth"
-            type="date"
-            value={newStudent.dateOfBirth}
-            onChange={handleInputChange}
-          />
+        <Form.Item label="Ngày sinh" required>
+          <Input name="dateOfBirth" type="date" value={newStudent.dateOfBirth} onChange={handleInputChange} />
         </Form.Item>
-        <Form.Item
-          label="Giới tính"
-          name="gender"
-          rules={[{ required: true, message: "Vui lòng chọn giới tính!" }]}
-        >
-          <Select
-            name="gender"
-            value={newStudent.gender}
-            onChange={(value) =>
-              setNewStudent({ ...newStudent, gender: value })
-            }
-          >
-            <Select.Option value="Nam">Nam</Select.Option>
-            <Select.Option value="Nữ">Nữ</Select.Option>
+        <Form.Item label="Địa chỉ thường trú" required>
+          <Input name="addressPermanent" value={newStudent.addressPermanent} onChange={handleInputChange} />
+        </Form.Item>
+        <Form.Item label="Địa chỉ tạm trú">
+          <Input name="addressTemporary" value={newStudent.addressTemporary} onChange={handleInputChange} />
+        </Form.Item>
+        <Form.Item label="Địa chỉ nhận thư">
+          <Input name="addressMailing" value={newStudent.addressMailing} onChange={handleInputChange} />
+        </Form.Item>
+        <Form.Item label="Loại giấy tờ tùy thân" required>
+          <Select name="idType" value={newStudent.idType} onChange={(value) => setNewStudent({ ...newStudent, idType: value })}>
+            <Select.Option value="CMND">CMND</Select.Option>
+            <Select.Option value="CCCD">CCCD</Select.Option>
+            <Select.Option value="Passport">Hộ chiếu</Select.Option>
           </Select>
         </Form.Item>
-        <Form.Item
-          label="Khoa"
-          name="faculty"
-          rules={[{ required: true, message: "Vui lòng chọn khoa!" }]}
-        >
-          <Select
-            name="faculty"
-            value={newStudent.faculty}
-            onChange={(value) =>
-              setNewStudent({ ...newStudent, faculty: value })
-            }
-          >
-            <Select.Option value="Khoa Luật">Khoa Luật</Select.Option>
-            <Select.Option value="Khoa Tiếng Anh thương mại">
-              Khoa Tiếng Anh thương mại
-            </Select.Option>
-            <Select.Option value="Khoa Tiếng Nhật">
-              Khoa Tiếng Nhật
-            </Select.Option>
-            <Select.Option value="Khoa Tiếng Pháp">
-              Khoa Tiếng Pháp
-            </Select.Option>
-          </Select>
+        <Form.Item label="Số giấy tờ" required>
+          <Input name="idNumber" value={newStudent.idNumber} onChange={handleInputChange} />
         </Form.Item>
-        <Form.Item
-          label="Khóa"
-          name="course"
-          rules={[{ required: true, message: "Vui lòng nhập khóa!" }]}
-        >
-          <Input
-            name="course"
-            value={newStudent.course}
-            onChange={handleInputChange}
-          />
+        <Form.Item label="Ngày cấp" required>
+          <Input name="idIssueDate" type="date" value={newStudent.idIssueDate} onChange={handleInputChange} />
         </Form.Item>
-        <Form.Item
-          label="Chương trình"
-          name="program"
-          rules={[{ required: true, message: "Vui lòng nhập chương trình!" }]}
-        >
-          <Input
-            name="program"
-            value={newStudent.program}
-            onChange={handleInputChange}
-          />
+        <Form.Item label="Ngày hết hạn">
+          <Input name="idExpiryDate" type="date" value={newStudent.idExpiryDate} onChange={handleInputChange} />
         </Form.Item>
-        <Form.Item
-          label="Địa chỉ"
-          name="address"
-          rules={[{ required: true, message: "Vui lòng nhập địa chỉ!" }]}
-        >
-          <Input
-            name="address"
-            value={newStudent.address}
-            onChange={handleInputChange}
-          />
+        <Form.Item label="Nơi cấp" required>
+          <Input name="idIssuePlace" value={newStudent.idIssuePlace} onChange={handleInputChange} />
         </Form.Item>
-        <Form.Item
-          label="Email"
-          name="email"
-          rules={[
-            { required: true, message: "Vui lòng nhập email!" },
-            { pattern: emailRegex, message: "Email không hợp lệ!" },
-          ]}
-        >
-          <Input
-            name="email"
-            value={newStudent.email}
-            onChange={handleInputChange}
-          />
-        </Form.Item>
-        <Form.Item
-          label="Số điện thoại"
-          name="phone"
-          rules={[
-            { required: true, message: "Vui lòng nhập số điện thoại!" },
-            { pattern: phoneRegex, message: "Số điện thoại không hợp lệ!" },
-          ]}
-        >
-          <Input
-            name="phone"
-            value={newStudent.phone}
-            onChange={handleInputChange}
-          />
-        </Form.Item>
-        <Form.Item
-          label="Trạng thái"
-          name="status"
-          rules={[{ required: true, message: "Vui lòng chọn trạng thái!" }]}
-        >
-          <Select
-            name="status"
-            value={newStudent.status}
-            onChange={(value) =>
-              setNewStudent({ ...newStudent, status: value })
-            }
-          >
-            <Select.Option value="Đang học">Đang học</Select.Option>
-            <Select.Option value="Đã tốt nghiệp">Đã tốt nghiệp</Select.Option>
-            <Select.Option value="Tạm dừng học">Tạm dừng học</Select.Option>
-            <Select.Option value="Đã thôi học">Đã thôi học</Select.Option>
-          </Select>
+        {newStudent.idType === "CCCD" && (
+          <Form.Item label="CCCD có gắn chip không?">
+            <Select name="idChip" value={newStudent.idChip} onChange={(value) => setNewStudent({ ...newStudent, idChip: value })}>
+              <Select.Option value="Có">Có</Select.Option>
+              <Select.Option value="Không">Không</Select.Option>
+            </Select>
+          </Form.Item>
+        )}
+        {newStudent.idType === "Passport" && (
+          <Form.Item label="Ghi chú hộ chiếu">
+            <Input name="passportNote" value={newStudent.passportNote} onChange={handleInputChange} />
+          </Form.Item>
+        )}
+        <Form.Item label="Quốc tịch" required>
+          <Input name="nationality" value={newStudent.nationality} onChange={handleInputChange} />
         </Form.Item>
       </Form>
     </Modal>
