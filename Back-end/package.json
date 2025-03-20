@@ -23,14 +23,19 @@
   "dependencies": {
     "@faker-js/faker": "^9.6.0",
     "cors": "^2.8.5",
+    "csv-parse": "^5.6.0",
+    "csv-stringify": "^6.5.2",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
-    "mongoose": "^8.12.1"
+    "fast-csv": "^5.0.2",
+    "mongoose": "^8.12.1",
+    "multer": "^1.4.5-lts.1"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
     "@types/mongoose": "^5.11.96",
+    "@types/multer": "^1.4.12",
     "@types/node": "^22.13.10",
     "morgan": "^1.10.0",
     "nodemon": "^3.1.9",
