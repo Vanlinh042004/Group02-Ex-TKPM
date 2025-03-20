@@ -1,6 +1,6 @@
 import { post, get, remove } from "../Utils/request";
 export const getStudent = async () => {
-  return get(`/list`);
+  return get(`/`);
 };
 export const searchStudent = async (query) => {
   return get(`/search?searchTerm=${query}`);
