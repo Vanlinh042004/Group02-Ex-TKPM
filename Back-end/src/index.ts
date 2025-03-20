@@ -1,5 +1,5 @@
 // Import dependencies
-import express, { Express } from 'express';
+import express, { Express, Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import morgan from 'morgan';
@@ -8,15 +8,30 @@ dotenv.config();
 // Import module
 import route from './routes';
 import { connect as dbConnect } from './config/database';
+import { requestLogger } from './middleware/requestLogger';
+import logger from './utils/logger';
 
 // Connect to DB
-dbConnect();
+dbConnect()
+  .then(() => {
+    logger.info('Connected to MongoDB', { module: 'Database' });
+  })
+  .catch((err) => {
+    logger.error('Failed to connect to MongoDB', {
+      module: 'Database',
+      details: { error: err.message, stack: err.stack },
+    });
+    process.exit(1);
+  });
 
 const port: number = parseInt(process.env.PORT || '3000', 10);
 const app: Express = express();
 
-// Use morgan for logging HTTP requests
-app.use(morgan('dev'));
+// Middleware for logging HTTP requests
+// Morgan for development style logging
+// app.use(morgan('dev'));
+// Custom request logger for structured logging
+app.use(requestLogger);
 
 // Sử dụng CORS cho tất cả các route
 app.use(cors());
@@ -29,9 +44,55 @@ app.use(
 
 app.use(express.json());
 
+// Global error handler
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+  logger.error('Unhandled application error', {
+    module: 'Express',
+    details: {
+      error: err.message,
+      stack: err.stack,
+      url: req.originalUrl,
+      method: req.method,
+    },
+  });
+
+  res.status(500).json({
+    success: false,
+    message: 'Internal Server Error',
+    error:
+      process.env.NODE_ENV === 'development'
+        ? err.message
+        : 'Something went wrong',
+  });
+});
+
 // route init
 route(app);
 
 app.listen(port, () => {
-  console.log(`App listening at http://localhost:${port}`);
+  logger.info(`Server started successfully`, {
+    module: 'Server',
+    details: { port, url: `http://localhost:${port}` },
+  });
+});
+
+// Handle process termination
+process.on('SIGINT', () => {
+  logger.info('Server shutting down', { module: 'Server' });
+  process.exit(0);
+});
+
+process.on('uncaughtException', (error) => {
+  logger.error('Uncaught exception', {
+    module: 'Process',
+    details: { error: error.message, stack: error.stack },
+  });
+  process.exit(1);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  logger.error('Unhandled promise rejection', {
+    module: 'Process',
+    details: { reason, promise },
+  });
 });

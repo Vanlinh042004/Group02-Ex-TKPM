@@ -1,0 +1,13 @@
+[2025-03-20 12:54:22.899] [INFO] [Server] [-] [SYSTEM] Server started successfully [DETAILS: {"port":5000,"url":"http://localhost:5000"}]
+[2025-03-20 12:54:23.551] [INFO] [Database] [-] [SYSTEM] Connected to MongoDB
+[2025-03-20 12:55:00.045] [WARN] [HTTP] [GET] [SYSTEM] GET /api/student/list 404 - 5ms [DETAILS: {"statusCode":404,"duration":5,"ip":"::ffff:127.0.0.1"}]
+[2025-03-20 12:55:26.008] [INFO] [StudentController] [EXPORT_DATA] [SYSTEM] Data exported successfully [DETAILS: {"format":"json","filePath":"C:\\Users\\hoang\\OneDrive - VNU-HCMUS\\Desktop\\Thiết kế phần mềm\\Week02\\file1.json"}]
+[2025-03-20 12:55:26.019] [INFO] [HTTP] [POST] [SYSTEM] POST /api/student/export 200 - 273ms [DETAILS: {"statusCode":200,"duration":273,"ip":"::ffff:127.0.0.1"}]
+[2025-03-20 12:56:13.523] [INFO] [Server] [-] [SYSTEM] Server shutting down
+[2025-03-20 12:56:47.929] [INFO] [Server] [-] [SYSTEM] Server started successfully [DETAILS: {"port":5000,"url":"http://localhost:5000"}]
+[2025-03-20 12:56:48.573] [INFO] [Database] [-] [SYSTEM] Connected to MongoDB
+[2025-03-20 12:56:53.072] [INFO] [Server] [-] [SYSTEM] Server shutting down
+[2025-03-20 12:57:04.371] [INFO] [Server] [-] [SYSTEM] Server started successfully [DETAILS: {"port":5000,"url":"http://localhost:5000"}]
+[2025-03-20 12:57:04.959] [INFO] [Database] [-] [SYSTEM] Connected to MongoDB
+[2025-03-20 12:57:21.826] [WARN] [HTTP] [GET] [SYSTEM] GET /api/student/list 404 - 7ms [DETAILS: {"statusCode":404,"duration":7,"ip":"::ffff:127.0.0.1"}]
+[2025-03-20 12:57:33.055] [INFO] [Server] [-] [SYSTEM] Server shutting down
