@@ -1,13 +1,26 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../../Style/Home.scss";
-import { DeleteOutlined, PlusOutlined, EditOutlined, UploadOutlined, DownloadOutlined } from "@ant-design/icons";
+import {
+  DeleteOutlined,
+  PlusOutlined,
+  EditOutlined,
+  UploadOutlined,
+  DownloadOutlined,
+} from "@ant-design/icons";
 import { Button, Upload, message } from "antd";
 import { useState, useEffect } from "react";
-import { searchStudent, getStudent, deleteStudent } from "../../Services/studentService";
+import {
+  searchStudent,
+  getStudent,
+  deleteStudent,
+} from "../../Services/studentService";
 import AddStudentModal from "../Home/AddStudentModal";
 import EditStudentModal from "../Home/EditStudentModal";
 import ImportStudents from "../Home/ImportStudents";
-import { exportStudentsToCSV, exportStudentsToJSON } from "../Home/ExportStudents"; 
+import {
+  exportStudentsToCSV,
+  exportStudentsToJSON,
+} from "../Home/ExportStudents";
 import swal from "sweetalert";
 
 function Home() {
@@ -63,7 +76,7 @@ function Home() {
   // Xử lý Import
   const handleImport = async (file) => {
     try {
-      const result = await ImportStudents(file); 
+      const result = await ImportStudents(file);
       setStudents(result);
       message.success("Import sinh viên thành công!");
     } catch (error) {
@@ -82,8 +95,16 @@ function Home() {
                   <h3 className="text-center mb-4">Bạn muốn tìm kiếm?</h3>
                   <form className="course-search-form" onSubmit={handleSearch}>
                     <div className="form-group d-flex">
-                      <input type="text" className="form-control" placeholder="Nhập họ tên hoặc mã sinh viên" />
-                      <input type="submit" value="Tìm kiếm" className="submit ml-2" />
+                      <input
+                        type="text"
+                        className="form-control"
+                        placeholder="Nhập họ tên hoặc mã sinh viên"
+                      />
+                      <input
+                        type="submit"
+                        value="Tìm kiếm"
+                        className="submit ml-2"
+                      />
                     </div>
                   </form>
                 </div>
@@ -100,20 +121,27 @@ function Home() {
           icon={<PlusOutlined />}
           size="large"
           shape="round"
-          style={{ width: "25%", height: "60px", fontSize: "18px" }}
           onClick={showModal}
         >
           Thêm Sinh viên
         </Button>
 
-        <Upload beforeUpload={() => false} onChange={(info) => handleImport(info.file)}>
-          <Button type="default" icon={<UploadOutlined />} size="large" shape="round">
+        <Upload
+          beforeUpload={() => false}
+          onChange={(info) => handleImport(info.file)}
+        >
+          <Button
+            type="primary"
+            icon={<UploadOutlined />}
+            size="large"
+            shape="round"
+          >
             Import CSV/JSON
           </Button>
         </Upload>
 
         <Button
-          type="default"
+          type="primary"
           icon={<DownloadOutlined />}
           size="large"
           shape="round"
@@ -123,7 +151,7 @@ function Home() {
         </Button>
 
         <Button
-          type="default"
+          type="primary"
           icon={<DownloadOutlined />}
           size="large"
           shape="round"
@@ -134,8 +162,18 @@ function Home() {
       </div>
 
       {/* Modals */}
-      <AddStudentModal isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible} students={students} setStudents={setStudents} />
-      <EditStudentModal isModalVisible={isEditModalVisible} setIsModalVisible={setIsEditModalVisible} student={studentToEdit} setStudents={setStudents} />
+      <AddStudentModal
+        isModalVisible={isModalVisible}
+        setIsModalVisible={setIsModalVisible}
+        students={students}
+        setStudents={setStudents}
+      />
+      <EditStudentModal
+        isModalVisible={isEditModalVisible}
+        setIsModalVisible={setIsEditModalVisible}
+        student={studentToEdit}
+        setStudents={setStudents}
+      />
 
       <section className="ftco-section">
         <div className="container">
@@ -144,27 +182,71 @@ function Home() {
               <div className="col-md-4 d-flex" key={index}>
                 <div className="student-card align-self-stretch p-4 mb-4">
                   <h4 className="mb-3">{student.fullName}</h4>
-                  <p><b>Mã số sinh viên:</b> {student.studentId}</p>
-                  <p><b>Ngày sinh:</b> {new Date(student.dateOfBirth).toLocaleDateString()}</p>
-                  <p><b>Giới tính:</b> {student.gender}</p>
-                  <p><b>Khoa:</b> {student.faculty?.name || "N/A"}</p>
-                  <p><b>Khóa:</b> {student.course}</p>
-                  <p><b>Chương trình:</b> {student.program?.name} ({student.program?.programId})</p>
-                  <p><b>Email:</b> {student.email}</p>
-                  <p><b>Điện thoại:</b> {student.phone}</p>
-                  <p><b>Trạng thái:</b> {student.status?.name || "N/A"}</p>
+                  <p>
+                    <b>Mã số sinh viên:</b> {student.studentId}
+                  </p>
+                  <p>
+                    <b>Ngày sinh:</b>{" "}
+                    {new Date(student.dateOfBirth).toLocaleDateString()}
+                  </p>
+                  <p>
+                    <b>Giới tính:</b> {student.gender}
+                  </p>
+                  <p>
+                    <b>Khoa:</b> {student.faculty?.name || "N/A"}
+                  </p>
+                  <p>
+                    <b>Khóa:</b> {student.course}
+                  </p>
+                  <p>
+                    <b>Chương trình:</b> {student.program?.name} (
+                    {student.program?.programId})
+                  </p>
+                  <p>
+                    <b>Email:</b> {student.email}
+                  </p>
+                  <p>
+                    <b>Điện thoại:</b> {student.phone}
+                  </p>
+                  <p>
+                    <b>Trạng thái:</b> {student.status?.name || "N/A"}
+                  </p>
 
                   {/* Địa chỉ thường trú */}
-                  <p><b>Địa chỉ thường trú:</b> {student.permanentAddress ? `${student.permanentAddress.streetAddress}, ${student.permanentAddress.district}, ${student.permanentAddress.city}` : "N/A"}</p>
+                  <p>
+                    <b>Địa chỉ thường trú:</b>{" "}
+                    {student.permanentAddress
+                      ? `${student.permanentAddress.streetAddress}, ${student.permanentAddress.district}, ${student.permanentAddress.city}`
+                      : "N/A"}
+                  </p>
 
                   {/* Chứng minh nhân dân */}
-                  <p><b>CMND:</b> {student.identityDocument?.number || "N/A"} - <b>Nơi cấp:</b> {student.identityDocument?.issuePlace || "N/A"}</p>
+                  <p>
+                    <b>CMND:</b> {student.identityDocument?.number || "N/A"} -{" "}
+                  </p>
+                  <p>
+                    <b>Nơi cấp:</b>{" "}
+                    {student.identityDocument?.issuePlace || "N/A"}
+                  </p>
 
                   <div className="d-flex justify-content-between">
-                    <Button type="primary" icon={<EditOutlined />} size="large" shape="round" onClick={() => showEditModal(student)}>
+                    <Button
+                      type="primary"
+                      icon={<EditOutlined />}
+                      size="large"
+                      shape="round"
+                      onClick={() => showEditModal(student)}
+                    >
                       Sửa
                     </Button>
-                    <Button type="primary" icon={<DeleteOutlined />} size="large" shape="round" danger onClick={() => handleDelete(student.studentId)}>
+                    <Button
+                      type="primary"
+                      icon={<DeleteOutlined />}
+                      size="large"
+                      shape="round"
+                      danger
+                      onClick={() => handleDelete(student.studentId)}
+                    >
                       Xóa
                     </Button>
                   </div>
