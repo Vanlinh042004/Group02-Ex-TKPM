@@ -6,6 +6,7 @@ import {
   EditOutlined,
   UploadOutlined,
   DownloadOutlined,
+  SearchOutlined,
 } from "@ant-design/icons";
 import { Button, Upload, message } from "antd";
 import { useState, useEffect } from "react";
@@ -29,11 +30,19 @@ function Home() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [studentToEdit, setStudentToEdit] = useState(null);
-  const [search, setSearch] = useState("");
+  const [searchId, setSearchID] = useState("");
+  const [searchName, setSearchName] = useState("");
+  const [searchFaculty, setSearchFaculty] = useState("");
 
-  const handleSearch = (e) => {
+  const handleSearch = async (e) => {
     e.preventDefault();
-    setSearch(e.target[0].value);
+    try {
+      const data = await searchStudent(searchId, searchName, searchFaculty);
+      setStudents(data);
+    } catch (error) {
+      // console.error("Lỗi khi tìm kiếm sinh viên:", error);
+      swal("Không tìm thấy sinh viên", "Vui lòng thử lại", "error");
+    }
   };
 
   const handleDelete = async (id) => {
@@ -56,22 +65,14 @@ function Home() {
   useEffect(() => {
     const fetchStudents = async () => {
       try {
-        if (search.trim()) {
-          const data = await searchStudent(search);
-          if (data.length === 0) {
-            swal("Không tìm thấy kết quả nào", "Vui lòng thử lại", "error");
-          }
-          setStudents(data);
-        } else {
-          const data = await getStudent();
-          setStudents(data);
-        }
+        const data = await getStudent();
+        setStudents(data);
       } catch (error) {
         console.error("Lỗi khi lấy danh sách sinh viên:", error);
       }
     };
     fetchStudents();
-  }, [search, check, isEditModalVisible, isModalVisible]);
+  }, [check, isEditModalVisible, isModalVisible]);
 
   // Xử lý Import
   const handleImport = async (file) => {
@@ -93,19 +94,40 @@ function Home() {
               <div className="full-wrap">
                 <div className="one-third search p-5">
                   <h3 className="text-center mb-4">Bạn muốn tìm kiếm?</h3>
-                  <form className="course-search-form" onSubmit={handleSearch}>
-                    <div className="form-group d-flex">
-                      <input
-                        type="text"
-                        className="form-control"
-                        placeholder="Nhập họ tên hoặc mã sinh viên"
-                      />
-                      <input
-                        type="submit"
-                        value="Tìm kiếm"
-                        className="submit ml-2"
-                      />
-                    </div>
+                  <form className="course-search-form">
+                    <input
+                      type="text"
+                      className="form-control mb-3"
+                      placeholder="Nhập Họ và Tên"
+                      onChange={(e) => setSearchName(e.target.value)}
+                    />
+                    <input
+                      type="text"
+                      className="form-control mb-3"
+                      placeholder="Nhập Mã sinh viên"
+                      onChange={(e) => setSearchID(e.target.value)}
+                    />
+                    <input
+                      type="text"
+                      className="form-control mb-3"
+                      placeholder="Nhập Tên khoa"
+                      onChange={(e) => setSearchFaculty(e.target.value)}
+                    />
+
+                    <Button
+                      type="primary"
+                      icon={<SearchOutlined />}
+                      size="large"
+                      shape="round"
+                      danger
+                      onClick={handleSearch}
+                      style={{
+                        fontWeight: "bold",
+                        width: "25%",
+                      }}
+                    >
+                      Tìm kiếm
+                    </Button>
                   </form>
                 </div>
               </div>
