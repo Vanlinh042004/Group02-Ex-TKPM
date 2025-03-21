@@ -12,6 +12,7 @@ const facultySchema = new Schema<IFaculty>(
     facultyId: {
       type: String,
       required: true,
+      unique: true
     },
     name: { 
       type: String, 

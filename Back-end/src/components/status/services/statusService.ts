@@ -58,6 +58,14 @@ class StatusService {
       throw error;
     }
   }
+  async getAllStatus(): Promise<IStatus[]> {
+    try {
+      return await Status.find({});
+    } catch (error) {
+      console.log('Error getting student status: ', error);
+      throw error;
+    }
+  }
 }
 
 export default new StatusService();
