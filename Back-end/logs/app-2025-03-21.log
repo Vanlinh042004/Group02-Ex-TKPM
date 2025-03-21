@@ -49,3 +49,4 @@
 [2025-03-21 16:24:03.579] [INFO] [HTTP] [DELETE] [SYSTEM] DELETE /api/student/delete/SV0009 200 - 235ms [DETAILS: {"statusCode":200,"duration":235,"ip":"::1"}]
 [2025-03-21 16:24:03.930] [INFO] [StudentController] [GET_ALL_STUDENTS] [SYSTEM] Successfully retrieved all students [DETAILS: {"count":98}]
 [2025-03-21 16:24:03.953] [INFO] [HTTP] [GET] [SYSTEM] GET /api/student/ 200 - 346ms [DETAILS: {"statusCode":200,"duration":346,"ip":"::1"}]
+[2025-03-21 16:43:06.414] [INFO] [Server] [-] [SYSTEM] Server shutting down

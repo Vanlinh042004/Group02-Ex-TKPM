@@ -153,20 +153,25 @@ npm start
 
 **1. Cho phép đổi tên & thêm mới: khoa, tình trạng sinh viên, chương trình**
 
+<img src="/FeatureImg/Feature1/AddFaculty.png" alt="AddFaculty" />
+<img src="/FeatureImg/Feature1/AddProgram.png" alt="AddProgram" />
+<img src="/FeatureImg/Feature1/AddStatus.png" alt="AddStatus" />
+<img src="/FeatureImg/Feature1/RenameFaculty.png" alt="RenameFaculty" />
+<img src="/FeatureImg/Feature1/RenameProgram.png" alt="RenameProgram" />
+<img src="/FeatureImg/Feature1/RenameStatus.png" alt="RenameStatus" />
+
 **2. Thêm chức năng tìm kiếm: tìm theo khoa, khoa + tên**
 
-<img src="/FeatureImg/SearchFaculty.png" alt="Search Faculty" width="500" height="300"/> 
-<img src="/FeatureImg/SearchName+Faculty.png" alt="Search Faculty" width="500" height="300"/>
+<img src="/FeatureImg/Feature2/SearchFaculty.png" alt="Search Faculty" width="500" height="300"/> 
+<img src="/FeatureImg/Feature2/SearchName+Faculty.png" alt="Search Faculty" width="500" height="300"/>
 
 **3. Hỗ trợ import/export dữ liệu: CSV, JSON, XML, Excel (chọn ít nhất 2)**
 
-<img src="/FeatureImg/Feature3.png" alt="Feature3" />
-<img src="/FeatureImg/Export.png" alt="Export" width="500" height="300"/>
-<img src="/FeatureImg/Export_csv.png" alt="Export_csv" width="500" height="300"/>
-<img src="/FeatureImg/Export_Json.png" alt="Export_Json" width="500" height="300"/>
-
-<img src="/FeatureImg/Export.png" alt="Export" width="500" height="300"/> 
-<img src="/FeatureImg/Import.png" alt="Import" width="500" height="300"/>
+<img src="/FeatureImg/Feature3/Feature3.png" alt="Feature3" />
+<img src="/FeatureImg/Feature3/Export.png" alt="Export" width="500" height="300"/>
+<img src="/FeatureImg/Feature3/Export_csv.png" alt="Export_csv" width="500" height="300"/>
+<img src="/FeatureImg/Feature3/Export_Json.png" alt="Export_Json" width="500" height="300"/>
+<img src="/FeatureImg/Feature3/Import.png" alt="Import" width="500" height="300"/>
 
 **4.Thêm logging mechanism để troubleshooting production issue & audit purposes**
-<img src="/FeatureImg/Feature4.png" alt="Feature4" />
+<img src="/FeatureImg/Feature4/Feature4.png" alt="Feature4" />
