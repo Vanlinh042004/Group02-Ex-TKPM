@@ -165,7 +165,6 @@ npm start
 <img src="/FeatureImg/Export_csv.png" alt="Export_csv" width="500" height="300"/>
 <img src="/FeatureImg/Export_Json.png" alt="Export_Json" width="500" height="300"/>
 
-<img src="/FeatureImg/Export.png" alt="Export" width="500" height="300"/> 
 <img src="/FeatureImg/Import.png" alt="Import" width="500" height="300"/>
 
 **4.Thêm logging mechanism để troubleshooting production issue & audit purposes**
