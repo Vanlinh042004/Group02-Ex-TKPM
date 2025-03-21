@@ -23,6 +23,15 @@ class FacultyController {
             res.status(400).json({ message: error.message });
         }
     }
+
+    async getAllFaculties(req: Request, res: Response): Promise<void> {
+        try {
+            const faculties = await FacultyService.getAllFaculties();
+            res.status(200).json({ message: 'Fetched all faculties successfully', data: faculties });
+        } catch (error: any) {
+            res.status(500).json({ message: 'Error fetching faculties', error: error.message });
+        }
+    }
 }
 
 export default new FacultyController();

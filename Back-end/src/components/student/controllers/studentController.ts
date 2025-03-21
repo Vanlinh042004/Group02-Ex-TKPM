@@ -21,7 +21,7 @@ class StudentController {
         operation: 'ADD_STUDENT',
         details: { studentData: student },
       });
-
+ 
       const result = await StudentService.addStudent(student);
 
       logger.info('Student added successfully', {
@@ -333,6 +333,9 @@ class StudentController {
       res.status(400).json({ message: error.message });
     }
   }
+
+ 
+
 }
 
 export default new StudentController();

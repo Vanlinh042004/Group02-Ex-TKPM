@@ -31,6 +31,10 @@ class FacultyService {
         await newFaculty.save();
         return newFaculty;
     }
+
+    async getAllFaculties(): Promise<IFaculty[]> {
+        return await Faculty.find();
+    }
 }
 
 export default new FacultyService();

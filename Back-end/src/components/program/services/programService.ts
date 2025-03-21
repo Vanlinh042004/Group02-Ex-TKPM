@@ -68,6 +68,10 @@ class ProgramService {
         await newProgram.save();
         return newProgram;
     }
+
+     async getAllPrograms() {
+        return await Program.find();
+    }
 }
 
 export default new ProgramService();

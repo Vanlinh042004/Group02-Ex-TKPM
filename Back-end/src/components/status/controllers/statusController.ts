@@ -2,6 +2,15 @@ import { Request, Response } from 'express';
 import StatusService, { ICreateStatusDTO } from '../services/statusService';
 
 class StatusController {
+
+    async getAllStatuses(req: Request, res: Response): Promise<void> {
+        try {
+            const statuses = await StatusService.getAllStatuses();
+            res.status(200).json({ message: 'Fetched all statuses successfully', data: statuses });
+        } catch (error: any) {
+            res.status(500).json({ message: 'Error fetching statuses', error: error.message });
+        }
+    }
     async renameStatus(req: Request, res: Response): Promise<void> {
         try {
             const statusId = req.params.statusId;

@@ -11,6 +11,10 @@ export interface IUpdateStatusDTO {
 }
 
 class StatusService {
+
+  async getAllStatuses(): Promise<IStatus[]> {
+    return await Status.find();
+  }
   async addStatus(data: ICreateStatusDTO): Promise<IStatus> {
     try {
       if (!data.name) {

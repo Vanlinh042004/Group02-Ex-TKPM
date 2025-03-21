@@ -23,6 +23,15 @@ class ProgramController {
             res.status(400).json({ message: error.message });
         }
     }
+
+    async getAllPrograms(req: Request, res: Response): Promise<void> {
+        try {
+            const programs = await ProgramService.getAllPrograms();
+            res.status(200).json({ message: 'Fetched all programs successfully', data: programs });
+        } catch (error: any) {
+            res.status(500).json({ message: 'Error fetching programs', error: error.message });
+        }
+    }
 }
 
 export default new ProgramController();
