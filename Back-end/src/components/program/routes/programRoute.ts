@@ -6,5 +6,8 @@ const router = express.Router();
 
 router.patch('/update/:programId', ProgramController.renameProgram);
 router.post('/add', ProgramController.addProgram);
-router.get('/', ProgramController.getAllPrograms); // Thêm route GET
+
+router.get('/list', ProgramController.getAllPrograms);
+
 export default router;
+

@@ -6,4 +6,6 @@ function generateId(name) {
         .join('');
 }
 
+
 module.exports = generateId;
+

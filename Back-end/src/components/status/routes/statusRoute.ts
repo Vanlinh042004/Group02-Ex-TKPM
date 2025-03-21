@@ -6,5 +6,6 @@ const router = express.Router();
 router.get('/', StatusController.getAllStatuses); // Thêm route GET
 router.patch('/update/:statusId', StatusController.renameStatus);
 router.post('/add', StatusController.addStatus);
+router.get('/list', StatusController.getAllStatus);
 
 export default router;

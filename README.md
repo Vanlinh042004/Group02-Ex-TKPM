@@ -116,7 +116,9 @@ npm install
 ```bash
 npm start
 ```
-----------------------------------------------------------------------------------------------------------------------------------------
+
+---
+
 #### Version 2.0
 
 **_Back - end_**
@@ -148,6 +150,7 @@ npm start
 ```
 
 ## Hình ảnh minh họa
+
 **1. Cho phép đổi tên & thêm mới: khoa, tình trạng sinh viên, chương trình**
 
 **2. Thêm chức năng tìm kiếm: tìm theo khoa, khoa + tên**
@@ -158,7 +161,11 @@ npm start
 **3. Hỗ trợ import/export dữ liệu: CSV, JSON, XML, Excel (chọn ít nhất 2)**
 
 <img src="/FeatureImg/Feature3.png" alt="Feature3" />
-<img src="/FeatureImg/Export.png" alt="Export" width="500" height="300"/> 
+<img src="/FeatureImg/Export.png" alt="Export" width="500" height="300"/>
+<img src="/FeatureImg/Export_csv.png" alt="Export_csv" width="500" height="300"/>
+<img src="/FeatureImg/Export_Json.png" alt="Export_Json" width="500" height="300"/>
+
 <img src="/FeatureImg/Import.png" alt="Import" width="500" height="300"/>
 
 **4.Thêm logging mechanism để troubleshooting production issue & audit purposes**
+<img src="/FeatureImg/Feature4.png" alt="Feature4" />

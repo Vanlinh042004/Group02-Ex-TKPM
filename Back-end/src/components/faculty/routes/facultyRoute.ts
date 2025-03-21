@@ -6,5 +6,6 @@ const router = express.Router();
 router.get('/', FacultyController.getAllFaculties); // Thêm route GET
 router.patch('/update/:facultyId', FacultyController.renameFaculty);
 router.post('/add', FacultyController.addFaculty);
+router.get('/list', FacultyController.getAllFaculties);
 
 export default router;
