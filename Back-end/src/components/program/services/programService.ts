@@ -1,53 +1,62 @@
-import Program, { IProgram } from '../models/program';
-import Faculty from '../../faculty/models/Faculty';
-import mongoose from 'mongoose';
+import Program, { IProgram } from '../models/Program';
+import generateId from '../../../utils/generateId';
+import { w } from '@faker-js/faker/dist/airline-CBNP41sR';
+import { da } from '@faker-js/faker/.';
 
 export interface ICreateProgramDTO {
+    programId: string;
     name: string;
-    description?: string;
-    duration: number; // Thời gian đào tạo (năm)
-    faculty: mongoose.Types.ObjectId | string; // Reference to Faculty
+    duration: number;
+    isActive: boolean;
     createdAt: Date;
     updatedAt: Date;
 }
 
 class ProgramService {
     async renameProgram(programId: string, newName: string): Promise<IProgram> {
-        const program = await Program.findById(programId);
+        if (!newName || !programId) {
+            throw new Error('Missing required fields');
+        }
+
+        const program = await Program.findOne({ programId });
+        
         if (!program) {
             throw new Error('Program not found');
         }
         program.name = newName;
+
+        const generatedId = generateId(newName);
+        let programNewId = generatedId;
+        let count = 0;
+        // Check if facultyId already exists
+        while (await Program.exists({ programId: programNewId })) {
+            count++;
+            programNewId = generatedId + '-' + count;
+        }
+
+        program.programId = programNewId;
         await program.save();
         
         return program;
     }
 
     async addProgram(data: ICreateProgramDTO): Promise<IProgram> {
-        if (!data.name || !data.duration || !data.faculty) {
+        if (!data.name || !data.duration) {
             throw new Error('Missing required fields');
         }
     
         if (data.duration <= 0) {
             throw new Error('Duration must be greater than 0');
         }
-    
-        let facultyId: mongoose.Types.ObjectId;
-        // Nếu truyền vào là ID
-        if (mongoose.Types.ObjectId.isValid(data.faculty)) {
-            facultyId = new mongoose.Types.ObjectId(data.faculty);
-        } 
-        // Nếu truyền vào là tên khoa
-        else {
-            const faculty = await Faculty.findOne({ 
-                name: { $regex: data.faculty.toString(), $options: 'i' } 
-            });
-    
-            if (!faculty) {
-                throw new Error('Faculty not found');
-            }
-    
-            facultyId = new mongoose.Types.ObjectId(faculty._id.toString());
+
+        // Generate programId
+        const generatedId = generateId(data.name);
+        let programNewId = generatedId;
+        let count = 0;
+        // Check if facultyId already exists
+        while (await Program.exists({ programId: programNewId })) {
+            count++;
+            programNewId = generatedId + '-' + count;
         }
     
         // Kiểm tra trùng tên chương trình
@@ -55,18 +64,29 @@ class ProgramService {
         if (existingProgram) {
             throw new Error('Program name already exists');
         }
+
     
-        // Tạo dữ liệu chương trình
-        const programData = {
-            ...data,
-            faculty: facultyId,
-            createdAt: new Date(),
-            updatedAt: new Date()
-        };
-    
-        const newProgram = new Program(programData);
+        const newProgram = new Program({
+            programId: programNewId,
+            name: data.name,
+            duration: data.duration,
+            isActive: data.isActive,
+            createdAt: data.createdAt,
+            updatedAt: data.updatedAt
+        });
+
         await newProgram.save();
         return newProgram;
+    }
+
+    async getAllPrograms(): Promise<IProgram[]> {
+        try {
+            return await Program.find({});
+        }
+        catch (error) {
+            console.log('Error getting programs: ', error);
+            throw error;
+        }
     }
 }
 
