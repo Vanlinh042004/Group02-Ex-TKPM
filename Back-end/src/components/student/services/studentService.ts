@@ -1,8 +1,7 @@
 import Student, { IStudent } from '../models/Student';
 import Faculty from '../../faculty/models/Faculty';
-import Program from '../../program/models/program';
+import Program from '../../program/models/Program';
 import Status from '../../status/models/Status';
-import mongoose from 'mongoose';
 import { importCSV, exportCSV } from '../../../utils/csvHandler';
 import { importJSON, exportJSON } from '../../../utils/jsonHandler';
 

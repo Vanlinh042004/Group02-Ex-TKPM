@@ -49,4 +49,12 @@
 [2025-03-21 16:24:03.579] [INFO] [HTTP] [DELETE] [SYSTEM] DELETE /api/student/delete/SV0009 200 - 235ms [DETAILS: {"statusCode":200,"duration":235,"ip":"::1"}]
 [2025-03-21 16:24:03.930] [INFO] [StudentController] [GET_ALL_STUDENTS] [SYSTEM] Successfully retrieved all students [DETAILS: {"count":98}]
 [2025-03-21 16:24:03.953] [INFO] [HTTP] [GET] [SYSTEM] GET /api/student/ 200 - 346ms [DETAILS: {"statusCode":200,"duration":346,"ip":"::1"}]
+<<<<<<< HEAD
 [2025-03-21 16:43:06.414] [INFO] [Server] [-] [SYSTEM] Server shutting down
+=======
+[2025-03-21 21:21:56.106] [INFO] [Server] [-] [SYSTEM] Server started successfully [DETAILS: {"port":5000,"url":"http://localhost:5000"}]
+[2025-03-21 21:21:56.916] [INFO] [Database] [-] [SYSTEM] Connected to MongoDB
+[2025-03-21 21:22:04.704] [INFO] [HTTP] [GET] [SYSTEM] GET /api/program/list 200 - 120ms [DETAILS: {"statusCode":200,"duration":120,"ip":"::1"}]
+[2025-03-21 21:22:40.101] [INFO] [HTTP] [GET] [SYSTEM] GET /api/status/list 200 - 91ms [DETAILS: {"statusCode":200,"duration":91,"ip":"::1"}]
+[2025-03-21 21:23:02.063] [INFO] [Server] [-] [SYSTEM] Server shutting down
+>>>>>>> f200ad083038ca1c7795c0b89296ecc1949de751
