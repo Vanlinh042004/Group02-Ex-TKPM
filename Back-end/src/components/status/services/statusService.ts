@@ -11,10 +11,6 @@ export interface IUpdateStatusDTO {
 }
 
 class StatusService {
-
-  async getAllStatuses(): Promise<IStatus[]> {
-    return await Status.find();
-  }
   async addStatus(data: ICreateStatusDTO): Promise<IStatus> {
     try {
       if (!data.name) {
@@ -59,6 +55,14 @@ class StatusService {
       return await status.save();
     } catch (error) {
       console.log('Error renaming student status: ', error);
+      throw error;
+    }
+  }
+  async getAllStatus(): Promise<IStatus[]> {
+    try {
+      return await Status.find({});
+    } catch (error) {
+      console.log('Error getting student status: ', error);
       throw error;
     }
   }
