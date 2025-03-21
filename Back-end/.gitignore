@@ -2,3 +2,5 @@
 launch.json
 launch.json
 node_modules/
+dist/
+logs/

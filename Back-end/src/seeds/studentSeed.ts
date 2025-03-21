@@ -4,7 +4,7 @@ import Student, {
   Gender 
 } from '../components/student/models/Student';
 import Faculty from '../components/faculty/models/Faculty';
-import Program from '../components/program/models/Program';
+import Program from '../components/program/models/program';
 import Status from '../components/status/models/Status';
 import dotenv from 'dotenv';
 import { faker } from '@faker-js/faker';

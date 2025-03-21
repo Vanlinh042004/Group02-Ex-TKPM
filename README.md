@@ -80,7 +80,9 @@
 
 ## Hướng dẫn cài đặt & chạy chương trình
 
-**BACK - END**
+#### Version 1.0
+
+**_Back - end_**
 
 1. Sử dụng file cấu hình .env để thiết lập các biến môi trường.
 
@@ -90,15 +92,18 @@ MONGODB_URI=mongodb+srv://donalmun:eqia8yO1F0G3oBVx@tkpm.vufuh.mongodb.net/ex01?
 ```
 
 2. Cài đặt các package cần thiêt:
+
 ```bash
 npm install
 ```
+
 3. Chạy chương trình:
+
 ```bash
 npm start
 ```
 
-**FRONT - END**
+**_Front - end_**
 
 1. Cài đặt các package cần thiêt:
 
@@ -111,3 +116,56 @@ npm install
 ```bash
 npm start
 ```
+
+---
+
+#### Version 2.0
+
+**_Back - end_**
+
+1. Cài đặt các package cần thiêt:
+
+```bash
+npm install
+```
+
+2. Chạy chương trình:
+
+```bash
+npm run dev
+```
+
+**_Front - end_**
+
+1. Cài đặt các package cần thiêt:
+
+```bash
+npm install
+```
+
+2. Chạy chương trình:
+
+```bash
+npm start
+```
+
+## Hình ảnh minh họa
+
+**1. Cho phép đổi tên & thêm mới: khoa, tình trạng sinh viên, chương trình**
+
+**2. Thêm chức năng tìm kiếm: tìm theo khoa, khoa + tên**
+
+<img src="/FeatureImg/SearchFaculty.png" alt="Search Faculty" width="500" height="300"/> 
+<img src="/FeatureImg/SearchName+Faculty.png" alt="Search Faculty" width="500" height="300"/>
+
+**3. Hỗ trợ import/export dữ liệu: CSV, JSON, XML, Excel (chọn ít nhất 2)**
+
+<img src="/FeatureImg/Feature3.png" alt="Feature3" />
+<img src="/FeatureImg/Export.png" alt="Export" width="500" height="300"/>
+<img src="/FeatureImg/Export_csv.png" alt="Export_csv" width="500" height="300"/>
+<img src="/FeatureImg/Export_Json.png" alt="Export_Json" width="500" height="300"/>
+
+<img src="/FeatureImg/Import.png" alt="Import" width="500" height="300"/>
+
+**4.Thêm logging mechanism để troubleshooting production issue & audit purposes**
+<img src="/FeatureImg/Feature4.png" alt="Feature4" />

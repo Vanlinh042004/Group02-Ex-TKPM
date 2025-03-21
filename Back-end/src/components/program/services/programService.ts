@@ -74,7 +74,7 @@ class ProgramService {
             createdAt: data.createdAt,
             updatedAt: data.updatedAt
         });
-        
+
         await newProgram.save();
         return newProgram;
     }

@@ -1,8 +1,10 @@
 import Student, { IStudent } from '../models/Student';
 import Faculty from '../../faculty/models/Faculty';
-import Program from '../../program/models/Program';
+import Program from '../../program/models/program';
 import Status from '../../status/models/Status';
 import mongoose from 'mongoose';
+import { importCSV, exportCSV } from '../../../utils/csvHandler';
+import { importJSON, exportJSON } from '../../../utils/jsonHandler';
 
 // Interface cho địa chỉ DTO
 export interface IAddressDTO {
@@ -56,15 +58,15 @@ export interface ICreateStudentDTO {
   faculty: string; // Faculty name or facultyId
   course: string;
   program: string; // Program name or programId
-  
+
   // Địa chỉ
   permanentAddress?: IAddressDTO;
   temporaryAddress?: IAddressDTO;
   mailingAddress: IAddressDTO;
-  
+
   // Giấy tờ tùy thân
   identityDocument: IdentityDocumentDTO;
-  
+
   email: string;
   phone: string;
   status: string;
@@ -126,11 +128,8 @@ class StudentService {
       }
 
       // Tìm faculty bằng tên hoặc facultyId
-      const facultyDoc = await Faculty.findOne({ 
-        $or: [
-          { name: faculty },
-          { facultyId: faculty }
-        ]
+      const facultyDoc = await Faculty.findOne({
+        $or: [{ name: faculty }, { facultyId: faculty }],
       });
 
       if (!facultyDoc) {
@@ -139,10 +138,7 @@ class StudentService {
 
       // Tìm program bằng tên hoặc programId
       const programDoc = await Program.findOne({
-        $or: [
-          { name: program },
-          { programId: program }
-        ]
+        $or: [{ name: program }, { programId: program }],
       });
 
       if (!programDoc) {
@@ -150,8 +146,7 @@ class StudentService {
       }
 
       // Tìm status bằng tên
-      const statusDoc = await Status
-        .findOne({ name: status });
+      const statusDoc = await Status.findOne({ name: status });
 
       if (!statusDoc) {
         throw new Error('Status not found');
@@ -206,7 +201,10 @@ class StudentService {
    * @param updateData Dữ liệu cần cập nhật
    * @returns Promise<IStudent> Thông tin sinh viên sau khi cập nhật
    */
-  async updateStudent(studentId: string, updateData: IUpdateStudentDTO): Promise<IStudent> {
+  async updateStudent(
+    studentId: string,
+    updateData: IUpdateStudentDTO
+  ): Promise<IStudent> {
     try {
       if (!studentId || !updateData) {
         throw new Error('Missing required fields');
@@ -214,11 +212,11 @@ class StudentService {
 
       // Nếu update faculty, kiểm tra và chuyển đổi
       if (updateData.faculty) {
-        const facultyDoc = await Faculty.findOne({ 
+        const facultyDoc = await Faculty.findOne({
           $or: [
             { name: updateData.faculty },
-            { facultyId: updateData.faculty }
-          ]
+            { facultyId: updateData.faculty },
+          ],
         });
 
         if (!facultyDoc) {
@@ -234,8 +232,8 @@ class StudentService {
         const programDoc = await Program.findOne({
           $or: [
             { name: updateData.program },
-            { programId: updateData.program }
-          ]
+            { programId: updateData.program },
+          ],
         });
 
         if (!programDoc) {
@@ -248,10 +246,9 @@ class StudentService {
 
       // Tương tự cho status nếu cần update
       if (updateData.status) {
-        const statusDoc = await
-          Status.findOne({
-            name: updateData.status
-          });
+        const statusDoc = await Status.findOne({
+          name: updateData.status,
+        });
 
         if (!statusDoc) {
           throw new Error('Status not found');
@@ -281,10 +278,16 @@ class StudentService {
    * @param searchParams Các tham số tìm kiếm
    * @returns Promise<IStudent[]> Danh sách sinh viên phù hợp
    */
-  async searchStudent(searchParams: IStudentSearchTermsDTO): Promise<IStudent[]> {
+  async searchStudent(
+    searchParams: IStudentSearchTermsDTO
+  ): Promise<IStudent[]> {
     try {
       // Kiểm tra nếu không có bất kỳ tham số tìm kiếm nào
-      if (!searchParams.studentId && !searchParams.fullName && !searchParams.faculty) {
+      if (
+        !searchParams.studentId &&
+        !searchParams.fullName &&
+        !searchParams.faculty
+      ) {
         return [];
       }
 
@@ -293,26 +296,28 @@ class StudentService {
 
       // Tìm kiếm theo mã sinh viên
       if (searchParams.studentId) {
-        searchConditions.push({ 
-          studentId: searchParams.studentId.toString() 
+        searchConditions.push({
+          studentId: searchParams.studentId.toString(),
         });
       }
 
       // Tìm kiếm theo tên
       if (searchParams.fullName) {
-        searchConditions.push({ 
-          fullName: { $regex: searchParams.fullName.toString(), $options: 'i' } 
+        searchConditions.push({
+          fullName: { $regex: searchParams.fullName.toString(), $options: 'i' },
         });
       }
 
       // Tìm kiếm theo khoa
       if (searchParams.faculty) {
         // Tìm ID của khoa
-        const faculty = await Faculty.findOne({ 
+        const faculty = await Faculty.findOne({
           $or: [
-            { name: { $regex: searchParams.faculty.toString(), $options: 'i' } },
-            { facultyId: searchParams.faculty }
-          ]
+            {
+              name: { $regex: searchParams.faculty.toString(), $options: 'i' },
+            },
+            { facultyId: searchParams.faculty },
+          ],
         });
 
         if (faculty) {
@@ -325,11 +330,11 @@ class StudentService {
 
       // Thực hiện tìm kiếm
       const result = await Student.find({
-        $and: searchConditions
+        $and: searchConditions,
       })
-      .populate('faculty')
-      .populate('program')
-      .populate('status');
+        .populate('faculty')
+        .populate('program')
+        .populate('status');
 
       return result;
     } catch (error) {
@@ -369,6 +374,52 @@ class StudentService {
     } catch (error) {
       console.log('Error retrieving student: ', error);
       throw error;
+    }
+  }
+
+  /**
+   * Import dữ liệu sinh viên từ file
+   * @param format Định dạng file (csv, json)
+   * @param filePath Đường dẫn tới file
+   * @return Promise<any[]> Dữ liệu sinh viên đã import
+   */
+  async importData(format: string, filePath: string): Promise<any[]> {
+    let data;
+    switch (format) {
+      case 'csv':
+        data = await importCSV(filePath);
+        break;
+      case 'json':
+        data = await importJSON(filePath);
+        break;
+      default:
+        throw new Error('Unsupported format');
+    }
+
+    // Save data to database
+    await Student.insertMany(data);
+
+    return data;
+  }
+
+  /**
+   * Export dữ liệu sinh viên ra file
+   * @param format Định dạng file (csv, json, xml, excel)
+   * @param filePath Đường dẫn tới file
+   * @returns Promise<void>
+   */
+  async exportData(format: string, filePath: string): Promise<void> {
+    // Fetch data from database
+    const data = await Student.find().lean();
+    switch (format) {
+      case 'csv':
+        await exportCSV(data, filePath);
+        break;
+      case 'json':
+        await exportJSON(data, filePath);
+        break;
+      default:
+        throw new Error('Unsupported format');
     }
   }
 }
