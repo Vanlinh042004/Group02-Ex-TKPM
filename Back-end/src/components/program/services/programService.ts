@@ -1,4 +1,4 @@
-import Program, { IProgram } from '../models/Program';
+import Program, { IProgram } from '../models/program';
 import generateId from '../../../utils/generateId';
 import { w } from '@faker-js/faker/dist/airline-CBNP41sR';
 import { da } from '@faker-js/faker/.';

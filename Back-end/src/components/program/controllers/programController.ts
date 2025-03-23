@@ -4,7 +4,7 @@ import ProgramService, { ICreateProgramDTO } from '../services/programService';
 class ProgramController {
     async renameProgram(req: Request, res: Response): Promise<void> {
         try {
-            const programId = req.params.programId;
+            const programId = req.body.programId;
             const newName = req.body.newName;
             const result = await ProgramService.renameProgram(programId, newName);
             

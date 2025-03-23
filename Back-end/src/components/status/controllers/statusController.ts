@@ -4,7 +4,7 @@ import StatusService, { ICreateStatusDTO } from '../services/statusService';
 class StatusController {
     async renameStatus(req: Request, res: Response): Promise<void> {
         try {
-            const statusId = req.params.statusId;
+            const statusId = req.body.statusId;
             const newName = req.body.newName;
             const result = await StatusService.renameStatus(statusId, newName);
             

@@ -5,6 +5,7 @@ import StudentService, {
   IStudentSearchTermsDTO,
 } from '../services/studentService';
 import logger from '../../../utils/logger';
+import { da } from '@faker-js/faker/.';
 
 class StudentController {
   /**
@@ -99,7 +100,7 @@ class StudentController {
    */
   async updateStudent(req: Request, res: Response): Promise<void> {
     try {
-      const studentId = req.params.studentId;
+      const studentId = req.body.studentId;
       const updateData = req.body as IUpdateStudentDTO;
 
       logger.debug('Updating student', {
@@ -252,39 +253,44 @@ class StudentController {
    */
   async importData(req: Request, res: Response): Promise<void> {
     try {
-      const { format, filePath } = req.body;
+      console.log('body',req.body);
+      const { format, data } = req.body;
+      if(!data){
+        throw new Error("Dữ liệu không hợp lệ");
+      }
+      if (!Array.isArray(data) ) {
+        throw new Error(data.message);
+      }
 
-      logger.debug('Importing student data', {
-        module: 'StudentController',
-        operation: 'IMPORT_DATA',
-        details: { format, filePath },
+      logger.debug("Importing student data", {
+        module: "StudentController",
+        operation: "IMPORT_DATA",
+        details: { format, recordCount: data.length },
       });
 
-      const data = await StudentService.importData(format, filePath);
+      const importedData = await StudentService.importData(format, data);
 
-      logger.info('Data imported successfully', {
-        module: 'StudentController',
-        operation: 'IMPORT_DATA',
+      logger.info("Data imported successfully", {
+        module: "StudentController",
+        operation: "IMPORT_DATA",
         details: {
           format,
-          filePath,
-          recordCount: Array.isArray(data) ? data.length : 'unknown',
+          recordCount: importedData.length,
         },
       });
 
       // Log audit trail for bulk import
-      logger.audit('IMPORT', 'student', 'BULK', null, {
-        recordCount: Array.isArray(data) ? data.length : 'unknown',
+      logger.audit("IMPORT", "student", "BULK", null, {
+        recordCount: importedData.length,
       });
 
-      res.status(200).json({ message: 'Data imported successfully', data });
+      res.status(200).json({ message: "Dữ liệu nhập thành công!", data: importedData });
     } catch (error: any) {
-      logger.error('Failed to import data', {
-        module: 'StudentController',
-        operation: 'IMPORT_DATA',
+      logger.error("Failed to import data", {
+        module: "StudentController",
+        operation: "IMPORT_DATA",
         details: {
           format: req.body?.format,
-          filePath: req.body?.filePath,
           error: error.message,
           stack: error.stack,
         },
@@ -292,7 +298,8 @@ class StudentController {
 
       res.status(400).json({ message: error.message });
     }
-  }
+}
+
 
   /**
    * Export dữ liệu sinh viên ra file

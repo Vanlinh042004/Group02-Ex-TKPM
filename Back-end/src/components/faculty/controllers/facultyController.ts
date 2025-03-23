@@ -4,13 +4,13 @@ import FacultyService, { ICreateFacultyDTO } from '../services/facultyService';
 class FacultyController {
     async renameFaculty(req: Request, res: Response): Promise<void> {
         try {
-            const facultyId = req.params.facultyId;
+            const facultyId = req.body.facultyId;
             const newName = req.body.newName;
             const result = await FacultyService.renameFaculty(facultyId, newName);
             
             res.status(200).json({ message: 'Faculty renamed successfully', data: result });
         } catch (error: any) {
-            res.status(400).json({ message: error.message });
+            res.status(404).json({ data:"lồn" });
         }
     }
 

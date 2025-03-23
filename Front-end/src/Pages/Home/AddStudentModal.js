@@ -13,9 +13,35 @@ const AddStudentModal = ({ isModalVisible, setIsModalVisible, students, setStude
   const [form] = Form.useForm();
 
   useEffect(() => {
-    axios.get("http://localhost:5000/api/faculty/").then((res) => setFaculties(res.data));
-    axios.get("http://localhost:5000/api/program/").then((res) => setPrograms(res.data));
-    axios.get("http://localhost:5000/api/status/").then((res) => setStatuses(res.data));
+    axios.get("http://localhost:5000/api/faculty/list")
+      .then((res) => {
+        console.log("Dữ liệu khoa từ API:", res.data);
+        setFaculties(res.data.data || []);
+      })
+      .catch((err) => {
+        console.error("Lỗi khi fetch khoa:", err);
+        setFaculties([]);
+      });
+
+    axios.get("http://localhost:5000/api/program/list")
+      .then((res) => {
+        console.log("Dữ liệu chương trình từ API:", res.data);
+        setPrograms(res.data.data || []);
+      })
+      .catch((err) => {
+        console.error("Lỗi khi fetch chương trình:", err);
+        setPrograms([]);
+      });
+
+    axios.get("http://localhost:5000/api/status/list")
+      .then((res) => {
+        console.log("Dữ liệu trạng thái từ API:", res.data);
+        setStatuses(res.data.data || []);
+      })
+      .catch((err) => {
+        console.error("Lỗi khi fetch trạng thái:", err);
+        setStatuses([]);
+      });
   }, []);
 
   const checkIfIdExists = (id) => students.some((student) => student.studentId === id);
@@ -27,7 +53,20 @@ const AddStudentModal = ({ isModalVisible, setIsModalVisible, students, setStude
         return;
       }
 
-      axios.post("http://localhost:5000/api/student/add", values)
+      const requestBody = {
+        ...values,
+        faculty: values.faculty,
+        program: values.program,
+        status: values.status,
+        dateOfBirth: new Date(values.dateOfBirth).toISOString(),
+        identityDocument: {
+          ...values.identityDocument,
+          issueDate: new Date(values.identityDocument.issueDate).toISOString(),
+          expiryDate: new Date(values.identityDocument.expiryDate).toISOString(),
+        },
+      };
+      console.log("Request body:", requestBody);  
+      axios.post("http://localhost:5000/api/student/add", requestBody)
         .then((response) => {
           setStudents([...students, response.data]);
           setIsModalVisible(false);
@@ -57,6 +96,14 @@ const AddStudentModal = ({ isModalVisible, setIsModalVisible, students, setStude
           <Input type="date" />
         </Form.Item>
 
+        <Form.Item label="Giới tính *" name="gender" rules={[{ required: true }]}>
+          <Select>
+            <Option value="Nam">Nam</Option>
+            <Option value="Nữ">Nữ</Option>
+            <Option value="Khác">Khác</Option>
+          </Select>
+        </Form.Item>
+
         <Form.Item label="Email *" name="email" rules={[{ required: true, type: "email" }]}>
           <Input />
         </Form.Item>
@@ -84,20 +131,26 @@ const AddStudentModal = ({ isModalVisible, setIsModalVisible, students, setStude
           <Form.Item name={["permanentAddress", "city"]} label="Tỉnh/Thành phố *" rules={[{ required: true }]}>
             <Input />
           </Form.Item>
+          <Form.Item name={["permanentAddress", "country"]} label="Quốc gia *" rules={[{ required: true }]}>
+            <Input />
+          </Form.Item>
         </Form.Item>
 
         {/* Địa chỉ tạm trú */}
         <Form.Item label="Địa chỉ tạm trú *">
-          <Form.Item name={["temporaryAddress", "streetAddress"]} label="Số nhà, đường *" rules={[{ required: true }]}>
+          <Form.Item name={["temporaryAddress", "streetAddress"]} label="Số nhà, đường " >
             <Input />
           </Form.Item>
-          <Form.Item name={["temporaryAddress", "ward"]} label="Phường/Xã *" rules={[{ required: true }]}>
+          <Form.Item name={["temporaryAddress", "ward"]} label="Phường/Xã " >
             <Input />
           </Form.Item>
-          <Form.Item name={["temporaryAddress", "district"]} label="Quận/Huyện *" rules={[{ required: true }]}>
+          <Form.Item name={["temporaryAddress", "district"]} label="Quận/Huyện " >
             <Input />
           </Form.Item>
-          <Form.Item name={["temporaryAddress", "city"]} label="Tỉnh/Thành phố *" rules={[{ required: true }]}>
+          <Form.Item name={["temporaryAddress", "city"]} label="Tỉnh/Thành phố ">
+            <Input />
+          </Form.Item>
+          <Form.Item name={["temporaryAddress", "country"]} label="Quốc gia ">
             <Input />
           </Form.Item>
         </Form.Item>
@@ -116,14 +169,27 @@ const AddStudentModal = ({ isModalVisible, setIsModalVisible, students, setStude
           <Form.Item name={["mailingAddress", "city"]} label="Tỉnh/Thành phố *" rules={[{ required: true }]}>
             <Input />
           </Form.Item>
+          <Form.Item name={["mailingAddress", "country"]} label="Quốc gia *" rules={[{ required: true }]}>
+            <Input />
+          </Form.Item>
         </Form.Item>
 
-         {/* Khoa */}
-         <Form.Item label="Khoa *" name="faculty" rules={[{ required: true, message: "Trường này là bắt buộc" }]}>
+        {/* Khoa */}
+        <Form.Item 
+          label="Khoa *" 
+          name="faculty" 
+          rules={[{ required: true, message: "Trường này là bắt buộc" }]}
+        >
           <Select>
-            {faculties.map((faculty) => (
-              <Option key={faculty._id} value={faculty._id}>{faculty.name}</Option>
-            ))}
+            {Array.isArray(faculties) ? (
+              faculties.map((faculty) => (
+                <Option key={faculty._id} value={faculty._id}>
+                  {faculty.name}
+                </Option>
+              ))
+            ) : (
+              <Option disabled>Không có dữ liệu</Option>
+            )}
           </Select>
         </Form.Item>
 
@@ -148,7 +214,6 @@ const AddStudentModal = ({ isModalVisible, setIsModalVisible, students, setStude
             ))}
           </Select>
         </Form.Item>
-
 
         {/* Giấy tờ tùy thân */}
         <Form.Item label="Loại giấy tờ tùy thân *" name={["identityDocument", "type"]} rules={[{ required: true }]}>
@@ -178,8 +243,8 @@ const AddStudentModal = ({ isModalVisible, setIsModalVisible, students, setStude
         {documentType === "CCCD" && (
           <Form.Item label="CCCD có gắn chip không?" name={["identityDocument", "hasChip"]}>
             <Select>
-              <Option value="Có">Có</Option>
-              <Option value="Không">Không</Option>
+              <Option value={true}>Có</Option>
+              <Option value={false}>Không</Option>
             </Select>
           </Form.Item>
         )}

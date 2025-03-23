@@ -10,6 +10,8 @@ import {
 } from "@ant-design/icons";
 import { Button, Upload, message } from "antd";
 import { useState, useEffect } from "react";
+import axios from "axios";
+import Papa from "papaparse";
 import {
   searchStudent,
   getStudent,
@@ -17,7 +19,6 @@ import {
 } from "../../Services/studentService";
 import AddStudentModal from "../Home/AddStudentModal";
 import EditStudentModal from "../Home/EditStudentModal";
-import ImportStudents from "../Home/ImportStudents";
 import {
   exportStudentsToCSV,
   exportStudentsToJSON,
@@ -76,13 +77,53 @@ function Home() {
 
   // Xử lý Import
   const handleImport = async (file) => {
-    try {
-      const result = await ImportStudents(file);
-      setStudents(result);
-      message.success("Import sinh viên thành công!");
-    } catch (error) {
-      message.error("Lỗi khi import dữ liệu!");
-    }
+    const reader = new FileReader();
+
+    reader.onload = async (event) => {
+      const fileData = event.target.result;
+      //console.log("File data:", fileData);
+
+      if (file.type === "application/json" || file.name.endsWith(".json")) {
+        try {
+          const jsonData = JSON.parse(fileData);
+          console.log("Parsed JSON data:", jsonData);
+          if (!Array.isArray(jsonData)) {
+            message.error("File JSON không hợp lệ!");
+            return;
+          }
+          // Send JSON data to the backend
+          const response = await axios.post("http://localhost:5000/api/student/import", { format: "json", data: jsonData });
+          console.log('Response from server:', jsonData);
+          setStudents(response.data.data);
+          message.success("Import JSON thành công!");
+        } catch (error) {
+          message.error("Lỗi khi đọc file JSON!");
+        }
+      } else if (file.type === "text/csv" || file.name.endsWith(".csv")) {
+        Papa.parse(fileData, {
+          header: true,
+          skipEmptyLines: true,
+          complete: async (result) => {
+            if (!result.data || result.data.length === 0) {
+              message.error("File CSV không hợp lệ hoặc trống!");
+              return;
+            }
+            // Send CSV data to the backend
+            const response = await axios.post("http://localhost:5000/api/student/import", { format: "csv", data: result.data });
+            setStudents(response.data.data);
+            message.success("Import CSV thành công!");
+          },
+          error: () => {
+            message.error("Lỗi khi đọc file CSV!");
+          },
+        });
+      } else {
+        message.error("Chỉ hỗ trợ file CSV và JSON!");
+      }
+    };
+
+    reader.readAsText(file);
+    return false; // Ngăn không cho upload tự động lên server
   };
 
   return (

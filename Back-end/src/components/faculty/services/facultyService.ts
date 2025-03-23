@@ -15,7 +15,7 @@ class FacultyService {
 
         const faculty = await Faculty.findOne({ facultyId });
         if (!faculty) {
-            throw new Error('Faculty not found');
+            throw new Error('Faculty not found lồn');
         }
         faculty.name = newName;
 
