@@ -38,6 +38,8 @@ const EditStudentModal = ({
     useState(false);
   const [isEditStatusModalVisible, setIsEditStatusModalVisible] =
     useState(false);
+  const allowedeEmail = process.env.REACT_APP_ALLOWED_EMAIL_DOMAIN;
+  const allowedPhone = new RegExp(process.env.REACT_APP_ALLOWED_PHONE);
 
   // State lưu dữ liệu nhập vào
   const [newFacultyName, setNewFacultyName] = useState("");
@@ -117,39 +119,61 @@ const EditStudentModal = ({
 
     fetchData();
   }, [check]);
-
+  const checkValidEmail = (email) => {
+    const domain = "@" + email.split("@")[1];
+    return domain === allowedeEmail;
+  };
+  const checkValidPhone = (phone) => {
+    return allowedPhone.test(phone);
+  };
   const handleUpdateStudent = () => {
-    form.validateFields().then((values) => {
-      const updatedStudentData = {
-        ...values,
-        dateOfBirth: new Date(values.dateOfBirth).toISOString(),
-        identityDocument: {
-          ...values.identityDocument,
-          issueDate: new Date(values.identityDocument.issueDate).toISOString(),
-          expiryDate: new Date(
-            values.identityDocument.expiryDate
-          ).toISOString(),
-        },
-      };
-      //console.log("Dữ liệu gửi lên backend:", updatedStudentData);
+    form
+      .validateFields()
+      .then((values) => {
+        if (!checkValidEmail(values.email)) {
+          //console.log(values.email);
+          swal("Lỗi!", "Email không hợp lệ!", "error");
+          return;
+        }
+        if (!checkValidPhone(values.phone)) {
+          swal("Lỗi!", "Số điện thoại không hợp lệ!", "error");
+          return;
+        }
+        const updatedStudentData = {
+          ...values,
+          dateOfBirth: new Date(values.dateOfBirth).toISOString(),
+          identityDocument: {
+            ...values.identityDocument,
+            issueDate: new Date(
+              values.identityDocument.issueDate
+            ).toISOString(),
+            expiryDate: new Date(
+              values.identityDocument.expiryDate
+            ).toISOString(),
+          },
+        };
+        //console.log("Dữ liệu gửi lên backend:", updatedStudentData);
 
-      updateStudent(student._id, updatedStudentData)
-        .then(() => {
-          setStudents((students) =>
-            students.map((s) =>
-              s._id === student._id ? { ...s, ...updatedStudentData } : s
-            )
-          );
-          setIsModalVisible(false);
-          swal(
-            "Thành công!",
-            "Cập nhật thông tin sinh viên thành công!",
-            "success"
-          );
-          //message.success("Cập nhật thông tin sinh viên thành công!");
-        })
-        .catch(() => message.error("Cập nhật thông tin sinh viên thất bại!"));
-    });
+        updateStudent(student._id, updatedStudentData)
+          .then(() => {
+            setStudents((students) =>
+              students.map((s) =>
+                s._id === student._id ? { ...s, ...updatedStudentData } : s
+              )
+            );
+            setIsModalVisible(false);
+            swal(
+              "Thành công!",
+              "Cập nhật thông tin sinh viên thành công!",
+              "success"
+            );
+            //message.success("Cập nhật thông tin sinh viên thành công!");
+          })
+          .catch(() => message.error("Cập nhật thông tin sinh viên thất bại!"));
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   // Xử lý thêm mới Khoa

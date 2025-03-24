@@ -19,8 +19,10 @@ const AddStudentModal = ({
   const [faculties, setFaculties] = useState([]);
   const [programs, setPrograms] = useState([]);
   const [statuses, setStatuses] = useState([]);
+  const [email, setEmail] = useState("");
   const [form] = Form.useForm();
-
+  const allowedeEmail = process.env.REACT_APP_ALLOWED_EMAIL_DOMAIN;
+  const allowedPhone = new RegExp(process.env.REACT_APP_ALLOWED_PHONE);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -50,16 +52,34 @@ const AddStudentModal = ({
     fetchData();
   }, []);
 
-  const checkIfIdExists = (id) =>
+  const checkIfIdExists = (id) => {
     students.some((student) => student.studentId === id);
-
-  const handleAddStudent = () => {
+  };
+  const checkValidEmail = (email) => {
+    const domain = "@" + email.split("@")[1];
+    return domain === allowedeEmail;
+  };
+  const checkValidPhone = (phone) => {
+    return allowedPhone.test(phone);
+  };
+  const handleAddStudent = async () => {
     form.validateFields().then((values) => {
       if (checkIfIdExists(values.studentId)) {
         swal("Mã sinh viên đã tồn tại", "Vui lòng thử lại", "error");
         return;
       }
-
+      if (!checkValidEmail(values.email)) {
+        swal(
+          "Email không hợp lệ",
+          "Email phải có domain " + allowedeEmail,
+          "error"
+        );
+        return;
+      }
+      if (!checkValidPhone(values.phone)) {
+        swal("Số điện thoại không hợp lệ", "Vui lòng thử lại", "error");
+        return;
+      }
       const requestBody = {
         ...values,
         faculty: values.faculty,
@@ -104,7 +124,7 @@ const AddStudentModal = ({
         <Form.Item
           label="Mã sinh viên *"
           name="studentId"
-          rules={[{ required: true }]}
+          rules={[{ required: true, message: "Trường này là bắt buộc" }]}
         >
           <Input />
         </Form.Item>
@@ -112,7 +132,7 @@ const AddStudentModal = ({
         <Form.Item
           label="Tên sinh viên *"
           name="fullName"
-          rules={[{ required: true }]}
+          rules={[{ required: true, message: "Trường này là bắt buộc" }]}
         >
           <Input />
         </Form.Item>
@@ -120,7 +140,7 @@ const AddStudentModal = ({
         <Form.Item
           label="Ngày sinh *"
           name="dateOfBirth"
-          rules={[{ required: true }]}
+          rules={[{ required: true, message: "Trường này là bắt buộc" }]}
         >
           <Input type="date" />
         </Form.Item>
@@ -128,7 +148,7 @@ const AddStudentModal = ({
         <Form.Item
           label="Giới tính *"
           name="gender"
-          rules={[{ required: true }]}
+          rules={[{ required: true, message: "Trường này là bắt buộc" }]}
         >
           <Select>
             <Option value="Nam">Nam</Option>
@@ -140,7 +160,17 @@ const AddStudentModal = ({
         <Form.Item
           label="Email *"
           name="email"
-          rules={[{ required: true, type: "email" }]}
+          rules={[
+            { required: true, message: "Trường này là bắt buộc" },
+            {
+              validator: (_, value) => {
+                if (!value) return Promise.resolve();
+                return checkValidEmail(value)
+                  ? Promise.resolve()
+                  : Promise.reject("Email phải có domain " + allowedeEmail);
+              },
+            },
+          ]}
         >
           <Input />
         </Form.Item>
@@ -148,7 +178,17 @@ const AddStudentModal = ({
         <Form.Item
           label="Số điện thoại *"
           name="phone"
-          rules={[{ required: true }]}
+          rules={[
+            { required: true, message: "Trường này là bắt buộc" },
+            {
+              validator: (_, value) => {
+                if (!value) return Promise.resolve();
+                return checkValidPhone(value)
+                  ? Promise.resolve()
+                  : Promise.reject("Số điện thoại không hợp lệ");
+              },
+            },
+          ]}
         >
           <Input />
         </Form.Item>
@@ -157,7 +197,7 @@ const AddStudentModal = ({
         <Form.Item
           label="Quốc tịch *"
           name="nationality"
-          rules={[{ required: true }]}
+          rules={[{ required: true, message: "Trường này là bắt buộc" }]}
         >
           <Input placeholder="Nhập quốc tịch" />
         </Form.Item>
@@ -167,35 +207,35 @@ const AddStudentModal = ({
           <Form.Item
             name={["permanentAddress", "streetAddress"]}
             label="Số nhà, đường *"
-            rules={[{ required: true }]}
+            rules={[{ required: true, message: "Trường này là bắt buộc" }]}
           >
             <Input />
           </Form.Item>
           <Form.Item
             name={["permanentAddress", "ward"]}
             label="Phường/Xã *"
-            rules={[{ required: true }]}
+            rules={[{ required: true, message: "Trường này là bắt buộc" }]}
           >
             <Input />
           </Form.Item>
           <Form.Item
             name={["permanentAddress", "district"]}
             label="Quận/Huyện *"
-            rules={[{ required: true }]}
+            rules={[{ required: true, message: "Trường này là bắt buộc" }]}
           >
             <Input />
           </Form.Item>
           <Form.Item
             name={["permanentAddress", "city"]}
             label="Tỉnh/Thành phố *"
-            rules={[{ required: true }]}
+            rules={[{ required: true, message: "Trường này là bắt buộc" }]}
           >
             <Input />
           </Form.Item>
           <Form.Item
             name={["permanentAddress", "country"]}
             label="Quốc gia *"
-            rules={[{ required: true }]}
+            rules={[{ required: true, message: "Trường này là bắt buộc" }]}
           >
             <Input />
           </Form.Item>
@@ -234,35 +274,35 @@ const AddStudentModal = ({
           <Form.Item
             name={["mailingAddress", "streetAddress"]}
             label="Số nhà, đường *"
-            rules={[{ required: true }]}
+            rules={[{ required: true, message: "Trường này là bắt buộc" }]}
           >
             <Input />
           </Form.Item>
           <Form.Item
             name={["mailingAddress", "ward"]}
             label="Phường/Xã *"
-            rules={[{ required: true }]}
+            rules={[{ required: true, message: "Trường này là bắt buộc" }]}
           >
             <Input />
           </Form.Item>
           <Form.Item
             name={["mailingAddress", "district"]}
             label="Quận/Huyện *"
-            rules={[{ required: true }]}
+            rules={[{ required: true, message: "Trường này là bắt buộc" }]}
           >
             <Input />
           </Form.Item>
           <Form.Item
             name={["mailingAddress", "city"]}
             label="Tỉnh/Thành phố *"
-            rules={[{ required: true }]}
+            rules={[{ required: true, message: "Trường này là bắt buộc" }]}
           >
             <Input />
           </Form.Item>
           <Form.Item
             name={["mailingAddress", "country"]}
             label="Quốc gia *"
-            rules={[{ required: true }]}
+            rules={[{ required: true, message: "Trường này là bắt buộc" }]}
           >
             <Input />
           </Form.Item>
@@ -329,7 +369,7 @@ const AddStudentModal = ({
         <Form.Item
           label="Loại giấy tờ tùy thân *"
           name={["identityDocument", "type"]}
-          rules={[{ required: true }]}
+          rules={[{ required: true, message: "Trường này là bắt buộc" }]}
         >
           <Select>
             <Option value="CMND">CMND</Option>
@@ -341,7 +381,7 @@ const AddStudentModal = ({
         <Form.Item
           label="Số giấy tờ *"
           name={["identityDocument", "number"]}
-          rules={[{ required: true }]}
+          rules={[{ required: true, message: "Trường này là bắt buộc" }]}
         >
           <Input />
         </Form.Item>
@@ -349,7 +389,7 @@ const AddStudentModal = ({
         <Form.Item
           label="Ngày cấp *"
           name={["identityDocument", "issueDate"]}
-          rules={[{ required: true }]}
+          rules={[{ required: true, message: "Trường này là bắt buộc" }]}
         >
           <Input type="date" />
         </Form.Item>
@@ -357,7 +397,7 @@ const AddStudentModal = ({
         <Form.Item
           label="Nơi cấp *"
           name={["identityDocument", "issuePlace"]}
-          rules={[{ required: true }]}
+          rules={[{ required: true, message: "Trường này là bắt buộc" }]}
         >
           <Input />
         </Form.Item>
@@ -365,7 +405,7 @@ const AddStudentModal = ({
         <Form.Item
           label="Ngày hết hạn *"
           name={["identityDocument", "expiryDate"]}
-          rules={[{ required: true }]}
+          rules={[{ required: true, message: "Trường này là bắt buộc" }]}
         >
           <Input type="date" />
         </Form.Item>
@@ -387,7 +427,7 @@ const AddStudentModal = ({
             <Form.Item
               label="Quốc gia cấp *"
               name={["identityDocument", "issuingCountry"]}
-              rules={[{ required: true }]}
+              rules={[{ required: true, message: "Trường này là bắt buộc" }]}
             >
               <Input placeholder="Nhập quốc gia cấp hộ chiếu" />
             </Form.Item>
