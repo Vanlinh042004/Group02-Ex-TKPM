@@ -16,6 +16,7 @@ import {
   searchStudent,
   getStudent,
   deleteStudent,
+  importStudent,
 } from "../../Services/studentService";
 import AddStudentModal from "../Home/AddStudentModal";
 import EditStudentModal from "../Home/EditStudentModal";
@@ -75,7 +76,6 @@ function Home() {
     fetchStudents();
   }, [check, isEditModalVisible, isModalVisible]);
 
-  // Xử lý Import
   const handleImport = async (file) => {
     const reader = new FileReader();
 
@@ -92,10 +92,11 @@ function Home() {
             return;
           }
           // Send JSON data to the backend
-          const response = await axios.post("http://localhost:5000/api/student/import", { format: "json", data: jsonData });
-          console.log('Response from server:', jsonData);
+          const response = importStudent(jsonData, "json");
+          //console.log("Response from server:", jsonData);
           setStudents(response.data.data);
-          message.success("Import JSON thành công!");
+          //message.success("Import JSON thành công!");
+          swal("Import thành công", "Dữ liệu đã được import", "success");
         } catch (error) {
           message.error("Lỗi khi đọc file JSON!");
         }
@@ -105,25 +106,28 @@ function Home() {
           skipEmptyLines: true,
           complete: async (result) => {
             if (!result.data || result.data.length === 0) {
-              message.error("File CSV không hợp lệ hoặc trống!");
+              //message.error("File CSV không hợp lệ hoặc trống!");
+              swal("Lỗi", "File CSV không hợp lệ hoặc trống", "error");
               return;
             }
             // Send CSV data to the backend
-            const response = await axios.post("http://localhost:5000/api/student/import", { format: "csv", data: result.data });
+            const response = importStudent(result.data, "csv");
             setStudents(response.data.data);
-            message.success("Import CSV thành công!");
+            //message.success("Import CSV thành công!");
+            swal("Import thành công", "Dữ liệu đã được import", "success");
           },
           error: () => {
             message.error("Lỗi khi đọc file CSV!");
           },
         });
       } else {
-        message.error("Chỉ hỗ trợ file CSV và JSON!");
+        swal("Lỗi", "Chỉ hỗ trợ file CSV và JSON!", "error");
+        //message.error("Chỉ hỗ trợ file CSV và JSON!");
       }
     };
 
     reader.readAsText(file);
-    return false; // Ngăn không cho upload tự động lên server
+    return false;
   };
 
   return (

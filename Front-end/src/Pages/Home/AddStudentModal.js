@@ -1,50 +1,57 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Input, Form, Select } from "antd";
-import axios from "axios";
 import swal from "sweetalert";
 import { useWatch } from "antd/es/form/Form";
-
+import {
+  addStudent,
+  getFaculty,
+  getProgram,
+  getStatus,
+} from "../../Services/studentService";
 const { Option } = Select;
 
-const AddStudentModal = ({ isModalVisible, setIsModalVisible, students, setStudents }) => {
+const AddStudentModal = ({
+  isModalVisible,
+  setIsModalVisible,
+  students,
+  setStudents,
+}) => {
   const [faculties, setFaculties] = useState([]);
   const [programs, setPrograms] = useState([]);
   const [statuses, setStatuses] = useState([]);
   const [form] = Form.useForm();
 
   useEffect(() => {
-    axios.get("http://localhost:5000/api/faculty/list")
-      .then((res) => {
-        console.log("Dữ liệu khoa từ API:", res.data);
-        setFaculties(res.data.data || []);
-      })
-      .catch((err) => {
-        console.error("Lỗi khi fetch khoa:", err);
-        setFaculties([]);
-      });
+    const fetchData = async () => {
+      try {
+        const faculties = await getFaculty();
+        //console.log("Faculties:", faculties);
+        setFaculties(faculties.data || []);
+      } catch (error) {
+        console.log(error);
+      }
 
-    axios.get("http://localhost:5000/api/program/list")
-      .then((res) => {
-        console.log("Dữ liệu chương trình từ API:", res.data);
-        setPrograms(res.data.data || []);
-      })
-      .catch((err) => {
-        console.error("Lỗi khi fetch chương trình:", err);
-        setPrograms([]);
-      });
+      try {
+        const programs = await getProgram();
+        //console.log("Programs:", programs);
+        setPrograms(programs.data || []);
+      } catch (error) {
+        console.log(error);
+      }
+      try {
+        const statuses = await getStatus();
+        //console.log("Statuses:", statuses);
+        setStatuses(statuses.data || []);
+      } catch (error) {
+        console.log(error);
+      }
+    };
 
-    axios.get("http://localhost:5000/api/status/list")
-      .then((res) => {
-        console.log("Dữ liệu trạng thái từ API:", res.data);
-        setStatuses(res.data.data || []);
-      })
-      .catch((err) => {
-        console.error("Lỗi khi fetch trạng thái:", err);
-        setStatuses([]);
-      });
+    fetchData();
   }, []);
 
-  const checkIfIdExists = (id) => students.some((student) => student.studentId === id);
+  const checkIfIdExists = (id) =>
+    students.some((student) => student.studentId === id);
 
   const handleAddStudent = () => {
     form.validateFields().then((values) => {
@@ -62,15 +69,20 @@ const AddStudentModal = ({ isModalVisible, setIsModalVisible, students, setStude
         identityDocument: {
           ...values.identityDocument,
           issueDate: new Date(values.identityDocument.issueDate).toISOString(),
-          expiryDate: new Date(values.identityDocument.expiryDate).toISOString(),
+          expiryDate: new Date(
+            values.identityDocument.expiryDate
+          ).toISOString(),
         },
       };
-      console.log("Request body:", requestBody);  
-      axios.post("http://localhost:5000/api/student/add", requestBody)
+      addStudent(requestBody)
         .then((response) => {
           setStudents([...students, response.data]);
           setIsModalVisible(false);
-          swal("Thêm sinh viên thành công", "Sinh viên đã được thêm", "success");
+          swal(
+            "Thêm sinh viên thành công",
+            "Sinh viên đã được thêm",
+            "success"
+          );
         })
         .catch(() => {
           swal("Lỗi khi thêm sinh viên", "Vui lòng thử lại", "error");
@@ -82,21 +94,42 @@ const AddStudentModal = ({ isModalVisible, setIsModalVisible, students, setStude
   const documentType = useWatch(["identityDocument", "type"], form);
 
   return (
-    <Modal title="Thêm Sinh viên" open={isModalVisible} onCancel={() => setIsModalVisible(false)} onOk={handleAddStudent}>
+    <Modal
+      title="Thêm Sinh viên"
+      open={isModalVisible}
+      onCancel={() => setIsModalVisible(false)}
+      onOk={handleAddStudent}
+    >
       <Form layout="vertical" form={form}>
-        <Form.Item label="Mã sinh viên *" name="studentId" rules={[{ required: true }]}>
+        <Form.Item
+          label="Mã sinh viên *"
+          name="studentId"
+          rules={[{ required: true }]}
+        >
           <Input />
         </Form.Item>
 
-        <Form.Item label="Tên sinh viên *" name="fullName" rules={[{ required: true }]}>
+        <Form.Item
+          label="Tên sinh viên *"
+          name="fullName"
+          rules={[{ required: true }]}
+        >
           <Input />
         </Form.Item>
 
-        <Form.Item label="Ngày sinh *" name="dateOfBirth" rules={[{ required: true }]}>
+        <Form.Item
+          label="Ngày sinh *"
+          name="dateOfBirth"
+          rules={[{ required: true }]}
+        >
           <Input type="date" />
         </Form.Item>
 
-        <Form.Item label="Giới tính *" name="gender" rules={[{ required: true }]}>
+        <Form.Item
+          label="Giới tính *"
+          name="gender"
+          rules={[{ required: true }]}
+        >
           <Select>
             <Option value="Nam">Nam</Option>
             <Option value="Nữ">Nữ</Option>
@@ -104,50 +137,91 @@ const AddStudentModal = ({ isModalVisible, setIsModalVisible, students, setStude
           </Select>
         </Form.Item>
 
-        <Form.Item label="Email *" name="email" rules={[{ required: true, type: "email" }]}>
+        <Form.Item
+          label="Email *"
+          name="email"
+          rules={[{ required: true, type: "email" }]}
+        >
           <Input />
         </Form.Item>
 
-        <Form.Item label="Số điện thoại *" name="phone" rules={[{ required: true }]}>
+        <Form.Item
+          label="Số điện thoại *"
+          name="phone"
+          rules={[{ required: true }]}
+        >
           <Input />
         </Form.Item>
 
         {/* Quốc tịch */}
-        <Form.Item label="Quốc tịch *" name="nationality" rules={[{ required: true }]}>
+        <Form.Item
+          label="Quốc tịch *"
+          name="nationality"
+          rules={[{ required: true }]}
+        >
           <Input placeholder="Nhập quốc tịch" />
         </Form.Item>
 
         {/* Địa chỉ thường trú */}
         <Form.Item label="Địa chỉ thường trú *">
-          <Form.Item name={["permanentAddress", "streetAddress"]} label="Số nhà, đường *" rules={[{ required: true }]}>
+          <Form.Item
+            name={["permanentAddress", "streetAddress"]}
+            label="Số nhà, đường *"
+            rules={[{ required: true }]}
+          >
             <Input />
           </Form.Item>
-          <Form.Item name={["permanentAddress", "ward"]} label="Phường/Xã *" rules={[{ required: true }]}>
+          <Form.Item
+            name={["permanentAddress", "ward"]}
+            label="Phường/Xã *"
+            rules={[{ required: true }]}
+          >
             <Input />
           </Form.Item>
-          <Form.Item name={["permanentAddress", "district"]} label="Quận/Huyện *" rules={[{ required: true }]}>
+          <Form.Item
+            name={["permanentAddress", "district"]}
+            label="Quận/Huyện *"
+            rules={[{ required: true }]}
+          >
             <Input />
           </Form.Item>
-          <Form.Item name={["permanentAddress", "city"]} label="Tỉnh/Thành phố *" rules={[{ required: true }]}>
+          <Form.Item
+            name={["permanentAddress", "city"]}
+            label="Tỉnh/Thành phố *"
+            rules={[{ required: true }]}
+          >
             <Input />
           </Form.Item>
-          <Form.Item name={["permanentAddress", "country"]} label="Quốc gia *" rules={[{ required: true }]}>
+          <Form.Item
+            name={["permanentAddress", "country"]}
+            label="Quốc gia *"
+            rules={[{ required: true }]}
+          >
             <Input />
           </Form.Item>
         </Form.Item>
 
         {/* Địa chỉ tạm trú */}
         <Form.Item label="Địa chỉ tạm trú *">
-          <Form.Item name={["temporaryAddress", "streetAddress"]} label="Số nhà, đường " >
+          <Form.Item
+            name={["temporaryAddress", "streetAddress"]}
+            label="Số nhà, đường "
+          >
             <Input />
           </Form.Item>
-          <Form.Item name={["temporaryAddress", "ward"]} label="Phường/Xã " >
+          <Form.Item name={["temporaryAddress", "ward"]} label="Phường/Xã ">
             <Input />
           </Form.Item>
-          <Form.Item name={["temporaryAddress", "district"]} label="Quận/Huyện " >
+          <Form.Item
+            name={["temporaryAddress", "district"]}
+            label="Quận/Huyện "
+          >
             <Input />
           </Form.Item>
-          <Form.Item name={["temporaryAddress", "city"]} label="Tỉnh/Thành phố ">
+          <Form.Item
+            name={["temporaryAddress", "city"]}
+            label="Tỉnh/Thành phố "
+          >
             <Input />
           </Form.Item>
           <Form.Item name={["temporaryAddress", "country"]} label="Quốc gia ">
@@ -157,27 +231,47 @@ const AddStudentModal = ({ isModalVisible, setIsModalVisible, students, setStude
 
         {/* Địa chỉ nhận thư */}
         <Form.Item label="Địa chỉ nhận thư *">
-          <Form.Item name={["mailingAddress", "streetAddress"]} label="Số nhà, đường *" rules={[{ required: true }]}>
+          <Form.Item
+            name={["mailingAddress", "streetAddress"]}
+            label="Số nhà, đường *"
+            rules={[{ required: true }]}
+          >
             <Input />
           </Form.Item>
-          <Form.Item name={["mailingAddress", "ward"]} label="Phường/Xã *" rules={[{ required: true }]}>
+          <Form.Item
+            name={["mailingAddress", "ward"]}
+            label="Phường/Xã *"
+            rules={[{ required: true }]}
+          >
             <Input />
           </Form.Item>
-          <Form.Item name={["mailingAddress", "district"]} label="Quận/Huyện *" rules={[{ required: true }]}>
+          <Form.Item
+            name={["mailingAddress", "district"]}
+            label="Quận/Huyện *"
+            rules={[{ required: true }]}
+          >
             <Input />
           </Form.Item>
-          <Form.Item name={["mailingAddress", "city"]} label="Tỉnh/Thành phố *" rules={[{ required: true }]}>
+          <Form.Item
+            name={["mailingAddress", "city"]}
+            label="Tỉnh/Thành phố *"
+            rules={[{ required: true }]}
+          >
             <Input />
           </Form.Item>
-          <Form.Item name={["mailingAddress", "country"]} label="Quốc gia *" rules={[{ required: true }]}>
+          <Form.Item
+            name={["mailingAddress", "country"]}
+            label="Quốc gia *"
+            rules={[{ required: true }]}
+          >
             <Input />
           </Form.Item>
         </Form.Item>
 
         {/* Khoa */}
-        <Form.Item 
-          label="Khoa *" 
-          name="faculty" 
+        <Form.Item
+          label="Khoa *"
+          name="faculty"
           rules={[{ required: true, message: "Trường này là bắt buộc" }]}
         >
           <Select>
@@ -193,30 +287,50 @@ const AddStudentModal = ({ isModalVisible, setIsModalVisible, students, setStude
           </Select>
         </Form.Item>
 
-        <Form.Item label="Khóa *" name="course" rules={[{ required: true, message: "Trường này là bắt buộc" }]}>
+        <Form.Item
+          label="Khóa *"
+          name="course"
+          rules={[{ required: true, message: "Trường này là bắt buộc" }]}
+        >
           <Input />
         </Form.Item>
 
         {/* Chương trình */}
-        <Form.Item label="Chương trình *" name="program" rules={[{ required: true, message: "Trường này là bắt buộc" }]}>
+        <Form.Item
+          label="Chương trình *"
+          name="program"
+          rules={[{ required: true, message: "Trường này là bắt buộc" }]}
+        >
           <Select>
             {programs.map((program) => (
-              <Option key={program._id} value={program._id}>{program.name}</Option>
+              <Option key={program._id} value={program._id}>
+                {program.name}
+              </Option>
             ))}
           </Select>
         </Form.Item>
 
         {/* Trạng thái */}
-        <Form.Item label="Tình trạng sinh viên *" name="status" rules={[{ required: true, message: "Trường này là bắt buộc" }]}>
+        <Form.Item
+          label="Tình trạng sinh viên *"
+          name="status"
+          rules={[{ required: true, message: "Trường này là bắt buộc" }]}
+        >
           <Select>
             {statuses.map((status) => (
-              <Option key={status._id} value={status._id}>{status.name}</Option>
+              <Option key={status._id} value={status._id}>
+                {status.name}
+              </Option>
             ))}
           </Select>
         </Form.Item>
 
         {/* Giấy tờ tùy thân */}
-        <Form.Item label="Loại giấy tờ tùy thân *" name={["identityDocument", "type"]} rules={[{ required: true }]}>
+        <Form.Item
+          label="Loại giấy tờ tùy thân *"
+          name={["identityDocument", "type"]}
+          rules={[{ required: true }]}
+        >
           <Select>
             <Option value="CMND">CMND</Option>
             <Option value="CCCD">CCCD</Option>
@@ -224,24 +338,43 @@ const AddStudentModal = ({ isModalVisible, setIsModalVisible, students, setStude
           </Select>
         </Form.Item>
 
-        <Form.Item label="Số giấy tờ *" name={["identityDocument", "number"]} rules={[{ required: true }]}>
+        <Form.Item
+          label="Số giấy tờ *"
+          name={["identityDocument", "number"]}
+          rules={[{ required: true }]}
+        >
           <Input />
         </Form.Item>
 
-        <Form.Item label="Ngày cấp *" name={["identityDocument", "issueDate"]} rules={[{ required: true }]}>
+        <Form.Item
+          label="Ngày cấp *"
+          name={["identityDocument", "issueDate"]}
+          rules={[{ required: true }]}
+        >
           <Input type="date" />
         </Form.Item>
 
-        <Form.Item label="Nơi cấp *" name={["identityDocument", "issuePlace"]} rules={[{ required: true }]}>
+        <Form.Item
+          label="Nơi cấp *"
+          name={["identityDocument", "issuePlace"]}
+          rules={[{ required: true }]}
+        >
           <Input />
         </Form.Item>
 
-        <Form.Item label="Ngày hết hạn *" name={["identityDocument", "expiryDate"]} rules={[{ required: true }]}>
+        <Form.Item
+          label="Ngày hết hạn *"
+          name={["identityDocument", "expiryDate"]}
+          rules={[{ required: true }]}
+        >
           <Input type="date" />
         </Form.Item>
 
         {documentType === "CCCD" && (
-          <Form.Item label="CCCD có gắn chip không?" name={["identityDocument", "hasChip"]}>
+          <Form.Item
+            label="CCCD có gắn chip không?"
+            name={["identityDocument", "hasChip"]}
+          >
             <Select>
               <Option value={true}>Có</Option>
               <Option value={false}>Không</Option>
@@ -251,10 +384,17 @@ const AddStudentModal = ({ isModalVisible, setIsModalVisible, students, setStude
 
         {documentType === "Passport" && (
           <>
-            <Form.Item label="Quốc gia cấp *" name={["identityDocument", "issuingCountry"]} rules={[{ required: true }]}>
+            <Form.Item
+              label="Quốc gia cấp *"
+              name={["identityDocument", "issuingCountry"]}
+              rules={[{ required: true }]}
+            >
               <Input placeholder="Nhập quốc gia cấp hộ chiếu" />
             </Form.Item>
-            <Form.Item label="Ghi chú (nếu có)" name={["identityDocument", "notes"]}>
+            <Form.Item
+              label="Ghi chú (nếu có)"
+              name={["identityDocument", "notes"]}
+            >
               <Input placeholder="Ghi chú thêm (nếu có)" />
             </Form.Item>
           </>
