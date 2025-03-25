@@ -24,7 +24,7 @@ class StatusController {
         res.status(400).json({ message: error.message });
         }
     }
-    async getAllStatus(req: Request, res: Response): Promise<void> {
+    async getAllStatuses(req: Request, res: Response): Promise<void> {
         try {
             const result = await StatusService.getAllStatus();
             res.status(200).json({ data: result });

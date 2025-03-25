@@ -4,28 +4,22 @@ import validateStudent from '../middlewares/validateStudent';
 
 const router = express.Router();
 
-// Route thêm sinh viên mới
-router.post('/add', validateStudent, StudentController.addStudent);
-
-// Route xóa sinh viên theo mã số
-router.delete('/delete/:studentId', StudentController.deleteStudent);
-
-// Route cập nhật thông tin sinh viên
-router.patch(
-  '/update/:studentId',
-  validateStudent,
-  StudentController.updateStudent
-);
-// Route tìm kiếm sinh viên theo từ khóa
-router.get('/search', StudentController.searchStudent);
-
-// Route lấy danh sách tất cả sinh viên
+// CRUD endpoints
+// Add student
+router.post('/', validateStudent, StudentController.addStudent);
+// Delete student by ID
+router.delete('/:studentId', StudentController.deleteStudent);
+// Update student by ID
+router.patch('/:studentId', validateStudent, StudentController.updateStudent);
+// Get all students
 router.get('/', StudentController.getAllStudent);
 
-// Route import dữ liệu sinh viên từ file
+// Additional actions
+// Search student by Id, name or faculty
+router.get('/search', StudentController.searchStudent);
+// Import data from CSV file
 router.post('/import', StudentController.importData);
-
-// Route export dữ liệu sinh viên ra file
-router.post('/export', StudentController.exportData);
+// Export data to CSV file
+router.get('/export', StudentController.exportData);
 
 export default router;

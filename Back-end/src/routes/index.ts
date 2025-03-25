@@ -8,10 +8,10 @@ import statusRouter from '../components/status/routes/statusRoute';
  * @param app Express application instance
  */
 function route(app: Express): void {
-  app.use('/api/student', studentRouter);
-  app.use('/api/faculty', facultyRouter);
-  app.use('/api/program', programRouter);
-  app.use('/api/status', statusRouter);
+  app.use('/api/students', studentRouter);
+  app.use('/api/faculties', facultyRouter);
+  app.use('/api/programs', programRouter);
+  app.use('/api/statuses', statusRouter);
 }
 
 export default route;

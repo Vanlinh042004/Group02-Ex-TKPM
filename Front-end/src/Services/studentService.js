@@ -1,48 +1,48 @@
 import { post, get, remove, patch } from "../Utils/request";
 export const getStudent = async () => {
-  return get(`/student`);
+  return get(`/students`);
 };
 export const getFaculty = async () => {
-  return get(`/faculty/list`);
+  return get(`/faculties`);
 };
 export const getProgram = async () => {
-  return get(`/program/list`);
+  return get(`/programs`);
 };
 export const getStatus = async () => {
-  return get(`/status/list`);
+  return get(`/statuses`);
 };
 export const searchStudent = async (studentId, fullName, faculty) => {
   return get(
-    `/student/search?studentId=${studentId}&fullName=${fullName}&faculty=${faculty}`
+    `/students/search?studentId=${studentId}&fullName=${fullName}&faculty=${faculty}`
   );
 };
 export const addStudent = async (data) => {
-  return post(`/student/add`, data);
+  return post(`/students`, data);
 };
 export const deleteStudent = async (id) => {
-  return remove(`/student/delete/${id}`);
+  return remove(`/students/${id}`);
 };
 export const importStudent = async (data, format) => {
-  return post(`/student/import`, data, format);
+  return post(`/students/import`, data, format);
 };
 export const updateStudent = async (id, data) => {
-  return patch(`/student/update/${id}`, data);
+  return patch(`/students/${id}`, data);
 };
 export const addFaculty = async (data) => {
-  return post(`/faculty/add`, data);
+  return post(`/faculties`, data);
 };
 export const addProgram = async (data) => {
-  return post(`/program/add`, data);
+  return post(`/programs`, data);
 };
 export const addStatus = async (data) => {
-  return post(`/status/add`, data);
+  return post(`/statuses`, data);
 };
 export const updateFaculty = async (id, data) => {
-  return patch(`/faculty/update/${id}`, data);
+  return patch(`/faculties/${id}`, data);
 };
 export const updateProgram = async (id, data) => {
-  return patch(`/program/update/${id}`, data);
+  return patch(`/programs/${id}`, data);
 };
 export const updateStatus = async (id, data) => {
-  return patch(`/status/update/${id}`, data);
+  return patch(`/statuses/${id}`, data);
 };
