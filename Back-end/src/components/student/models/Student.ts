@@ -78,7 +78,7 @@ const addressSchema = new Schema<IAddress>({
   ward: { type: String },
   district: { type: String },
   city: { type: String },
-  country: { type: String, required: true }
+  country: { type: String}
 });
 
 // Schema cơ bản cho Identity Documents
@@ -142,7 +142,7 @@ const studentSchema = new Schema<IStudent>(
     temporaryAddress: addressSchema,
     mailingAddress: { 
       type: addressSchema, 
-      required: true 
+     
     },
     
     // Giấy tờ tùy thân

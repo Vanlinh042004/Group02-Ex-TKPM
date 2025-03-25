@@ -77,12 +77,24 @@ function Home() {
   }, [check, isEditModalVisible, isModalVisible]);
 
   const handleImport = async (file) => {
+    // Kiểm tra nếu file không tồn tại hoặc không hợp lệ
+    if (!file || !(file instanceof Blob)) {
+      swal("Thành Công", "Xóa File thành Công!", "success");
+      return false;
+    }
+  
+    // Kiểm tra nếu file không phải là JSON hoặc CSV
+    if (!(file.type === "application/json" || file.name.endsWith(".json") || file.type === "text/csv" || file.name.endsWith(".csv"))) {
+      swal("Lỗi", "Chỉ hỗ trợ file CSV và JSON!", "error");
+      return false;
+    }
+  
     const reader = new FileReader();
-
+  
     reader.onload = async (event) => {
       const fileData = event.target.result;
       //console.log("File data:", fileData);
-
+  
       if (file.type === "application/json" || file.name.endsWith(".json")) {
         try {
           const jsonData = JSON.parse(fileData);
@@ -92,7 +104,7 @@ function Home() {
             return;
           }
           // Send JSON data to the backend
-          const response = importStudent(jsonData, "json");
+          const response = await importStudent(jsonData, "json");
           //console.log("Response from server:", jsonData);
           setStudents(response.data.data);
           //message.success("Import JSON thành công!");
@@ -111,7 +123,7 @@ function Home() {
               return;
             }
             // Send CSV data to the backend
-            const response = importStudent(result.data, "csv");
+            const response = await importStudent(result.data, "csv");
             setStudents(response.data.data);
             //message.success("Import CSV thành công!");
             swal("Import thành công", "Dữ liệu đã được import", "success");
@@ -120,13 +132,19 @@ function Home() {
             message.error("Lỗi khi đọc file CSV!");
           },
         });
-      } else {
-        swal("Lỗi", "Chỉ hỗ trợ file CSV và JSON!", "error");
-        //message.error("Chỉ hỗ trợ file CSV và JSON!");
       }
     };
-
+  
     reader.readAsText(file);
+    return false;
+  };
+
+  const beforeUpload = (file) => {
+    // Kiểm tra nếu file không phải là JSON hoặc CSV
+    if (!(file.type === "application/json" || file.name.endsWith(".json") || file.type === "text/csv" || file.name.endsWith(".csv"))) {
+      swal("Lỗi", "Chỉ hỗ trợ file CSV và JSON!", "error");
+      return Upload.LIST_IGNORE;
+    }
     return false;
   };
 
@@ -194,7 +212,7 @@ function Home() {
         </Button>
 
         <Upload
-          beforeUpload={() => false}
+          beforeUpload={beforeUpload}
           onChange={(info) => handleImport(info.file)}
         >
           <Button
@@ -245,7 +263,7 @@ function Home() {
       <section className="ftco-section">
         <div className="container">
           <div className="row">
-            {students.map((student, index) => (
+            {students?.map((student, index) => (
               <div className="col-md-4 d-flex" key={index}>
                 <div className="student-card align-self-stretch p-4 mb-4">
                   <h4 className="mb-3">{student.fullName}</h4>
