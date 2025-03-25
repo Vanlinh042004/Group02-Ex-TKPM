@@ -3,9 +3,12 @@ import FacultyController from '../controllers/facultyController';
 
 const router = express.Router();
 
-router.get('/', FacultyController.getAllFaculties); // Thêm route GET
-router.patch('/update/:facultyId', FacultyController.renameFaculty);
-router.post('/add', FacultyController.addFaculty);
-router.get('/list', FacultyController.getAllFaculties);
+// CRUD endpoints
+// Add faculty
+router.post('/', FacultyController.addFaculty);
+// Rename faculty by ID
+router.patch('/:facultyId', FacultyController.renameFaculty);
+// Get all faculties
+router.get('/', FacultyController.getAllFaculties);
 
 export default router;

@@ -3,9 +3,12 @@ import StatusController from '../controllers/statusController';
 
 const router = express.Router();
 
-//router.get('/', StatusController.getAllStatuses); // Thêm route GET
-router.patch('/update/:statusId', StatusController.renameStatus);
-router.post('/add', StatusController.addStatus);
-router.get('/list', StatusController.getAllStatus);
+// CRUD endpoints
+// Add status
+router.post('/', StatusController.addStatus);
+// Rename status by ID
+router.patch('/:statusId', StatusController.renameStatus);
+// Get all statuses
+router.get('/', StatusController.getAllStatuses);
 
 export default router;
