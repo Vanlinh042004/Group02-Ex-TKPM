@@ -1,4 +1,5 @@
 import mongoose, { Document, Schema } from 'mongoose';
+import emailDomainService from '../services/emailDomainService';
 
 export enum Gender {
   MALE = 'Nam',
@@ -154,7 +155,13 @@ const studentSchema = new Schema<IStudent>(
     email: { 
       type: String, 
       required: true, 
-      unique: true 
+      unique: true,
+      validate: {
+        validator: async function(email: string) {
+          return await emailDomainService.isValidEmailDomain(email);
+        },
+        message: 'Email không hợp lệ'
+      } 
     },
     phone: { 
       type: String, 

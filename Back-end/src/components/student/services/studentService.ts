@@ -121,10 +121,12 @@ class StudentService {
       // Kiểm tra sinh viên đã tồn tại
       const existingStudent = await Student.findOne({ studentId });
       if (existingStudent) {
-        throw new Error('Student already exists');
+        throw new Error('StudentId already exists');
       }
 
       // Tìm faculty bằng tên hoặc facultyId
+      const allFaculties = await Faculty.find();
+      console.log('allFaculties',allFaculties);
       const facultyDoc = await Faculty.findOne({
         $or: [{ name: faculty }, { _id: faculty }],
       });
