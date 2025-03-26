@@ -19,10 +19,10 @@ const AddStudentModal = ({
   const [faculties, setFaculties] = useState([]);
   const [programs, setPrograms] = useState([]);
   const [statuses, setStatuses] = useState([]);
-  const [email, setEmail] = useState("");
   const [form] = Form.useForm();
   const allowedeEmail = process.env.REACT_APP_ALLOWED_EMAIL_DOMAIN;
   const allowedPhone = new RegExp(process.env.REACT_APP_ALLOWED_PHONE);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -53,8 +53,9 @@ const AddStudentModal = ({
   }, []);
 
   const checkIfIdExists = (id) => {
-    students.some((student) => student.studentId === id);
+    return students.some((student) => student.studentId === id);
   };
+
   const checkValidEmail = (email) => {
     const domain = "@" + email.split("@")[1];
     return domain === allowedeEmail;
@@ -63,7 +64,8 @@ const AddStudentModal = ({
     return allowedPhone.test(phone);
   };
   const handleAddStudent = async () => {
-    form.validateFields().then((values) => {
+    try {
+      const values = await form.getFieldsValue();
       if (checkIfIdExists(values.studentId)) {
         swal("Mã sinh viên đã tồn tại", "Vui lòng thử lại", "error");
         return;
@@ -94,20 +96,25 @@ const AddStudentModal = ({
           ).toISOString(),
         },
       };
-      addStudent(requestBody)
-        .then((response) => {
-          setStudents([...students, response.data]);
-          setIsModalVisible(false);
+      try {
+        const response = await addStudent(requestBody);
+        if (response.status === 200) {
           swal(
             "Thêm sinh viên thành công",
-            "Sinh viên đã được thêm",
+            "Sinh viên đã được thêm vào hệ thống",
             "success"
           );
-        })
-        .catch(() => {
-          swal("Lỗi khi thêm sinh viên", "Vui lòng thử lại", "error");
-        });
-    });
+          setStudents([...students, response.data]);
+          setIsModalVisible(false);
+          form.resetFields();
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    } catch (error) {
+      //console.log(error);
+      swal("Vui lòng điền đầy đủ thông tin", "Vui lòng thử lại", "error");
+    }
   };
 
   // Lắng nghe loại giấy tờ tùy thân

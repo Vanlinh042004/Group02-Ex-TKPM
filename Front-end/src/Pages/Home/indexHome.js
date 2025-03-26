@@ -10,7 +10,6 @@ import {
 } from "@ant-design/icons";
 import { Button, Upload, message } from "antd";
 import { useState, useEffect } from "react";
-import axios from "axios";
 import Papa from "papaparse";
 import {
   searchStudent,
@@ -82,19 +81,26 @@ function Home() {
       swal("Thành Công", "Xóa File thành Công!", "success");
       return false;
     }
-  
+
     // Kiểm tra nếu file không phải là JSON hoặc CSV
-    if (!(file.type === "application/json" || file.name.endsWith(".json") || file.type === "text/csv" || file.name.endsWith(".csv"))) {
+    if (
+      !(
+        file.type === "application/json" ||
+        file.name.endsWith(".json") ||
+        file.type === "text/csv" ||
+        file.name.endsWith(".csv")
+      )
+    ) {
       swal("Lỗi", "Chỉ hỗ trợ file CSV và JSON!", "error");
       return false;
     }
-  
+
     const reader = new FileReader();
-  
+
     reader.onload = async (event) => {
       const fileData = event.target.result;
       //console.log("File data:", fileData);
-  
+
       if (file.type === "application/json" || file.name.endsWith(".json")) {
         try {
           const jsonData = JSON.parse(fileData);
@@ -134,14 +140,21 @@ function Home() {
         });
       }
     };
-  
+
     reader.readAsText(file);
     return false;
   };
 
   const beforeUpload = (file) => {
     // Kiểm tra nếu file không phải là JSON hoặc CSV
-    if (!(file.type === "application/json" || file.name.endsWith(".json") || file.type === "text/csv" || file.name.endsWith(".csv"))) {
+    if (
+      !(
+        file.type === "application/json" ||
+        file.name.endsWith(".json") ||
+        file.type === "text/csv" ||
+        file.name.endsWith(".csv")
+      )
+    ) {
       swal("Lỗi", "Chỉ hỗ trợ file CSV và JSON!", "error");
       return Upload.LIST_IGNORE;
     }
