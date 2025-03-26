@@ -8,6 +8,7 @@ import {
   getProgram,
   getStatus,
 } from "../../Services/studentService";
+import { getAllowedEmails } from "../../Services/emailService";
 const { Option } = Select;
 
 const AddStudentModal = ({
@@ -19,8 +20,8 @@ const AddStudentModal = ({
   const [faculties, setFaculties] = useState([]);
   const [programs, setPrograms] = useState([]);
   const [statuses, setStatuses] = useState([]);
+  const [allowedEmails, setAllowedEmails] = useState([]);
   const [form] = Form.useForm();
-  const allowedeEmail = process.env.REACT_APP_ALLOWED_EMAIL_DOMAIN;
   const allowedPhone = new RegExp(process.env.REACT_APP_ALLOWED_PHONE);
 
   useEffect(() => {
@@ -47,6 +48,13 @@ const AddStudentModal = ({
       } catch (error) {
         console.log(error);
       }
+      try {
+        const email = await getAllowedEmails();
+        //console.log("Email:", email.data);
+        setAllowedEmails(email.data);
+      } catch (error) {
+        console.log(error);
+      }
     };
 
     fetchData();
@@ -57,8 +65,10 @@ const AddStudentModal = ({
   };
 
   const checkValidEmail = (email) => {
-    const domain = "@" + email.split("@")[1];
-    return domain === allowedeEmail;
+    const domain = email.split("@")[1];
+    return allowedEmails.some((allowedEmail) => {
+      return domain === allowedEmail.domain;
+    });
   };
   const checkValidPhone = (phone) => {
     return allowedPhone.test(phone);
@@ -71,15 +81,11 @@ const AddStudentModal = ({
         return;
       }
       if (!checkValidEmail(values.email)) {
-        swal(
-          "Email không hợp lệ",
-          "Email phải có domain " + allowedeEmail,
-          "error"
-        );
+        swal("Email không hợp lệ !", "Vui lòng thử lại", "error");
         return;
       }
       if (!checkValidPhone(values.phone)) {
-        swal("Số điện thoại không hợp lệ", "Vui lòng thử lại", "error");
+        swal("Số điện thoại không hợp lệ !", "Vui lòng thử lại", "error");
         return;
       }
       const requestBody = {
@@ -174,7 +180,7 @@ const AddStudentModal = ({
                 if (!value) return Promise.resolve();
                 return checkValidEmail(value)
                   ? Promise.resolve()
-                  : Promise.reject("Email phải có domain " + allowedeEmail);
+                  : Promise.reject("Email không hợp lệ");
               },
             },
           ]}
