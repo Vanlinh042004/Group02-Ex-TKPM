@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Modal, Input, Form, Select, message } from "antd";
 import swal from "sweetalert";
 import { getAllowedEmails } from "../../Services/emailService";
+import { getCountries, getCountryConfig } from "../../Services/phoneService";
+
 
 import {
   getFaculty,
@@ -48,6 +50,9 @@ const EditStudentModal = ({
   const [newStatusName, setNewStatusName] = useState("");
   const [newStatusDescription, setNewStatusDescription] = useState("");
   const [check, setCheck] = useState(false);
+  const [countries, setCountries] = useState([]); // State lưu danh sách quốc gia
+  const [phoneRegex, setPhoneRegex] = useState(""); // Regex kiểm tra số điện thoại
+
 
   // State để lưu ID của mục được chọn khi đổi tên
   const [selectedFaculty, setSelectedFaculty] = useState({
@@ -101,6 +106,15 @@ const EditStudentModal = ({
         console.log(error);
       }
 
+        // Gọi API lấy danh sách quốc gia
+      try {
+        const countries = await getCountries();
+        setCountries(countries || []); // Lưu danh sách quốc gia vào state
+        console.log(" danh sách quốc gia:", countries);
+      } catch (error) {
+        console.log("Lỗi khi lấy danh sách quốc gia:", error);
+      }
+
       try {
         const programs = await getProgram();
         //console.log("Programs:", programs);
@@ -134,9 +148,37 @@ const EditStudentModal = ({
       return domain === allowedEmail.domain;
     });
   };
-  const checkValidPhone = (phone) => {
-    return allowedPhone.test(phone);
+  
+  const handleCountryChange = async (country) => {
+    try {
+      const config = await getCountryConfig(country); // Gọi API lấy cấu hình quốc gia
+      const escapedRegex = config.regex
+        .replace(/\+/g, "\\+") // Escape dấu +
+        .replace(/d/g, "\\d"); // Thay thế d bằng \d
+      setPhoneRegex(escapedRegex); // Lưu regex đã được xử lý
+      console.log("regex:", escapedRegex);
+      form.setFieldsValue({ phone: "" }); // Reset trường số điện thoại
+    } catch (error) {
+      console.log("Lỗi khi lấy cấu hình quốc gia:", error);
+    }
   };
+  
+  const checkValidPhone = (phone) => {
+    if (!phoneRegex) {
+      console.log("Regex chưa được thiết lập!");
+      return false; // Nếu regex chưa được thiết lập, trả về false
+    }
+    try {
+      const regex = new RegExp(phoneRegex); // Sử dụng regex đã được xử lý
+      console.log("regex sau:", regex);
+      return regex.test(phone); // Kiểm tra số điện thoại
+    } catch (error) {
+      console.log("Lỗi khi tạo regex:", error);
+      return false; // Nếu regex không hợp lệ, trả về false
+    }
+  };
+ 
+
   const handleUpdateStudent = () => {
     form
       .validateFields()
@@ -339,6 +381,17 @@ const EditStudentModal = ({
     }
   };
 
+  // const handleCountryChange = async (country) => {
+  //   try {
+  //     const config = await getCountryConfig(country); // Gọi API lấy cấu hình quốc gia
+  //     setPhoneRegex(config.regex); // Cập nhật regex kiểm tra số điện thoại
+  //     console.log('regex:', config.regex);
+  //     form.setFieldsValue({ phone: "" }); // Reset trường số điện thoại
+  //   } catch (error) {
+  //     console.log("Lỗi khi lấy cấu hình quốc gia:", error);
+  //   }
+  // };
+
   return (
     <>
       <Modal
@@ -363,9 +416,22 @@ const EditStudentModal = ({
           <Form.Item label="Số điện thoại" name="phone">
             <Input />
           </Form.Item>
-          <Form.Item label="Quốc tịch" name="nationality">
-            <Input />
-          </Form.Item>
+          <Form.Item
+          name={["permanentAddress", "country"]}
+          label="Quốc tịch"
+          
+        >
+          <Select
+            placeholder="Chọn quốc tịch"
+            onChange={handleCountryChange} // Gọi khi chọn quốc gia
+          >
+            {countries.map((country, index) => (
+              <Select.Option key={index} value={country}>
+                {country}
+              </Select.Option>
+            ))}
+          </Select>
+        </Form.Item>
 
           <Form.Item label="Khoa" name="faculty">
             <Select
