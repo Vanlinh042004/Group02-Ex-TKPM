@@ -272,7 +272,8 @@ const AddStudentModal = ({
             <Select
               onChange={async (value) => {
                 const config = await getCountryConfig(value);
-                setPhoneRegex("^(?:\\+84|0)(3|5|7|8|9)[0-9]{8}$");
+                console.log(config.regex);
+                setPhoneRegex(config.regex);
               }}
             >
               {Array.isArray(countries) ? (
