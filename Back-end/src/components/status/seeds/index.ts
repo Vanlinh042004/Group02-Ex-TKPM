@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-import Status from '../components/status/models/Status';
+import Status from '../models/Status';
 dotenv.config();
 
 // Hàm này sẽ thêm dữ liệu mẫu cho bảng trạng thái
@@ -13,7 +13,7 @@ const seedStatuses = async () => {
     // Kiểm tra nếu đã có dữ liệu trong collection
     const statusCount = await Status.countDocuments();
     if (statusCount > 0) {
-      console.log('Statuss already seeded.');
+      console.log('Statuses already seeded.');
       return;
     }
 

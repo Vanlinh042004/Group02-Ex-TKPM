@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-import Faculty from '../components/faculty/models/Faculty';
+import Faculty from '../models/Faculty';
 dotenv.config();
 
 // Hàm này sẽ thêm dữ liệu mẫu cho bảng khoa

@@ -2,10 +2,10 @@ import mongoose from 'mongoose';
 import Student, { 
   IdentityDocumentType, 
   Gender 
-} from '../components/student/models/Student';
-import Faculty from '../components/faculty/models/Faculty';
-import Program from '../components/program/models/program';
-import Status from '../components/status/models/Status';
+} from '../models/Student';
+import Faculty from '../../faculty/models/Faculty';
+import Program from '../../program/models/Program';
+import Status from '../../status/models/Status';
 import dotenv from 'dotenv';
 import { faker } from '@faker-js/faker';
 
@@ -104,7 +104,7 @@ const seedStudents = async () => {
       ) || permanentAddress;
       
       const fullName = faker.person.fullName();
-      const email = `${fullName.toLowerCase().replace(/ /g, '.')}@example.com`;
+      const email = `${fullName.toLowerCase().trim().replace(/[^a-zA-Z0-9\s]/g, '').replace(/\s+/g, '')}@example.com`;
 
       students.push({
         studentId: `SV${String(i + 1).padStart(4, '0')}`,

@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-import Program from '../components/program/models/program';
+import Program from '../models/Program';
 dotenv.config();
 
 // Hàm này sẽ thêm dữ liệu mẫu cho bảng chương trình
