@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import Student, { IdentityDocumentType, Gender } from '../models/Student';
 import Faculty from '../../faculty/models/Faculty';
-import Program from '../../program/models/Program';
+import Program from '../../program/models/program';
 import Status from '../../status/models/Status';
 import dotenv from 'dotenv';
 import { faker } from '@faker-js/faker';

@@ -22,7 +22,7 @@ class StudentController {
         operation: 'ADD_STUDENT',
         details: { studentData: student },
       });
- 
+
       const result = await StudentService.addStudent(student);
 
       logger.info('Student added successfully', {
@@ -100,7 +100,7 @@ class StudentController {
    */
   async updateStudent(req: Request, res: Response): Promise<void> {
     try {
-      const studentId = req.body.studentId;
+      const studentId = req.params.studentId;
       const updateData = req.body as IUpdateStudentDTO;
 
       logger.debug('Updating student', {
@@ -253,26 +253,26 @@ class StudentController {
    */
   async importData(req: Request, res: Response): Promise<void> {
     try {
-      console.log('body',req.body);
+      console.log('body', req.body);
       const { format, data } = req.body;
-      if(!data){
-        throw new Error("Dữ liệu không hợp lệ");
+      if (!data) {
+        throw new Error('Dữ liệu không hợp lệ');
       }
-      if (!Array.isArray(data) ) {
+      if (!Array.isArray(data)) {
         throw new Error(data.message);
       }
 
-      logger.debug("Importing student data", {
-        module: "StudentController",
-        operation: "IMPORT_DATA",
+      logger.debug('Importing student data', {
+        module: 'StudentController',
+        operation: 'IMPORT_DATA',
         details: { format, recordCount: data.length },
       });
 
       const importedData = await StudentService.importData(format, data);
 
-      logger.info("Data imported successfully", {
-        module: "StudentController",
-        operation: "IMPORT_DATA",
+      logger.info('Data imported successfully', {
+        module: 'StudentController',
+        operation: 'IMPORT_DATA',
         details: {
           format,
           recordCount: importedData.length,
@@ -280,15 +280,17 @@ class StudentController {
       });
 
       // Log audit trail for bulk import
-      logger.audit("IMPORT", "student", "BULK", null, {
+      logger.audit('IMPORT', 'student', 'BULK', null, {
         recordCount: importedData.length,
       });
 
-      res.status(200).json({ message: "Dữ liệu nhập thành công!", data: importedData });
+      res
+        .status(200)
+        .json({ message: 'Dữ liệu nhập thành công!', data: importedData });
     } catch (error: any) {
-      logger.error("Failed to import data", {
-        module: "StudentController",
-        operation: "IMPORT_DATA",
+      logger.error('Failed to import data', {
+        module: 'StudentController',
+        operation: 'IMPORT_DATA',
         details: {
           format: req.body?.format,
           error: error.message,
@@ -298,8 +300,7 @@ class StudentController {
 
       res.status(400).json({ message: error.message });
     }
-}
-
+  }
 
   /**
    * Export dữ liệu sinh viên ra file
@@ -340,9 +341,6 @@ class StudentController {
       res.status(400).json({ message: error.message });
     }
   }
-
- 
-
 }
 
 export default new StudentController();
