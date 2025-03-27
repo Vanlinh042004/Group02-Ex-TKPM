@@ -154,7 +154,9 @@ const EditStudentModal = ({
         };
         //console.log("Dữ liệu gửi lên backend:", updatedStudentData);
 
-        updateStudent(student._id, updatedStudentData)
+        updateStudent(student.studentId, updatedStudentData)
+        console.log("Dữ liệu gửi lên backend:", updatedStudentData);
+        axios
           .then(() => {
             setStudents((students) =>
               students.map((s) =>
