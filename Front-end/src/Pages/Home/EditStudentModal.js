@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Input, Form, Select, message, Space } from "antd";
-import axios from "axios";
+import { Modal, Input, Form, Select, message } from "antd";
 import swal from "sweetalert";
+import { getAllowedEmails } from "../../Services/emailService";
+
 import {
   getFaculty,
   getProgram,
@@ -15,7 +16,7 @@ import {
   updateStatus,
 } from "../../Services/studentService";
 const { Option } = Select;
-
+const allowedPhone = new RegExp("^(?:\\+84|0)(3|5|7|8|9)[0-9]{8}$");
 const EditStudentModal = ({
   isModalVisible,
   setIsModalVisible,
@@ -38,9 +39,7 @@ const EditStudentModal = ({
     useState(false);
   const [isEditStatusModalVisible, setIsEditStatusModalVisible] =
     useState(false);
-  const allowedeEmail = process.env.REACT_APP_ALLOWED_EMAIL_DOMAIN;
-  const allowedPhone = new RegExp(process.env.REACT_APP_ALLOWED_PHONE);
-
+  const [allowedEmails, setAllowedEmails] = useState([]);
   // State lưu dữ liệu nhập vào
   const [newFacultyName, setNewFacultyName] = useState("");
   const [newProgramName, setNewProgramName] = useState("");
@@ -115,13 +114,24 @@ const EditStudentModal = ({
       } catch (error) {
         console.log(error);
       }
+      try {
+        const email = await getAllowedEmails();
+        //console.log("Email:", email.data);
+        if (email.data) {
+          setAllowedEmails(email.data);
+        }
+      } catch (error) {
+        console.log(error);
+      }
     };
 
     fetchData();
   }, [check]);
   const checkValidEmail = (email) => {
-    const domain = "@" + email.split("@")[1];
-    return domain === allowedeEmail;
+    const domain = email.split("@")[1];
+    return allowedEmails.some((allowedEmail) => {
+      return domain === allowedEmail.domain;
+    });
   };
   const checkValidPhone = (phone) => {
     return allowedPhone.test(phone);
