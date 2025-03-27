@@ -29,7 +29,10 @@ const seedStatuses = async () => {
         name: 'Đã thôi học',
       },
       {
-        name: 'Tạm dừng học'
+        name: 'Bảo lưu',
+      },
+      {
+        name: 'Đình chỉ',
       },
     ];
 
