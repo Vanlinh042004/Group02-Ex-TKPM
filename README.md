@@ -153,25 +153,73 @@ npm start
 
 **1. Cho phép đổi tên & thêm mới: khoa, tình trạng sinh viên, chương trình**
 
-<img src="/FeatureImg/Feature1/AddFaculty.png" alt="AddFaculty" />
-<img src="/FeatureImg/Feature1/AddProgram.png" alt="AddProgram" />
-<img src="/FeatureImg/Feature1/AddStatus.png" alt="AddStatus" />
-<img src="/FeatureImg/Feature1/RenameFaculty.png" alt="RenameFaculty" />
-<img src="/FeatureImg/Feature1/RenameProgram.png" alt="RenameProgram" />
-<img src="/FeatureImg/Feature1/RenameStatus.png" alt="RenameStatus" />
+<img src="FeatureImg/Ex02/Feature1/AddFaculty.png" alt="AddFaculty" />
+<img src="FeatureImg/Ex02/Feature1/AddProgram.png" alt="AddProgram" />
+<img src="FeatureImg/Ex02/Feature1/AddStatus.png" alt="AddStatus" />
+<img src="FeatureImg/Ex02/Feature1/RenameFaculty.png" alt="RenameFaculty" />
+<img src="FeatureImg/Ex02/Feature1/RenameProgram.png" alt="RenameProgram" />
+<img src="FeatureImg/Ex02/Feature1/RenameStatus.png" alt="RenameStatus" />
 
 **2. Thêm chức năng tìm kiếm: tìm theo khoa, khoa + tên**
 
-<img src="/FeatureImg/Feature2/SearchFaculty.png" alt="Search Faculty" width="500" height="300"/> 
-<img src="/FeatureImg/Feature2/SearchName+Faculty.png" alt="Search Faculty" width="500" height="300"/>
+<img src="FeatureImg/Ex02/Feature2/SearchFaculty.png" alt="Search Faculty" width="500" height="300"/> 
+<img src="FeatureImg/Ex02/Feature2/SearchName+Faculty.png" alt="Search Faculty" width="500" height="300"/>
 
 **3. Hỗ trợ import/export dữ liệu: CSV, JSON, XML, Excel (chọn ít nhất 2)**
 
-<img src="/FeatureImg/Feature3/Feature3.png" alt="Feature3" />
-<img src="/FeatureImg/Feature3/Export.png" alt="Export" width="500" height="300"/>
-<img src="/FeatureImg/Feature3/Export_csv.png" alt="Export_csv" width="500" height="300"/>
-<img src="/FeatureImg/Feature3/Export_Json.png" alt="Export_Json" width="500" height="300"/>
-<img src="/FeatureImg/Feature3/Import.png" alt="Import" width="500" height="300"/>
+<img src="FeatureImg/Ex02/Feature3/Feature3.png" alt="Feature3" />
+<img src="FeatureImg/Ex02/Feature3/Export.png" alt="Export" width="500" height="300"/>
+<img src="FeatureImg/Ex02/Feature3/Export_csv.png" alt="Export_csv" width="500" height="300"/>
+<img src="FeatureImg/Ex02/Feature3/Export_Json.png" alt="Export_Json" width="500" height="300"/>
+<img src="FeatureImg/Ex02/Feature3/Import.png" alt="Import" width="500" height="300"/>
 
 **4.Thêm logging mechanism để troubleshooting production issue & audit purposes**
-<img src="/FeatureImg/Feature4/Feature4.png" alt="Feature4" />
+<img src="FeatureImg/Ex02/Feature4/Feature4.png" alt="Feature4" />
+
+#### Version 3.0
+
+**_Back - end_**
+
+1. Cài đặt các package cần thiêt:
+
+```bash
+npm install
+```
+
+2. Chạy chương trình:
+
+```bash
+npm run dev
+```
+
+**_Front - end_**
+
+1. Cài đặt các package cần thiêt:
+
+```bash
+npm install
+```
+
+2. Chạy chương trình:
+
+```bash
+npm start
+```
+
+## Hình ảnh minh họa
+
+**1. MSSV phải là duy nhất**
+<img src="FeatureImg/Ex03/Rule01/image1.png"  />
+<img src="FeatureImg/Ex03/Rule01/image2.png"  />
+
+**2. Email phải thuộc một tên miền nhất định và có thể cấu hình động (configurable)**
+<img src="FeatureImg/Ex03/Rule02/image1.png"  />
+<img src="FeatureImg/Ex03/Rule02/image2.png"  />
+<img src="FeatureImg/Ex03/Rule02/image3.png"  />
+
+**3. Số điện thoại phải có định dạng hợp lệ theo quốc gia (configurable)**
+<img src="FeatureImg/Ex03/Rule03/image1.png"  />
+<img src="FeatureImg/Ex03/Rule03/image2.png"  />
+<img src="FeatureImg/Ex03/Rule03/image3.png"  />
+
+**4.Tình trạng sinh viên chỉ có thể thay đổi theo một số quy tắc (configurable)**

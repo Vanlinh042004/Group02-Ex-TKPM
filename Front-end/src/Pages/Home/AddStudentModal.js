@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import { Modal, Input, Form, Select } from "antd";
 import swal from "sweetalert";
 import { useWatch } from "antd/es/form/Form";
@@ -9,6 +9,7 @@ import {
   getStatus,
 } from "../../Services/studentService";
 import { getAllowedEmails } from "../../Services/emailService";
+import { getCountries, getCountryConfig } from "../../Services/phoneService";
 const { Option } = Select;
 
 const AddStudentModal = ({
@@ -22,14 +23,16 @@ const AddStudentModal = ({
   const [statuses, setStatuses] = useState([]);
   const [allowedEmails, setAllowedEmails] = useState([]);
   const [form] = Form.useForm();
-  const allowedPhone = new RegExp(process.env.REACT_APP_ALLOWED_PHONE);
-
+  const [countries, setCountries] = useState([]);
+  const [phoneRegex, setPhoneRegex] = useState("");
   useEffect(() => {
     const fetchData = async () => {
       try {
         const faculties = await getFaculty();
         //console.log("Faculties:", faculties);
-        setFaculties(faculties.data || []);
+        if (faculties.data) {
+          setFaculties(faculties.data || []);
+        }
       } catch (error) {
         console.log(error);
       }
@@ -37,21 +40,35 @@ const AddStudentModal = ({
       try {
         const programs = await getProgram();
         //console.log("Programs:", programs);
-        setPrograms(programs.data || []);
+        if (programs.data) {
+          setPrograms(programs.data || []);
+        }
       } catch (error) {
         console.log(error);
       }
       try {
         const statuses = await getStatus();
         //console.log("Statuses:", statuses);
-        setStatuses(statuses.data || []);
+        if (statuses.data) {
+          setStatuses(statuses.data || []);
+        }
       } catch (error) {
         console.log(error);
       }
       try {
         const email = await getAllowedEmails();
         //console.log("Email:", email.data);
-        setAllowedEmails(email.data);
+        if (email.data) {
+          setAllowedEmails(email.data);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+      try {
+        const countries = await getCountries();
+        if (countries) {
+          setCountries(countries || []);
+        }
       } catch (error) {
         console.log(error);
       }
@@ -71,11 +88,13 @@ const AddStudentModal = ({
     });
   };
   const checkValidPhone = (phone) => {
+    const allowedPhone = new RegExp(phoneRegex);
     return allowedPhone.test(phone);
   };
   const handleAddStudent = async () => {
     try {
       const values = await form.getFieldsValue();
+      console.log(checkValidPhone(values.phone));
       if (checkIfIdExists(values.studentId)) {
         swal("Mã sinh viên đã tồn tại", "Vui lòng thử lại", "error");
         return;
@@ -250,7 +269,22 @@ const AddStudentModal = ({
             label="Quốc gia *"
             rules={[{ required: true, message: "Trường này là bắt buộc" }]}
           >
-            <Input />
+            <Select
+              onChange={async (value) => {
+                const config = await getCountryConfig(value);
+                setPhoneRegex("^(?:\\+84|0)(3|5|7|8|9)[0-9]{8}$");
+              }}
+            >
+              {Array.isArray(countries) ? (
+                countries.map((country, index) => (
+                  <Option key={index} value={country}>
+                    {country}
+                  </Option>
+                ))
+              ) : (
+                <Option disabled>Không có dữ liệu</Option>
+              )}
+            </Select>
           </Form.Item>
         </Form.Item>
 
