@@ -1,6 +1,6 @@
 import mongoose, { Document, Schema } from "mongoose"
 
-export interface IEmailDomain {
+export interface IEmailDomain extends Document {
     domain: string
 }
 
