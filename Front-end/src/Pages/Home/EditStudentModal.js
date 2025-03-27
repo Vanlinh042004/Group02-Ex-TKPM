@@ -15,6 +15,7 @@ import {
   updateProgram,
   updateStatus,
 } from "../../Services/studentService";
+import axios from "axios";
 const { Option } = Select;
 const allowedPhone = new RegExp("^(?:\\+84|0)(3|5|7|8|9)[0-9]{8}$");
 const EditStudentModal = ({
@@ -141,7 +142,6 @@ const EditStudentModal = ({
       .validateFields()
       .then((values) => {
         if (!checkValidEmail(values.email)) {
-          //console.log(values.email);
           swal("Lỗi!", "Email không hợp lệ!", "error");
           return;
         }
@@ -154,19 +154,12 @@ const EditStudentModal = ({
           dateOfBirth: new Date(values.dateOfBirth).toISOString(),
           identityDocument: {
             ...values.identityDocument,
-            issueDate: new Date(
-              values.identityDocument.issueDate
-            ).toISOString(),
-            expiryDate: new Date(
-              values.identityDocument.expiryDate
-            ).toISOString(),
+            issueDate: new Date(values.identityDocument.issueDate).toISOString(),
+            expiryDate: new Date(values.identityDocument.expiryDate).toISOString(),
           },
         };
-        //console.log("Dữ liệu gửi lên backend:", updatedStudentData);
-
+  
         updateStudent(student.studentId, updatedStudentData)
-        console.log("Dữ liệu gửi lên backend:", updatedStudentData);
-        axios
           .then(() => {
             setStudents((students) =>
               students.map((s) =>
@@ -179,9 +172,15 @@ const EditStudentModal = ({
               "Cập nhật thông tin sinh viên thành công!",
               "success"
             );
-            //message.success("Cập nhật thông tin sinh viên thành công!");
           })
-          .catch(() => message.error("Cập nhật thông tin sinh viên thất bại!"));
+          .catch((error) => {
+            if (error.response && error.response.data) {
+              const backendMessage = error.response.data.message || "Cập nhật thông tin sinh viên thất bại!";
+              swal("Lỗi!", backendMessage, "error");
+            } else {
+              swal("Lỗi!", "Cập nhật thông tin sinh viên thất bại!", "error");
+            }
+          });
       })
       .catch((error) => {
         console.log(error);
