@@ -160,9 +160,11 @@ class StudentService {
         throw new Error("Status not found");
       }
 
+      console.log("phoneNumberConfig", phoneNumberConfig);
       // Tìm phoneNumberConfig bằng tên hoặc ID
       const phoneNumberConfigDoc = await PhoneNumberConfig.findOne({
-        $or: [{ name: phoneNumberConfig }, { _id: phoneNumberConfig }],
+       
+       country: phoneNumberConfig
       });
 
       if (!phoneNumberConfigDoc) {
@@ -185,6 +187,7 @@ class StudentService {
         identityDocument,
         email,
         phone,
+        phoneNumberConfig: phoneNumberConfigDoc._id,
         status: statusDoc._id,
       });
 

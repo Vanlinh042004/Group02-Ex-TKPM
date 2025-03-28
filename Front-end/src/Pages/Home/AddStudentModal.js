@@ -25,6 +25,8 @@ const AddStudentModal = ({
   const [form] = Form.useForm();
   const [countries, setCountries] = useState([]);
   const [phoneRegex, setPhoneRegex] = useState("");
+  const [phoneNumberConfig , setPphoneNumberConfig ] = useState("");
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -108,12 +110,14 @@ const AddStudentModal = ({
         swal("Số điện thoại không hợp lệ !", "Vui lòng thử lại", "error");
         return;
       }
+      console.log('values',phoneNumberConfig);
       const requestBody = {
         ...values,
         faculty: values.faculty,
         program: values.program,
         status: values.status,
         dateOfBirth: new Date(values.dateOfBirth).toISOString(),
+        phoneNumberConfig: phoneNumberConfig,
         identityDocument: {
           ...values.identityDocument,
           issueDate: new Date(values.identityDocument.issueDate).toISOString(),
@@ -122,9 +126,12 @@ const AddStudentModal = ({
           ).toISOString(),
         },
       };
+     // console.log('body',requestBody);
+
       try {
         const response = await addStudent(requestBody);
-        if (response.status === 200) {
+        console.log('response',response);
+        if (response.message==="Student added successfully") {
           swal(
             "Thêm sinh viên thành công",
             "Sinh viên đã được thêm vào hệ thống",
@@ -142,6 +149,8 @@ const AddStudentModal = ({
       swal("Vui lòng điền đầy đủ thông tin", "Vui lòng thử lại", "error");
     }
   };
+
+  
 
   // Lắng nghe loại giấy tờ tùy thân
   const documentType = useWatch(["identityDocument", "type"], form);
@@ -208,54 +217,72 @@ const AddStudentModal = ({
         </Form.Item>
 
         <Form.Item
-          label="Số điện thoại *"
-          name="phone"
-          rules={[
-            { required: true, message: "Trường này là bắt buộc" },
-            {
-              validator: (_, value) => {
-                if (!value) return Promise.resolve();
-                return checkValidPhone(value)
-                  ? Promise.resolve()
-                  : Promise.reject("Số điện thoại không hợp lệ");
-              },
-            },
-          ]}
-        >
-          <div className="d-flex align-items-center">
-            <Select
-              placeholder="Chọn mã quốc gia"
-              className="me-2"
-              onChange={async (value) => {
-                const config = await getCountryConfig(value);
-                const escapedRegex = config.regex
-                  .replace(/\+/g, "\\+")
-                  .replace(/d/g, "\\d");
-                //console.log(config.regex);
-                setPhoneRegex(escapedRegex);
-              }}
-            >
-              {Array.isArray(countries) ? (
-                countries.map((country, index) => (
-                  <Option key={index} value={country.country}>
-                    {country.country}
-                  </Option>
-                ))
-              ) : (
-                <Option disabled>Không có dữ liệu</Option>
-              )}
-            </Select>
-            <Input placeholder="Nhập số điện thoại " />
-          </div>
-        </Form.Item>
+  label="Số điện thoại *"
+  name="phone"
+  rules={[
+    { required: true, message: "Trường này là bắt buộc" },
+    {
+      validator: (_, value) => {
+        if (!value) return Promise.resolve();
+        return checkValidPhone(value)
+          ? Promise.resolve()
+          : Promise.reject("Số điện thoại không hợp lệ");
+      },
+    },
+  ]}
+>
+  <div className="d-flex align-items-center">
+    <Select
+      placeholder="Chọn mã quốc gia"
+      className="me-2"
+      onChange={async (value) => {
+        const config = await getCountryConfig(value);
+        const escapedRegex = config.regex
+          .replace(/\+/g, "\\+")
+          .replace(/d/g, "\\d");
+       // console.log(config.regex);
+       // console.log("country", config.country);
 
+        setPhoneRegex(escapedRegex);
+        setPphoneNumberConfig(config.country); // Lưu country (ví dụ: "Việt Nam")
+        form.setFieldsValue({ phoneNumberConfig: config.country }); // Lưu country vào form
+      }}
+    >
+      {Array.isArray(countries) ? (
+        countries.map((country, index) => (
+          <Option key={index} value={country.country}>
+            {country.country}
+          </Option>
+        ))
+      ) : (
+        <Option disabled>Không có dữ liệu</Option>
+      )}
+    </Select>
+    <Input placeholder="Nhập số điện thoại " />
+  </div>
+</Form.Item>
         {/* Quốc tịch */}
         <Form.Item
           name={["permanentAddress", "country"]}
           label="Quốc tịch"
-          rules={[{ required: true, message: "Vui lòng chọn quốc tịch!" }]}
+          rules={[{  message: "Vui lòng chọn quốc tịch!" }]}
         >
-          <Input placeholder="Nhập quốc tịch" />
+        <Select
+          placeholder="Chọn quốc tịch"
+          onChange={(value) => {
+            form.setFieldsValue({ permanentAddress: { country: value } }); // Cập nhật giá trị quốc tịch trong form
+          }}
+        >
+          {Array.isArray(countries) ? (
+            countries.map((country, index) => (
+              <Select.Option key={index} value={country.country}>
+                {country.country}
+              </Select.Option>
+            ))
+          ) : (
+            <Select.Option disabled>Không có dữ liệu</Select.Option>
+          )}
+        </Select>
         </Form.Item>
 
         {/* Địa chỉ thường trú */}
