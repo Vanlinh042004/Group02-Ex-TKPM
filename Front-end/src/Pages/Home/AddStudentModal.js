@@ -66,6 +66,7 @@ const AddStudentModal = ({
       }
       try {
         const countries = await getCountries();
+        //console.log("Countries:", countries);
         if (countries) {
           setCountries(countries || []);
         }
@@ -231,13 +232,13 @@ const AddStudentModal = ({
                   .replace(/\+/g, "\\+")
                   .replace(/d/g, "\\d");
                 //console.log(config.regex);
-                setPhoneRegex(config.regex);
+                setPhoneRegex(escapedRegex);
               }}
             >
               {Array.isArray(countries) ? (
                 countries.map((country, index) => (
-                  <Option key={index} value={country}>
-                    {country}
+                  <Option key={index} value={country.country}>
+                    {country.country}
                   </Option>
                 ))
               ) : (
@@ -254,13 +255,7 @@ const AddStudentModal = ({
           label="Quốc tịch"
           rules={[{ required: true, message: "Vui lòng chọn quốc tịch!" }]}
         >
-          <Select placeholder="Chọn quốc tịch">
-            {countries.map((country, index) => (
-              <Select.Option key={index} value={country}>
-                {country}
-              </Select.Option>
-            ))}
-          </Select>
+          <Input placeholder="Nhập quốc tịch" />
         </Form.Item>
 
         {/* Địa chỉ thường trú */}
