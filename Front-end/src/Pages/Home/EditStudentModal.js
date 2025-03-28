@@ -4,7 +4,6 @@ import swal from "sweetalert";
 import { getAllowedEmails } from "../../Services/emailService";
 import { getCountries, getCountryConfig } from "../../Services/phoneService";
 
-
 import {
   getFaculty,
   getProgram,
@@ -17,9 +16,7 @@ import {
   updateProgram,
   updateStatus,
 } from "../../Services/studentService";
-import axios from "axios";
 const { Option } = Select;
-const allowedPhone = new RegExp("^(?:\\+84|0)(3|5|7|8|9)[0-9]{8}$");
 const EditStudentModal = ({
   isModalVisible,
   setIsModalVisible,
@@ -50,11 +47,9 @@ const EditStudentModal = ({
   const [newStatusName, setNewStatusName] = useState("");
   const [newStatusDescription, setNewStatusDescription] = useState("");
   const [check, setCheck] = useState(false);
-  const [countries, setCountries] = useState([]); // State lưu danh sách quốc gia
-  const [phoneRegex, setPhoneRegex] = useState(""); // Regex kiểm tra số điện thoại
+  const [countries, setCountries] = useState([]);
+  const [phoneRegex, setPhoneRegex] = useState("");
 
-
-  // State để lưu ID của mục được chọn khi đổi tên
   const [selectedFaculty, setSelectedFaculty] = useState({
     _id: null,
     facultyId: null,
@@ -106,11 +101,10 @@ const EditStudentModal = ({
         console.log(error);
       }
 
-        // Gọi API lấy danh sách quốc gia
       try {
         const countries = await getCountries();
-        setCountries(countries || []); // Lưu danh sách quốc gia vào state
-        console.log(" danh sách quốc gia:", countries);
+        setCountries(countries || []);
+        // console.log(" danh sách quốc gia:", countries);
       } catch (error) {
         console.log("Lỗi khi lấy danh sách quốc gia:", error);
       }
@@ -148,36 +142,32 @@ const EditStudentModal = ({
       return domain === allowedEmail.domain;
     });
   };
-  
+
   const handleCountryChange = async (country) => {
     try {
-      const config = await getCountryConfig(country); // Gọi API lấy cấu hình quốc gia
-      const escapedRegex = config.regex
-        .replace(/\+/g, "\\+") // Escape dấu +
-        .replace(/d/g, "\\d"); // Thay thế d bằng \d
-      setPhoneRegex(escapedRegex); // Lưu regex đã được xử lý
-      console.log("regex:", escapedRegex);
+      const config = await getCountryConfig(country);
+      setPhoneRegex(config.regex); // Lưu regex đã được xử lý
+      //console.log("regex:", escapedRegex);
       form.setFieldsValue({ phone: "" }); // Reset trường số điện thoại
     } catch (error) {
       console.log("Lỗi khi lấy cấu hình quốc gia:", error);
     }
   };
-  
+
   const checkValidPhone = (phone) => {
-    if (!phoneRegex) {
-      console.log("Regex chưa được thiết lập!");
-      return false; // Nếu regex chưa được thiết lập, trả về false
+    if (phoneRegex === "") {
+      //console.log("Regex chưa được thiết lập!");
+      return true;
     }
     try {
-      const regex = new RegExp(phoneRegex); // Sử dụng regex đã được xử lý
-      console.log("regex sau:", regex);
-      return regex.test(phone); // Kiểm tra số điện thoại
+      const regex = new RegExp(phoneRegex);
+      // console.log("regex sau:", regex);
+      return regex.test(phone);
     } catch (error) {
-      console.log("Lỗi khi tạo regex:", error);
-      return false; // Nếu regex không hợp lệ, trả về false
+      // console.log("Lỗi khi tạo regex:", error);
+      return false;
     }
   };
- 
 
   const handleUpdateStudent = () => {
     form
@@ -196,11 +186,15 @@ const EditStudentModal = ({
           dateOfBirth: new Date(values.dateOfBirth).toISOString(),
           identityDocument: {
             ...values.identityDocument,
-            issueDate: new Date(values.identityDocument.issueDate).toISOString(),
-            expiryDate: new Date(values.identityDocument.expiryDate).toISOString(),
+            issueDate: new Date(
+              values.identityDocument.issueDate
+            ).toISOString(),
+            expiryDate: new Date(
+              values.identityDocument.expiryDate
+            ).toISOString(),
           },
         };
-  
+
         updateStudent(student.studentId, updatedStudentData)
           .then(() => {
             setStudents((students) =>
@@ -217,7 +211,9 @@ const EditStudentModal = ({
           })
           .catch((error) => {
             if (error.response && error.response.data) {
-              const backendMessage = error.response.data.message || "Cập nhật thông tin sinh viên thất bại!";
+              const backendMessage =
+                error.response.data.message ||
+                "Cập nhật thông tin sinh viên thất bại!";
               swal("Lỗi!", backendMessage, "error");
             } else {
               swal("Lỗi!", "Cập nhật thông tin sinh viên thất bại!", "error");
@@ -264,7 +260,6 @@ const EditStudentModal = ({
     }
   };
 
-  // Xử lý thêm mới Trạng thái
   const handleAddStatus = async () => {
     const requestBody = {
       name: newStatusName,
@@ -285,7 +280,6 @@ const EditStudentModal = ({
     }
   };
 
-  // Update the handleUpdateFaculty function to use the new state structure
   const handleUpdateFaculty = async () => {
     if (!selectedFaculty._id) {
       //return message.error("Vui lòng chọn một Khoa!");
@@ -381,17 +375,6 @@ const EditStudentModal = ({
     }
   };
 
-  // const handleCountryChange = async (country) => {
-  //   try {
-  //     const config = await getCountryConfig(country); // Gọi API lấy cấu hình quốc gia
-  //     setPhoneRegex(config.regex); // Cập nhật regex kiểm tra số điện thoại
-  //     console.log('regex:', config.regex);
-  //     form.setFieldsValue({ phone: "" }); // Reset trường số điện thoại
-  //   } catch (error) {
-  //     console.log("Lỗi khi lấy cấu hình quốc gia:", error);
-  //   }
-  // };
-
   return (
     <>
       <Modal
@@ -416,22 +399,18 @@ const EditStudentModal = ({
           <Form.Item label="Số điện thoại" name="phone">
             <Input />
           </Form.Item>
-          <Form.Item
-          name={["permanentAddress", "country"]}
-          label="Quốc tịch"
-          
-        >
-          <Select
-            placeholder="Chọn quốc tịch"
-            onChange={handleCountryChange} // Gọi khi chọn quốc gia
-          >
-            {countries.map((country, index) => (
-              <Select.Option key={index} value={country}>
-                {country}
-              </Select.Option>
-            ))}
-          </Select>
-        </Form.Item>
+          <Form.Item name={["permanentAddress", "country"]} label="Quốc tịch">
+            <Select
+              placeholder="Chọn quốc tịch"
+              onChange={handleCountryChange} // Gọi khi chọn quốc gia
+            >
+              {countries.map((country, index) => (
+                <Select.Option key={index} value={country}>
+                  {country}
+                </Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
 
           <Form.Item label="Khoa" name="faculty">
             <Select

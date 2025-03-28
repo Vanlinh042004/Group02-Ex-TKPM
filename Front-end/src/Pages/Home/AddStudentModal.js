@@ -185,7 +185,6 @@ const AddStudentModal = ({
           <Select>
             <Option value="Nam">Nam</Option>
             <Option value="Nữ">Nữ</Option>
-         
           </Select>
         </Form.Item>
 
@@ -222,7 +221,31 @@ const AddStudentModal = ({
             },
           ]}
         >
-          <Input />
+          <div className="d-flex align-items-center">
+            <Select
+              placeholder="Chọn mã quốc gia"
+              className="me-2"
+              onChange={async (value) => {
+                const config = await getCountryConfig(value);
+                const escapedRegex = config.regex
+                  .replace(/\+/g, "\\+")
+                  .replace(/d/g, "\\d");
+                //console.log(config.regex);
+                setPhoneRegex(config.regex);
+              }}
+            >
+              {Array.isArray(countries) ? (
+                countries.map((country, index) => (
+                  <Option key={index} value={country}>
+                    {country}
+                  </Option>
+                ))
+              ) : (
+                <Option disabled>Không có dữ liệu</Option>
+              )}
+            </Select>
+            <Input placeholder="Nhập số điện thoại " />
+          </div>
         </Form.Item>
 
         {/* Quốc tịch */}
@@ -231,10 +254,7 @@ const AddStudentModal = ({
           label="Quốc tịch"
           rules={[{ required: true, message: "Vui lòng chọn quốc tịch!" }]}
         >
-          <Select
-            placeholder="Chọn quốc tịch"
-          
-          >
+          <Select placeholder="Chọn quốc tịch">
             {countries.map((country, index) => (
               <Select.Option key={index} value={country}>
                 {country}
@@ -278,23 +298,7 @@ const AddStudentModal = ({
             label="Quốc gia *"
             rules={[{ required: true, message: "Trường này là bắt buộc" }]}
           >
-            <Select
-              onChange={async (value) => {
-                const config = await getCountryConfig(value);
-                console.log(config.regex);
-                setPhoneRegex(config.regex);
-              }}
-            >
-              {Array.isArray(countries) ? (
-                countries.map((country, index) => (
-                  <Option key={index} value={country}>
-                    {country}
-                  </Option>
-                ))
-              ) : (
-                <Option disabled>Không có dữ liệu</Option>
-              )}
-            </Select>
+            <Input />
           </Form.Item>
         </Form.Item>
 
