@@ -3,6 +3,7 @@ import Student, { IdentityDocumentType, Gender } from '../models/Student';
 import Faculty from '../../faculty/models/Faculty';
 import Program from '../../program/models/program';
 import Status from '../../status/models/Status';
+import PhoneNumberConfig from '../../phone-number/models/PhoneNumberConfig';
 import dotenv from 'dotenv';
 import { faker } from '@faker-js/faker';
 
@@ -81,6 +82,12 @@ const seedStudents = async () => {
       throw new Error('No statuses found. Please initialize statuses first.');
     }
 
+     // Chọn cấu hình số điện thoại (ưu tiên Việt Nam)
+     const phoneNumberConfig = faker.helpers.arrayElement([
+      ...(await PhoneNumberConfig.find({ country: 'Việt Nam' })),
+      ...(await PhoneNumberConfig.find({}))
+    ]);
+
     // Xóa dữ liệu cũ
     await Student.deleteMany({});
     console.log('🗑️ Deleted old students data');
@@ -135,6 +142,7 @@ const seedStudents = async () => {
 
         email,
         phone: `0${faker.string.numeric(9)}`,
+        phoneNumberConfig: phoneNumberConfig._id,
         status: status._id,
       });
     }

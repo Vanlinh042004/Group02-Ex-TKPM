@@ -2,6 +2,7 @@ import Student, { IStudent } from '../models/Student';
 import Faculty from '../../faculty/models/Faculty';
 import Program from '../../program/models/program';
 import Status from '../../status/models/Status';
+import PhoneNumberConfig from '../../phone-number/models/PhoneNumberConfig';
 import { importCSV, exportCSV } from '../../../utils/csvHandler';
 import { importJSON, exportJSON } from '../../../utils/jsonHandler';
 import mongoose from 'mongoose';
@@ -73,6 +74,7 @@ export interface ICreateStudentDTO {
 
   email: string;
   phone: string;
+  phoneNumberConfig: string; // PhoneNumberConfig name or ID
   status: string;
 }
 
@@ -102,6 +104,7 @@ class StudentService {
         identityDocument,
         email,
         phone,
+        phoneNumberConfig,
         status,
       } = student;
 
@@ -155,6 +158,15 @@ class StudentService {
 
       if (!statusDoc) {
         throw new Error('Status not found');
+      }
+
+      // Tìm phoneNumberConfig bằng tên hoặc ID
+      const phoneNumberConfigDoc = await PhoneNumberConfig.findOne({
+        $or: [{ name: phoneNumberConfig }, { _id: phoneNumberConfig }],
+      });
+
+      if (!phoneNumberConfigDoc) {
+        throw new Error('PhoneNumberConfig not found');
       }
 
       // Tạo sinh viên mới
@@ -213,6 +225,21 @@ class StudentService {
     try {
       if (!studentId || !updateData) {
         throw new Error('Missing required fields');
+      }
+      if (updateData.phoneNumberConfig) {
+        const phoneNumberConfigDoc = await PhoneNumberConfig.findOne({
+          $or: [
+            { _id: updateData.phoneNumberConfig },
+            { country: updateData.phoneNumberConfig }
+          ]
+        });
+
+        if (!phoneNumberConfigDoc) {
+          throw new Error('Phone number configuration not found');
+        }
+
+        // Thay thế bằng ID của phoneNumberConfig
+        updateData.phoneNumberConfig = phoneNumberConfigDoc._id.toString();
       }
 
       // Kiểm tra trạng thái nếu cần cập nhật
@@ -336,7 +363,8 @@ class StudentService {
       })
         .populate('faculty')
         .populate('program')
-        .populate('status');
+        .populate('status')
+        .populate('phoneNumberConfig');
 
       return result;
     } catch (error) {
@@ -354,7 +382,8 @@ class StudentService {
       const result = await Student.find({})
         .populate('faculty')
         .populate('program')
-        .populate('status');
+        .populate('status')
+        .populate('phoneNumberConfig');
       return result;
     } catch (error) {
       console.log('Error retrieving all students: ', error);
@@ -371,7 +400,9 @@ class StudentService {
     try {
       const student = await Student.findOne({ studentId })
         .populate('faculty')
-        .populate('program');
+        .populate('program')
+        .populate('status')
+        .populate('phoneNumberConfig');
       return student;
     } catch (error) {
       console.log('Error retrieving student: ', error);

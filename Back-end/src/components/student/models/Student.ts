@@ -68,6 +68,7 @@ export interface IStudent extends Document {
   
   email: string;
   phone: string;
+  phoneNumberConfig: mongoose.Types.ObjectId; // Reference to PhoneNumberConfig
   status: mongoose.Types.ObjectId; // Reference to student Status
   createdAt: Date;
   updatedAt: Date;
@@ -166,6 +167,11 @@ const studentSchema = new Schema<IStudent>(
     phone: { 
       type: String, 
       required: true 
+    },
+    phoneNumberConfig: {
+      type: Schema.Types.ObjectId,
+      ref: 'PhoneNumberConfig',
+      required: true
     },
     status: {
       type: Schema.Types.ObjectId,
