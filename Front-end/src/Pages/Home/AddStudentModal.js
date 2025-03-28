@@ -185,7 +185,7 @@ const AddStudentModal = ({
           <Select>
             <Option value="Nam">Nam</Option>
             <Option value="Nữ">Nữ</Option>
-            <Option value="Khác">Khác</Option>
+         
           </Select>
         </Form.Item>
 
@@ -227,11 +227,20 @@ const AddStudentModal = ({
 
         {/* Quốc tịch */}
         <Form.Item
-          label="Quốc tịch *"
-          name="nationality"
-          rules={[{ required: true, message: "Trường này là bắt buộc" }]}
+          name={["permanentAddress", "country"]}
+          label="Quốc tịch"
+          rules={[{ required: true, message: "Vui lòng chọn quốc tịch!" }]}
         >
-          <Input placeholder="Nhập quốc tịch" />
+          <Select
+            placeholder="Chọn quốc tịch"
+          
+          >
+            {countries.map((country, index) => (
+              <Select.Option key={index} value={country}>
+                {country}
+              </Select.Option>
+            ))}
+          </Select>
         </Form.Item>
 
         {/* Địa chỉ thường trú */}
