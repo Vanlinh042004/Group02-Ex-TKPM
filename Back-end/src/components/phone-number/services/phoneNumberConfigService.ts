@@ -1,14 +1,14 @@
 import PhoneNumberConfig, { IPhoneNumberConfig } from '../models/PhoneNumberConfig';
 
 // DTO interfaces kế thừa từ model interface
-export interface ICreatePhoneNumberConfigDTO 
- extends Pick<IPhoneNumberConfig, 'country' | 'countryCode' | 'regex'> {}
+export interface IPhoneNumberConfigDTO {
+  country: string;
+  countryCode: string;
+  regex: string;
+}
 
 export interface IUpdatePhoneNumberConfigDTO 
  extends Partial<Pick<IPhoneNumberConfig, 'countryCode' | 'regex'>> {}
-
-export interface IPhoneNumberConfigResponseDTO 
- extends Pick<IPhoneNumberConfig, 'countryCode' | 'regex'> {}
 
 class PhoneNumberConfigService {
  /**
@@ -31,7 +31,7 @@ class PhoneNumberConfigService {
   * @returns Promise<IPhoneNumberConfigResponseDTO | null> 
   * Thông tin mã quốc gia và biểu thức regex
   */
- async getPhoneNumberConfig(country: string): Promise<IPhoneNumberConfigResponseDTO | null> {
+ async getPhoneNumberConfig(country: string): Promise<IPhoneNumberConfig> {
    try {
      if (!country) {
        throw new Error('Country is required');
@@ -45,10 +45,7 @@ class PhoneNumberConfigService {
        throw new Error(`No phone number configuration found for ${country}`);
      }
 
-     return {
-       countryCode: phoneConfig.countryCode,
-       regex: phoneConfig.regex
-     };
+      return phoneConfig;
    } catch (error) {
      console.error(`Error getting phone number config for ${country}:`, error);
      throw error;
@@ -61,7 +58,7 @@ class PhoneNumberConfigService {
   * @returns Promise<IPhoneNumberConfigResponseDTO> Cấu hình số điện thoại đã được tạo
   */
  async addPhoneNumberConfig(
-   phoneNumberConfig: ICreatePhoneNumberConfigDTO
+   phoneNumberConfig: IPhoneNumberConfigDTO
  ): Promise<IPhoneNumberConfig> {
    try {
      // Kiểm tra đầy đủ thông tin

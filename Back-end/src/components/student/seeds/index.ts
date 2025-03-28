@@ -87,7 +87,7 @@ const seedStudents = async () => {
 
     // Tạo sinh viên
     const students = [];
-    const totalStudents = 100;
+    const totalStudents = 20;
 
     for (let i = 0; i < totalStudents; i++) {
       // Chọn ngẫu nhiên một khoa
