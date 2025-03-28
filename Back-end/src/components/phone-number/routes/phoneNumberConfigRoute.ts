@@ -5,9 +5,9 @@ const router = express.Router();
 
 // CRUD endpoints
 // Get all countries
-router.get('/countries', PhoneNumberConfigController.getAllCountries);
+router.get('/', PhoneNumberConfigController.getAllPhoneNumberConfigs);
 // Get phone number config by country
-router.get('/configs/:country', PhoneNumberConfigController.getPhoneNumberConfig);
+router.get('/:country', PhoneNumberConfigController.getPhoneNumberConfig);
 // Add new phone number config
 router.post('/', PhoneNumberConfigController.addPhoneNumberConfig);
 // Update phone number config by country

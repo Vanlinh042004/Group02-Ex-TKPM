@@ -13,17 +13,16 @@ export interface IUpdatePhoneNumberConfigDTO
 class PhoneNumberConfigService {
  /**
   * Lấy danh sách các quốc gia có trong cấu hình
-  * @returns Promise<string[]> Danh sách tên quốc gia
+  * @returns Promise<IPhoneNumberConfig[]> Danh sách configs các quốc gia
   */
- async getAllCountries(): Promise<string[]> {
+ async getAllPhoneNumberConfigs(): Promise<IPhoneNumberConfig[]> {
    try {
-     const phoneConfigs = await PhoneNumberConfig.find({});
-     return phoneConfigs.map(config => config.country);
-   } catch (error) {
-     console.error('Error getting all countries:', error);
-     throw error;
-   }
- }
+      return await PhoneNumberConfig.find({});
+    } catch (error) {
+      console.error('Error getting all phone number configs:', error);  
+      throw error;
+    }
+  }
 
  /**
   * Lấy thông tin cấu hình số điện thoại theo quốc gia

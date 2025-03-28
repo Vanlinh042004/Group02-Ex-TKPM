@@ -2,9 +2,9 @@ import { Request, Response } from "express";
 import phoneNumberService from "../services/phoneNumberConfigService";
 
 class PhoneNumberConfigController {
-    async getAllCountries(req: Request, res: Response) {
+    async getAllPhoneNumberConfigs(req: Request, res: Response) {
         try {
-            const countries = await phoneNumberService.getAllCountries();
+            const countries = await phoneNumberService.getAllPhoneNumberConfigs();
             res.status(200).json(countries);
         } catch (error) {
             res.status(500).json({ message: error.message });
