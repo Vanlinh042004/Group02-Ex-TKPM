@@ -223,3 +223,6 @@ npm start
 <img src="FeatureImg/Ex03/Rule03/image3.png"  />
 
 **4.Tình trạng sinh viên chỉ có thể thay đổi theo một số quy tắc (configurable)**
+<img src="FeatureImg/Ex03/Rule04/image1.png"  />
+<img src="FeatureImg/Ex03/Rule04/image2.png"  />
+<img src="FeatureImg/Ex03/Rule04/image3.png"  />

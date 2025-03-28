@@ -1,14 +1,14 @@
-import Student, { IStudent } from '../models/Student';
-import Faculty from '../../faculty/models/Faculty';
-import Program from '../../program/models/program';
-import Status from '../../status/models/Status';
-import { importCSV, exportCSV } from '../../../utils/csvHandler';
-import { importJSON, exportJSON } from '../../../utils/jsonHandler';
-import mongoose from 'mongoose';
+import Student, { IStudent } from "../models/Student";
+import Faculty from "../../faculty/models/Faculty";
+import Program from "../../program/models/program";
+import Status from "../../status/models/Status";
+import { importCSV, exportCSV } from "../../../utils/csvHandler";
+import { importJSON, exportJSON } from "../../../utils/jsonHandler";
+import mongoose from "mongoose";
 import {
   validStatuses,
   statusTransitionRules,
-} from '../../status/config/statusRules';
+} from "../../status/config/statusRules";
 
 // Interface cho địa chỉ DTO
 export interface IAddressDTO {
@@ -29,16 +29,16 @@ export interface IIdentityBaseDTO {
 }
 
 export interface ICMND_DTO extends IIdentityBaseDTO {
-  type: 'CMND';
+  type: "CMND";
 }
 
 export interface ICCCD_DTO extends IIdentityBaseDTO {
-  type: 'CCCD';
+  type: "CCCD";
   hasChip: boolean;
 }
 
 export interface IPassport_DTO extends IIdentityBaseDTO {
-  type: 'Hộ chiếu';
+  type: "Hộ chiếu";
   issuingCountry: string;
   notes?: string;
 }
@@ -106,39 +106,39 @@ class StudentService {
       } = student;
 
       // Kiểm tra các trường bắt buộc
-      if (!studentId) throw new Error('Missing required field: studentId');
-      if (!fullName) throw new Error('Missing required field: fullName');
-      if (!dateOfBirth) throw new Error('Missing required field: dateOfBirth');
-      if (!gender) throw new Error('Missing required field: gender');
-      if (!faculty) throw new Error('Missing required field: faculty');
-      if (!course) throw new Error('Missing required field: course');
-      if (!program) throw new Error('Missing required field: program');
+      if (!studentId) throw new Error("Missing required field: studentId");
+      if (!fullName) throw new Error("Missing required field: fullName");
+      if (!dateOfBirth) throw new Error("Missing required field: dateOfBirth");
+      if (!gender) throw new Error("Missing required field: gender");
+      if (!faculty) throw new Error("Missing required field: faculty");
+      if (!course) throw new Error("Missing required field: course");
+      if (!program) throw new Error("Missing required field: program");
       if (!mailingAddress)
-        throw new Error('Missing required field: mailingAddress');
+        throw new Error("Missing required field: mailingAddress");
       //  if (!mailingAddress.country) throw new Error('Missing required field: mailingAddress.country');
       if (!identityDocument)
-        throw new Error('Missing required field: identityDocument');
+        throw new Error("Missing required field: identityDocument");
       if (!identityDocument.number)
-        throw new Error('Missing required field: identityDocument.number');
-      if (!email) throw new Error('Missing required field: email');
-      if (!phone) throw new Error('Missing required field: phone');
-      if (!status) throw new Error('Missing required field: status');
+        throw new Error("Missing required field: identityDocument.number");
+      if (!email) throw new Error("Missing required field: email");
+      if (!phone) throw new Error("Missing required field: phone");
+      if (!status) throw new Error("Missing required field: status");
 
       // Kiểm tra sinh viên đã tồn tại
       const existingStudent = await Student.findOne({ studentId });
       if (existingStudent) {
-        throw new Error('StudentId already exists');
+        throw new Error("StudentId already exists");
       }
 
       // Tìm faculty bằng tên hoặc facultyId
       const allFaculties = await Faculty.find();
-      console.log('allFaculties', allFaculties);
+      console.log("allFaculties", allFaculties);
       const facultyDoc = await Faculty.findOne({
         $or: [{ name: faculty }, { _id: faculty }],
       });
 
       if (!facultyDoc) {
-        throw new Error('Faculty not found');
+        throw new Error("Faculty not found");
       }
 
       // Tìm program bằng tên hoặc programId
@@ -147,14 +147,14 @@ class StudentService {
       });
 
       if (!programDoc) {
-        throw new Error('Program not found');
+        throw new Error("Program not found");
       }
 
       // Tìm status bằng tên
       const statusDoc = await Status.findOne({ _id: status });
 
       if (!statusDoc) {
-        throw new Error('Status not found');
+        throw new Error("Status not found");
       }
 
       // Tạo sinh viên mới
@@ -163,7 +163,7 @@ class StudentService {
         fullName,
         dateOfBirth,
         gender,
-        nationality: nationality || 'Việt Nam',
+        nationality: nationality || "Việt Nam",
         faculty: facultyDoc._id,
         course,
         program: programDoc._id,
@@ -178,7 +178,7 @@ class StudentService {
 
       return await newStudent.save();
     } catch (error) {
-      console.log('Error adding student: ', error);
+      console.log("Error adding student: ", error);
       throw error;
     }
   }
@@ -192,10 +192,10 @@ class StudentService {
       const result = await Student.findOneAndDelete({ studentId });
 
       if (!result) {
-        throw new Error('Student not found');
+        throw new Error("Student not found");
       }
     } catch (error) {
-      console.log('Error deleting student: ', error);
+      console.log("Error deleting student: ", error);
       throw error;
     }
   }
@@ -212,7 +212,7 @@ class StudentService {
   ): Promise<IStudent> {
     try {
       if (!studentId || !updateData) {
-        throw new Error('Missing required fields');
+        throw new Error("Missing required fields");
       }
 
       // Kiểm tra trạng thái nếu cần cập nhật
@@ -220,7 +220,7 @@ class StudentService {
         const currentStudent = await Student.findOne({ studentId });
 
         if (!currentStudent) {
-          throw new Error('Student not found');
+          throw new Error("Student not found");
         }
 
         const currentStatusId = currentStudent.status.toString();
@@ -229,7 +229,7 @@ class StudentService {
         // Truy vấn trạng thái hiện tại từ database
         const currentStatusDoc = await Status.findById(currentStatusId);
         if (!currentStatusDoc) {
-          throw new Error('Current status not found');
+          throw new Error("Current status not found");
         }
 
         const currentStatusName = currentStatusDoc.name;
@@ -237,7 +237,7 @@ class StudentService {
         // Truy vấn trạng thái mới từ database
         const newStatusDoc = await Status.findById(newStatusId);
         if (!newStatusDoc) {
-          throw new Error('New status not found');
+          throw new Error("New status not found");
         }
 
         const newStatusName = newStatusDoc.name;
@@ -252,7 +252,7 @@ class StudentService {
           statusTransitionRules[currentStatusName] || [];
         if (!allowedTransitions.includes(newStatusName)) {
           throw new Error(
-            `Cannot change status from "${currentStatusName}" to "${newStatusName}"`
+            `Không thể đổi trạng thái "${currentStatusName}" sang "${newStatusName}"`
           );
         }
 
@@ -265,12 +265,12 @@ class StudentService {
       });
 
       if (!result) {
-        throw new Error('Student not found');
+        throw new Error("Student not found");
       }
 
       return result;
     } catch (error: any) {
-      console.log('Error updating student: ', error);
+      console.log("Error updating student: ", error);
       throw error;
     }
   }
@@ -306,7 +306,7 @@ class StudentService {
       // Tìm kiếm theo tên
       if (searchParams.fullName) {
         searchConditions.push({
-          fullName: { $regex: searchParams.fullName.toString(), $options: 'i' },
+          fullName: { $regex: searchParams.fullName.toString(), $options: "i" },
         });
       }
 
@@ -316,7 +316,7 @@ class StudentService {
         const faculty = await Faculty.findOne({
           $or: [
             {
-              name: { $regex: searchParams.faculty.toString(), $options: 'i' },
+              name: { $regex: searchParams.faculty.toString(), $options: "i" },
             },
             { facultyId: searchParams.faculty },
           ],
@@ -334,13 +334,13 @@ class StudentService {
       const result = await Student.find({
         $and: searchConditions,
       })
-        .populate('faculty')
-        .populate('program')
-        .populate('status');
+        .populate("faculty")
+        .populate("program")
+        .populate("status");
 
       return result;
     } catch (error) {
-      console.log('Error searching students: ', error);
+      console.log("Error searching students: ", error);
       throw error;
     }
   }
@@ -352,12 +352,12 @@ class StudentService {
   async getAllStudent(): Promise<IStudent[]> {
     try {
       const result = await Student.find({})
-        .populate('faculty')
-        .populate('program')
-        .populate('status');
+        .populate("faculty")
+        .populate("program")
+        .populate("status");
       return result;
     } catch (error) {
-      console.log('Error retrieving all students: ', error);
+      console.log("Error retrieving all students: ", error);
       throw error;
     }
   }
@@ -370,11 +370,11 @@ class StudentService {
   async getStudentById(studentId: string): Promise<IStudent | null> {
     try {
       const student = await Student.findOne({ studentId })
-        .populate('faculty')
-        .populate('program');
+        .populate("faculty")
+        .populate("program");
       return student;
     } catch (error) {
-      console.log('Error retrieving student: ', error);
+      console.log("Error retrieving student: ", error);
       throw error;
     }
   }
@@ -387,18 +387,18 @@ class StudentService {
    */
   async importData(format: string, data: any[]): Promise<any[]> {
     let formattedData;
-    console.log('data', data);
+    console.log("data", data);
     switch (format) {
-      case 'csv':
+      case "csv":
         formattedData = await this.processCSVData(data);
         break;
-      case 'json':
+      case "json":
         formattedData = await this.processJSONData(data);
         break;
       default:
-        throw new Error('Định dạng không được hỗ trợ!');
+        throw new Error("Định dạng không được hỗ trợ!");
     }
-    console.log('dt', formattedData);
+    console.log("dt", formattedData);
     // Lưu dữ liệu vào database
     await Student.insertMany(formattedData);
 
@@ -409,36 +409,36 @@ class StudentService {
   async processCSVData(data: any[]): Promise<any[]> {
     return data.map((item) => ({
       studentId: item.studentId || null,
-      fullName: item.fullName || '',
-      gender: item.gender || 'Không xác định',
+      fullName: item.fullName || "",
+      gender: item.gender || "Không xác định",
       dateOfBirth: item.dateOfBirth ? new Date(item.dateOfBirth) : null,
-      email: item.email || '',
-      phone: item.phone || '',
+      email: item.email || "",
+      phone: item.phone || "",
       course: item.course ? parseInt(item.course, 10) || null : null,
-      faculty: item.faculty || '',
-      program: item.program || '',
-      status: item.status || '',
-      nationality: item.nationality || 'Không rõ',
+      faculty: item.faculty || "",
+      program: item.program || "",
+      status: item.status || "",
+      nationality: item.nationality || "Không rõ",
       identityDocument: item.identityDocument || {
-        type: '',
-        number: '',
+        type: "",
+        number: "",
         issueDate: null,
-        issuePlace: '',
+        issuePlace: "",
         expiryDate: null,
       },
       mailingAddress: item.mailingAddress || {
-        streetAddress: '',
-        ward: '',
-        district: '',
-        city: '',
-        country: '',
+        streetAddress: "",
+        ward: "",
+        district: "",
+        city: "",
+        country: "",
       },
       permanentAddress: item.permanentAddress || {
-        streetAddress: '',
-        ward: '',
-        district: '',
-        city: '',
-        country: '',
+        streetAddress: "",
+        ward: "",
+        district: "",
+        city: "",
+        country: "",
       },
     }));
   }
@@ -462,40 +462,40 @@ class StudentService {
       };
 
       return {
-        studentId: item.studentId || 'N/A',
-        fullName: item.fullName || 'Không có tên',
-        gender: item.gender || 'Không xác định',
-        dateOfBirth: parseDate(item.dateOfBirth) || new Date('2000-01-01'), // Ngày mặc định
-        email: item.email || 'no-email@example.com',
-        phone: item.phone || '0000000000',
+        studentId: item.studentId || "N/A",
+        fullName: item.fullName || "Không có tên",
+        gender: item.gender || "Không xác định",
+        dateOfBirth: parseDate(item.dateOfBirth) || new Date("2000-01-01"), // Ngày mặc định
+        email: item.email || "no-email@example.com",
+        phone: item.phone || "0000000000",
         course: item.course ? parseInt(item.course, 10) || null : 2024, // Mặc định là 2024 nếu thiếu
-        faculty: parseObjectId(item.faculty) || 'Không xác định',
-        program: parseObjectId(item.program) || 'Không xác định',
-        status: parseObjectId(item.status) || 'Chưa cập nhật',
-        nationality: item.nationality || 'Không rõ',
+        faculty: parseObjectId(item.faculty) || "Không xác định",
+        program: parseObjectId(item.program) || "Không xác định",
+        status: parseObjectId(item.status) || "Chưa cập nhật",
+        nationality: item.nationality || "Không rõ",
         identityDocument: {
-          type: item.identityDocument?.type || 'Không xác định',
-          number: item.identityDocument?.number || '000000000',
+          type: item.identityDocument?.type || "Không xác định",
+          number: item.identityDocument?.number || "000000000",
           issueDate: parseDate(item.identityDocument?.issueDate),
-          issuePlace: item.identityDocument?.issuePlace || 'Không xác định',
+          issuePlace: item.identityDocument?.issuePlace || "Không xác định",
           expiryDate: parseDate(item.identityDocument?.expiryDate),
           hasChip: item.identityDocument?.hasChip || false,
         },
         mailingAddress: {
           streetAddress:
-            item.mailingAddress?.streetAddress || 'Không có địa chỉ',
-          ward: item.mailingAddress?.ward || 'Không có phường',
-          district: item.mailingAddress?.district || 'Không có quận',
-          city: item.mailingAddress?.city || 'Không có thành phố',
-          country: item.mailingAddress?.country || 'Không có quốc gia',
+            item.mailingAddress?.streetAddress || "Không có địa chỉ",
+          ward: item.mailingAddress?.ward || "Không có phường",
+          district: item.mailingAddress?.district || "Không có quận",
+          city: item.mailingAddress?.city || "Không có thành phố",
+          country: item.mailingAddress?.country || "Không có quốc gia",
         },
         permanentAddress: {
           streetAddress:
-            item.permanentAddress?.streetAddress || 'Không có địa chỉ',
-          ward: item.permanentAddress?.ward || 'Không có phường',
-          district: item.permanentAddress?.district || 'Không có quận',
-          city: item.permanentAddress?.city || 'Không có thành phố',
-          country: item.permanentAddress?.country || 'Không có quốc gia',
+            item.permanentAddress?.streetAddress || "Không có địa chỉ",
+          ward: item.permanentAddress?.ward || "Không có phường",
+          district: item.permanentAddress?.district || "Không có quận",
+          city: item.permanentAddress?.city || "Không có thành phố",
+          country: item.permanentAddress?.country || "Không có quốc gia",
         },
       };
     });
@@ -511,14 +511,14 @@ class StudentService {
     // Fetch data from database
     const data = await Student.find().lean();
     switch (format) {
-      case 'csv':
+      case "csv":
         await exportCSV(data, filePath);
         break;
-      case 'json':
+      case "json":
         await exportJSON(data, filePath);
         break;
       default:
-        throw new Error('Unsupported format');
+        throw new Error("Unsupported format");
     }
   }
 }
