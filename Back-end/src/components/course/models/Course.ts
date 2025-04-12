@@ -26,7 +26,7 @@ const courseSchema = new Schema<ICourse>(
         credits: {
             type: Number,
             required: true,
-            min: [0, 'Number of credits has to bigger than 2']
+            min: [2, 'Number of credits has to bigger than 2']
         },
         facultyId: {
             type: Schema.Types.ObjectId,
