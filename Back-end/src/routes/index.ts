@@ -5,6 +5,8 @@ import programRouter from '../components/program/routes/programRoute';
 import statusRouter from '../components/status/routes/statusRoute';
 import emailDomainRouter from '../components/email-domain/routes/emailDomainRoute';
 import phoneNumberConfigRouter from '../components/phone-number/routes/phoneNumberConfigRoute';
+import courseRouter from '../components/course/routes/courseRoute';
+import classRouter from '../components/class/routes/classRoute';
 /**
  * Cấu hình tất cả các routes cho ứng dụng
  * @param app Express application instance
@@ -16,6 +18,8 @@ function route(app: Express): void {
   app.use('/api/statuses', statusRouter);
   app.use('/api/email-domains', emailDomainRouter);
   app.use('/api/phone-numbers', phoneNumberConfigRouter);
+  app.use('/api/courses', courseRouter);
+  app.use('/api/classes', classRouter);
 }
 
 export default route;
