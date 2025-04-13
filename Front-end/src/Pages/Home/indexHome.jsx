@@ -17,12 +17,12 @@ import {
   deleteStudent,
   importStudent,
 } from "../../Services/studentService";
-import AddStudentModal from "../Home/AddStudentModal";
-import EditStudentModal from "../Home/EditStudentModal";
+import AddStudentModal from "./AddStudentModal";
+import EditStudentModal from "./EditStudentModal";
 import {
   exportStudentsToCSV,
   exportStudentsToJSON,
-} from "../Home/ExportStudents";
+} from "./ExportStudents";
 import swal from "sweetalert";
 
 function Home() {
