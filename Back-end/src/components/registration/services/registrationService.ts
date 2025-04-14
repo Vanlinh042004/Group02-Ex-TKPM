@@ -176,6 +176,35 @@ class RegistrationService {
   }
 
   /**
+    * Lấy danh sách tất cả các đăng ký
+    * @returns Promise<IRegistration[]>
+    */
+    async getAllRegistrations(): Promise<IRegistration[]> {
+     try {
+      const registrations = await Registration.find()
+        .populate('student', 'studentId fullName email')
+        .populate({
+         path: 'class',
+         populate: {
+          path: 'course',
+          select: 'courseId name'
+         }
+        });
+
+      return registrations;
+     } catch (error: any) {
+      logger.error('Lỗi lấy danh sách tất cả các đăng ký', {
+        module: 'RegistrationService',
+        operation: 'getAllRegistrations',
+        details: {
+         errorMessage: error.message
+        }
+      });
+      throw error;
+     }
+    }
+
+  /**
    * Lấy danh sách sinh viên trong một lớp học
    * @param classId Mã lớp học
    * @returns Promise<IRegistration[]>

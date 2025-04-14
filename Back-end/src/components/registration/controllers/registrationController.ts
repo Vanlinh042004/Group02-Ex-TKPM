@@ -14,6 +14,16 @@ class RegistrationController {
         }
     }
 
+    async getAllRegistrations(req: Request, res: Response): Promise<void> {
+        try {
+            const result = await RegistrationService.getAllRegistrations();
+
+            res.status(200).json({ message: "Fetch all registrations successfully", data: result });
+        } catch (error: any) {
+            res.status(400).json({ message: error.message })
+        }
+    }
+
     async cancelRegistration(req: Request, res: Response): Promise<void> {
         try {
             const registrationId = req.params.registrationId;
