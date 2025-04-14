@@ -2,8 +2,27 @@ import Registration, { IRegistration, RegistrationStatus } from '../models/Regis
 import Class, { IClass } from '../../class/models/Class';
 import Student from '../../student/models/Student';
 import Course from '../../course/models/Course';
+import { exportCSV } from '../../../utils/csvHandler';
+import { exportJSON } from '../../../utils/jsonHandler';
 import mongoose from 'mongoose';
 import logger from '../../../utils/logger';
+import fs from 'fs';
+import path from 'path';
+
+interface TranscriptData {
+  studentId: string;
+  fullName: string;
+  faculty: string;
+  courses: Array<{
+    courseCode: string;
+    courseName: string;
+    credits: number;
+    grade: number;
+    status: string;
+  }>;
+  gpa: number;
+  totalCredits: number;
+}
 
 class RegistrationService {
   /**
@@ -175,6 +194,59 @@ class RegistrationService {
     }
   }
 
+   /**
+   * Cập nhật điểm số
+   * @param registrationId ID đăng ký
+   * @param grade Điểm số
+   * @returns Promise<IRegistration | null>
+   */
+   async updateGrade(
+    registrationId: string, 
+    grade: number
+  ): Promise<IRegistration | null> {
+    try {
+      // Kiểm tra điểm hợp lệ
+      if (grade < 0 || grade > 10) {
+        throw new Error('Điểm số không hợp lệ (0-10)');
+      }
+  
+      // Kiểm tra xem registration có tồn tại không
+      const registration = await Registration.findById(registrationId);
+      if (!registration) {
+        throw new Error('Đăng ký không tồn tại');
+      }
+  
+      // Kiểm tra trạng thái của registration
+      if (registration.status !== 'active') {
+        throw new Error('Chỉ được cập nhật điểm cho các đăng ký đang hoạt động');
+      }
+  
+      // Cập nhật điểm
+      return await Registration.findByIdAndUpdate(
+        registrationId, 
+        { 
+          grade,
+          // Nếu grade đã được nhập trước đó, giữ nguyên các thông tin khác
+          ...(registration.grade === undefined && { 
+            updatedAt: new Date() 
+          }) 
+        }, 
+        { new: true }
+      );
+    } catch (error: any) {
+      logger.error('Lỗi cập nhật điểm', {
+        module: 'RegistrationService',
+        operation: 'updateGrade',
+        details: {
+          registrationId,
+          grade,
+          errorMessage: error.message
+        }
+      });
+      throw error;
+    }
+  }
+
   /**
     * Lấy danh sách tất cả các đăng ký
     * @returns Promise<IRegistration[]>
@@ -231,6 +303,133 @@ class RegistrationService {
         operation: 'getAllStudentsFromClass',
         details: {
           classId,
+          errorMessage: error.message
+        }
+      });
+      throw error;
+    }
+  }
+  /**
+   * Xuất bảng điểm cho sinh viên
+   * @param studentId Mã sinh viên
+   * @param format Định dạng file (csv hoặc json)
+   * @returns Promise<string> Đường dẫn file bảng điểm
+   */
+  async generateTranscript(
+    studentId: string, 
+    format: 'csv' | 'json' = 'csv'
+  ): Promise<string> {
+    try {
+      // Tìm sinh viên
+      const student = await Student.findOne({ studentId })
+        .populate('faculty');
+      
+      if (!student) {
+        throw new Error('Sinh viên không tồn tại');
+      }
+  
+      // Lấy các đăng ký khóa học
+      const registrations = await Registration.find({ 
+        student: student._id, 
+        status: 'active',
+        grade: { $exists: true }
+      }).populate({
+        path: 'class',
+        populate: {
+          path: 'course'
+        }
+      });
+  
+      // Chuẩn bị dữ liệu bảng điểm
+      let totalWeightedPoints = 0;
+      let totalCredits = 0;
+  
+      const transcriptData = registrations.map(reg => {
+        const course = (reg.class as any).course;
+        const courseEntry = {
+          courseCode: course.courseId,
+          courseName: course.name,
+          credits: course.credits,
+          grade: reg.grade || 0,
+          status: reg.grade && reg.grade >= 5 ? 'Passed' : 'Failed',
+          studentId: student.studentId,
+          fullName: student.fullName,
+          faculty: (student.faculty as any).name
+        };
+  
+        // Tính toán GPA
+        if (reg.grade !== undefined && reg.grade !== null) {
+          totalWeightedPoints += (reg.grade * course.credits);
+          totalCredits += course.credits;
+        }
+  
+        return courseEntry;
+      });
+  
+      // Tính GPA
+      const gpa = totalCredits > 0 
+        ? Number((totalWeightedPoints / totalCredits).toFixed(2)) 
+        : 0;
+  
+      // Thêm dòng GPA vào cuối
+      const finalTranscriptData = [
+        ...transcriptData,
+        {
+          courseCode: '',
+          courseName: 'GPA',
+          credits: totalCredits,
+          grade: gpa,
+          status: '',
+          studentId: student.studentId,
+          fullName: student.fullName,
+          faculty: (student.faculty as any).name
+        }
+      ];
+  
+      // Tạo thư mục lưu trữ nếu chưa tồn tại
+      const outputDir = path.join(process.cwd(), 'transcripts');
+      if (!fs.existsSync(outputDir)) {
+        fs.mkdirSync(outputDir);
+      }
+  
+      // Tạo tên file
+      const filename = `transcript_${studentId}_${Date.now()}.${format}`;
+      const filePath = path.join(outputDir, filename);
+  
+      // Xuất file
+      if (format === 'csv') {
+        await exportCSV(finalTranscriptData, filePath);
+      } else {
+        await exportJSON([{
+          studentInfo: {
+            studentId: student.studentId,
+            fullName: student.fullName,
+            faculty: (student.faculty as any).name
+          },
+          courses: transcriptData,
+          gpa: gpa,
+          totalCredits: totalCredits
+        }], filePath);
+      }
+  
+      // Log thông tin xuất bảng điểm
+      logger.info('Xuất bảng điểm thành công', {
+        module: 'RegistrationService',
+        operation: 'generateTranscript',
+        details: {
+          studentId,
+          format,
+          filePath
+        }
+      });
+  
+      return filePath;
+    } catch (error: any) {
+      logger.error('Lỗi khi xuất bảng điểm', {
+        module: 'RegistrationService',
+        operation: 'generateTranscript',
+        details: {
+          studentId,
           errorMessage: error.message
         }
       });

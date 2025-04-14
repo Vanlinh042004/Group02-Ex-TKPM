@@ -1,0 +1,4 @@
+courseCode,courseName,credits,grade,status,studentId,fullName,faculty
+CSC10001,Nhập môn lập trình,4,10,Passed,SV0001,Maria Keeling,Khoa Sinh Dục
+CSC10001,Nhập môn lập trình,4,8.5,Passed,SV0001,Maria Keeling,Khoa Sinh Dục
+,GPA,8,9.25,,SV0001,Maria Keeling,Khoa Sinh Dục

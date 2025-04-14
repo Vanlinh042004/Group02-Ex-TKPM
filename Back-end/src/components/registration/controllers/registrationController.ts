@@ -36,6 +36,18 @@ class RegistrationController {
         }
     }
 
+    async updateGrade(req: Request, res: Response): Promise<void> {
+        try {
+            const registrationId = req.params.registrationId;
+            const grade = req.body.grade;
+            const result = await RegistrationService.updateGrade(registrationId, grade);
+
+            res.status(200).json({ message: "Update grade successfully", data: result});
+        } catch (error: any) {
+            res.status(400).json({ message: error.message });
+        }
+    }
+
     async getAllStudentsFromClass(req: Request, res: Response): Promise<void> {
         try {
             const classId = req.params.classId;
