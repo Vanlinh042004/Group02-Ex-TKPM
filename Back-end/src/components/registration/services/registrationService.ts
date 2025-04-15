@@ -2,24 +2,22 @@ import Registration, { IRegistration, RegistrationStatus } from '../models/Regis
 import Class, { IClass } from '../../class/models/Class';
 import Student from '../../student/models/Student';
 import Course from '../../course/models/Course';
-import { exportCSV } from '../../../utils/csvHandler';
-import { exportJSON } from '../../../utils/jsonHandler';
 import mongoose from 'mongoose';
 import logger from '../../../utils/logger';
 import fs from 'fs';
 import path from 'path';
 
-interface TranscriptData {
-  studentId: string;
-  fullName: string;
-  faculty: string;
-  courses: Array<{
-    courseCode: string;
-    courseName: string;
-    credits: number;
-    grade: number;
-    status: string;
-  }>;
+export interface ICourseTranscript {
+  classId: string,
+  courseId: string;
+  name: string;
+  credits: number;
+  grade: number;
+  status: string;
+}
+
+export interface ITranscript {
+  courses: ICourseTranscript[];
   gpa: number;
   totalCredits: number;
 }
@@ -312,17 +310,15 @@ class RegistrationService {
   /**
    * Xuất bảng điểm cho sinh viên
    * @param studentId Mã sinh viên
-   * @param format Định dạng file (csv hoặc json)
-   * @returns Promise<string> Đường dẫn file bảng điểm
+   * @returns Promise<ITranscript>
    */
-  async generateTranscript(
-    studentId: string, 
-    format: 'csv' | 'json' = 'csv'
-  ): Promise<string> {
+  async generateTranscript(studentId: string): Promise<ITranscript> {
     try {
+      // Loại bỏ ký tự xuống dòng và trim
+      studentId = studentId.trim();
+  
       // Tìm sinh viên
-      const student = await Student.findOne({ studentId })
-        .populate('faculty');
+      const student = await Student.findOne({ studentId });
       
       if (!student) {
         throw new Error('Sinh viên không tồn tại');
@@ -344,20 +340,20 @@ class RegistrationService {
       let totalWeightedPoints = 0;
       let totalCredits = 0;
   
-      const transcriptData = registrations.map(reg => {
+      const courses = registrations.map(reg => {
         const course = (reg.class as any).course;
-        const courseEntry = {
-          courseCode: course.courseId,
-          courseName: course.name,
+        
+        // Tính toán điểm và học phần
+        const courseEntry: ICourseTranscript = {
+          classId: (reg.class as any).classId.toString(),
+          courseId: course.courseId,
+          name: course.name,
           credits: course.credits,
           grade: reg.grade || 0,
-          status: reg.grade && reg.grade >= 5 ? 'Passed' : 'Failed',
-          studentId: student.studentId,
-          fullName: student.fullName,
-          faculty: (student.faculty as any).name
+          status: reg.grade && reg.grade >= 5 ? 'Passed' : 'Failed'
         };
   
-        // Tính toán GPA
+        // Tính GPA
         if (reg.grade !== undefined && reg.grade !== null) {
           totalWeightedPoints += (reg.grade * course.credits);
           totalCredits += course.credits;
@@ -371,61 +367,24 @@ class RegistrationService {
         ? Number((totalWeightedPoints / totalCredits).toFixed(2)) 
         : 0;
   
-      // Thêm dòng GPA vào cuối
-      const finalTranscriptData = [
-        ...transcriptData,
-        {
-          courseCode: '',
-          courseName: 'GPA',
-          credits: totalCredits,
-          grade: gpa,
-          status: '',
-          studentId: student.studentId,
-          fullName: student.fullName,
-          faculty: (student.faculty as any).name
-        }
-      ];
-  
-      // Tạo thư mục lưu trữ nếu chưa tồn tại
-      const outputDir = path.join(process.cwd(), 'transcripts');
-      if (!fs.existsSync(outputDir)) {
-        fs.mkdirSync(outputDir);
-      }
-  
-      // Tạo tên file
-      const filename = `transcript_${studentId}_${Date.now()}.${format}`;
-      const filePath = path.join(outputDir, filename);
-  
-      // Xuất file
-      if (format === 'csv') {
-        await exportCSV(finalTranscriptData, filePath);
-      } else {
-        await exportJSON([{
-          studentInfo: {
-            studentId: student.studentId,
-            fullName: student.fullName,
-            faculty: (student.faculty as any).name
-          },
-          courses: transcriptData,
-          gpa: gpa,
-          totalCredits: totalCredits
-        }], filePath);
-      }
-  
       // Log thông tin xuất bảng điểm
-      logger.info('Xuất bảng điểm thành công', {
+      logger.info('Lấy bảng điểm thành công', {
         module: 'RegistrationService',
         operation: 'generateTranscript',
         details: {
           studentId,
-          format,
-          filePath
+          courseCount: courses.length,
+          gpa
         }
       });
   
-      return filePath;
+      return {
+        courses,
+        gpa,
+        totalCredits
+      };
     } catch (error: any) {
-      logger.error('Lỗi khi xuất bảng điểm', {
+      logger.error('Lỗi khi lấy bảng điểm', {
         module: 'RegistrationService',
         operation: 'generateTranscript',
         details: {

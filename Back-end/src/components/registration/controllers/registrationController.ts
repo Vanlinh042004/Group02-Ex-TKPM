@@ -58,6 +58,19 @@ class RegistrationController {
             res.status(400).json({ message: error.message });
         }
     }
+    async generateTranscript(req: Request, res: Response): Promise<void> {
+        try {
+          const { studentId } = req.params;
+    
+          const transcript = await RegistrationService.generateTranscript(studentId);
+          
+          res.status(200).json(transcript);
+        } catch (error: any) {
+          res.status(500).json({ 
+            message: error.message 
+          });
+        }
+      }
 }
 
 export default new RegistrationController();
