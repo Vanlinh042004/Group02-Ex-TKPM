@@ -4,8 +4,9 @@ import Student from '../../student/models/Student';
 import Course from '../../course/models/Course';
 import mongoose from 'mongoose';
 import logger from '../../../utils/logger';
-import fs from 'fs';
-import path from 'path';
+import { ICreateStudentDTO } from '../../student/services/studentService';
+
+export interface IStudentInfo extends Partial<ICreateStudentDTO> {}
 
 export interface ICourseTranscript {
   classId: string,
@@ -17,6 +18,7 @@ export interface ICourseTranscript {
 }
 
 export interface ITranscript {
+  studentInfo: IStudentInfo,
   courses: ICourseTranscript[];
   gpa: number;
   totalCredits: number;
@@ -318,7 +320,11 @@ class RegistrationService {
       studentId = studentId.trim();
   
       // Tìm sinh viên
-      const student = await Student.findOne({ studentId });
+      const student = await Student.findOne({ studentId })
+        .populate('faculty')
+        .populate('program')
+        .populate('phoneNumberConfig')
+        .populate('status');
       
       if (!student) {
         throw new Error('Sinh viên không tồn tại');
@@ -377,8 +383,16 @@ class RegistrationService {
           gpa
         }
       });
-  
+      const studentInfo: IStudentInfo = {
+        ...student.toObject(),
+        faculty: student.faculty ? (student.faculty as any).toObject() : undefined,
+        program: student.program ? (student.program as any).toObject() : undefined,
+        phoneNumberConfig: student.phoneNumberConfig ? (student.phoneNumberConfig as any).toObject() : undefined,
+        status: student.status ? (student.status as any).toObject() : undefined,
+      };
+
       return {
+        studentInfo,
         courses,
         gpa,
         totalCredits
