@@ -1,5 +1,7 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../../Style/Home.scss";
+import { useNavigate } from "react-router-dom"; // ✅ import navigate
+import { BookOutlined } from "@ant-design/icons"; // ✅ import BookOutlined icon
 import {
   DeleteOutlined,
   PlusOutlined,
@@ -160,6 +162,7 @@ function Home() {
     }
     return false;
   };
+  const navigate = useNavigate(); // ✅
 
   return (
     <>
@@ -256,6 +259,17 @@ function Home() {
           onClick={() => exportStudentsToJSON(students)}
         >
           Export JSON
+        </Button>
+
+         {/* ✅ NEW BUTTON: Đăng ký khóa học */}
+         <Button
+          type="primary"
+          icon={<BookOutlined />}
+          size="large"
+          shape="round"
+          onClick={() => navigate("/course-registration")}
+        >
+          Đăng ký khóa học cho sinh viên
         </Button>
       </div>
 

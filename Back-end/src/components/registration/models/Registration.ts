@@ -32,8 +32,8 @@ const RegistrationSchema: Schema = new Schema(
     },
     grade: {
       type: Number,
-      min: 0,
-      max: 10,
+      min: [0, 'Grade can not be smaller than 0'],
+      max: [10, 'Grade can not be bigger than 10']
     },
     status: {
       type: String,
