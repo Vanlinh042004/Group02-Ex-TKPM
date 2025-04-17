@@ -4,6 +4,25 @@ import Student from '../../student/models/Student';
 import Course from '../../course/models/Course';
 import mongoose from 'mongoose';
 import logger from '../../../utils/logger';
+import { ICreateStudentDTO } from '../../student/services/studentService';
+
+export interface IStudentInfo extends Partial<ICreateStudentDTO> {}
+
+export interface ICourseTranscript {
+  classId: string,
+  courseId: string;
+  name: string;
+  credits: number;
+  grade: number;
+  status: string;
+}
+
+export interface ITranscript {
+  studentInfo: IStudentInfo,
+  courses: ICourseTranscript[];
+  gpa: number;
+  totalCredits: number;
+}
 
 class RegistrationService {
   /**
@@ -175,6 +194,88 @@ class RegistrationService {
     }
   }
 
+   /**
+   * Cập nhật điểm số
+   * @param registrationId ID đăng ký
+   * @param grade Điểm số
+   * @returns Promise<IRegistration | null>
+   */
+   async updateGrade(
+    registrationId: string, 
+    grade: number
+  ): Promise<IRegistration | null> {
+    try {
+      // Kiểm tra điểm hợp lệ
+      if (grade < 0 || grade > 10) {
+        throw new Error('Điểm số không hợp lệ (0-10)');
+      }
+  
+      // Kiểm tra xem registration có tồn tại không
+      const registration = await Registration.findById(registrationId);
+      if (!registration) {
+        throw new Error('Đăng ký không tồn tại');
+      }
+  
+      // Kiểm tra trạng thái của registration
+      if (registration.status !== 'active') {
+        throw new Error('Chỉ được cập nhật điểm cho các đăng ký đang hoạt động');
+      }
+  
+      // Cập nhật điểm
+      return await Registration.findByIdAndUpdate(
+        registrationId, 
+        { 
+          grade,
+          // Nếu grade đã được nhập trước đó, giữ nguyên các thông tin khác
+          ...(registration.grade === undefined && { 
+            updatedAt: new Date() 
+          }) 
+        }, 
+        { new: true }
+      );
+    } catch (error: any) {
+      logger.error('Lỗi cập nhật điểm', {
+        module: 'RegistrationService',
+        operation: 'updateGrade',
+        details: {
+          registrationId,
+          grade,
+          errorMessage: error.message
+        }
+      });
+      throw error;
+    }
+  }
+
+  /**
+    * Lấy danh sách tất cả các đăng ký
+    * @returns Promise<IRegistration[]>
+    */
+    async getAllRegistrations(): Promise<IRegistration[]> {
+     try {
+      const registrations = await Registration.find()
+        .populate('student', 'studentId fullName email')
+        .populate({
+         path: 'class',
+         populate: {
+          path: 'course',
+          select: 'courseId name'
+         }
+        });
+
+      return registrations;
+     } catch (error: any) {
+      logger.error('Lỗi lấy danh sách tất cả các đăng ký', {
+        module: 'RegistrationService',
+        operation: 'getAllRegistrations',
+        details: {
+         errorMessage: error.message
+        }
+      });
+      throw error;
+     }
+    }
+
   /**
    * Lấy danh sách sinh viên trong một lớp học
    * @param classId Mã lớp học
@@ -202,6 +303,106 @@ class RegistrationService {
         operation: 'getAllStudentsFromClass',
         details: {
           classId,
+          errorMessage: error.message
+        }
+      });
+      throw error;
+    }
+  }
+  /**
+   * Xuất bảng điểm cho sinh viên
+   * @param studentId Mã sinh viên
+   * @returns Promise<ITranscript>
+   */
+  async generateTranscript(studentId: string): Promise<ITranscript> {
+    try {
+      // Loại bỏ ký tự xuống dòng và trim
+      studentId = studentId.trim();
+  
+      // Tìm sinh viên
+      const student = await Student.findOne({ studentId })
+        .populate('faculty')
+        .populate('program')
+        .populate('phoneNumberConfig')
+        .populate('status');
+      
+      if (!student) {
+        throw new Error('Sinh viên không tồn tại');
+      }
+  
+      // Lấy các đăng ký khóa học
+      const registrations = await Registration.find({ 
+        student: student._id, 
+        status: 'active',
+        grade: { $exists: true }
+      }).populate({
+        path: 'class',
+        populate: {
+          path: 'course'
+        }
+      });
+  
+      // Chuẩn bị dữ liệu bảng điểm
+      let totalWeightedPoints = 0;
+      let totalCredits = 0;
+  
+      const courses = registrations.map(reg => {
+        const course = (reg.class as any).course;
+        
+        // Tính toán điểm và học phần
+        const courseEntry: ICourseTranscript = {
+          classId: (reg.class as any).classId.toString(),
+          courseId: course.courseId,
+          name: course.name,
+          credits: course.credits,
+          grade: reg.grade || 0,
+          status: reg.grade && reg.grade >= 5 ? 'Passed' : 'Failed'
+        };
+  
+        // Tính GPA
+        if (reg.grade !== undefined && reg.grade !== null) {
+          totalWeightedPoints += (reg.grade * course.credits);
+          totalCredits += course.credits;
+        }
+  
+        return courseEntry;
+      });
+  
+      // Tính GPA
+      const gpa = totalCredits > 0 
+        ? Number((totalWeightedPoints / totalCredits).toFixed(2)) 
+        : 0;
+  
+      // Log thông tin xuất bảng điểm
+      logger.info('Lấy bảng điểm thành công', {
+        module: 'RegistrationService',
+        operation: 'generateTranscript',
+        details: {
+          studentId,
+          courseCount: courses.length,
+          gpa
+        }
+      });
+      const studentInfo: IStudentInfo = {
+        ...student.toObject(),
+        faculty: student.faculty ? (student.faculty as any).toObject() : undefined,
+        program: student.program ? (student.program as any).toObject() : undefined,
+        phoneNumberConfig: student.phoneNumberConfig ? (student.phoneNumberConfig as any).toObject() : undefined,
+        status: student.status ? (student.status as any).toObject() : undefined,
+      };
+
+      return {
+        studentInfo,
+        courses,
+        gpa,
+        totalCredits
+      };
+    } catch (error: any) {
+      logger.error('Lỗi khi lấy bảng điểm', {
+        module: 'RegistrationService',
+        operation: 'generateTranscript',
+        details: {
+          studentId,
           errorMessage: error.message
         }
       });
