@@ -87,7 +87,7 @@ npm start
 
 <img src="FeatureImg/Ex05/ManageCourse/UserStory7/1.PNG"  />
 <img src="FeatureImg/Ex05/ManageCourse/UserStory7/2.PNG"  />
-<img src="FeatureImg/Ex05/ManageCourse/UserStory7/3.PNG"  />
+<img src="FeatureImg/Ex05/ManageCourse/UserStory7/4.PNG"  />
 
 4. **Unit Test**
 
