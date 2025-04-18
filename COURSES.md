@@ -79,16 +79,16 @@ npm start
 
 #### **User Story 6: Hủy đăng ký khóa học của sinh viên**
 
-<img src="FeatureImg/Ex05/ManageCourse/UserStory6/1.png"  />
-<img src="FeatureImg/Ex05/ManageCourse/UserStory6/2.png"  />
-<img src="FeatureImg/Ex05/ManageCourse/UserStory6/3.png"  />
+<img src="FeatureImg/Ex05/ManageCourse/UserStory6/1.PNG"  />
+<img src="FeatureImg/Ex05/ManageCourse/UserStory6/2.PNG"  />
+<img src="FeatureImg/Ex05/ManageCourse/UserStory6/3.PNG"  />
 
 #### **User Story 7: In bảng điểm chính thức**
 
-<img src="FeatureImg/Ex05/ManageCourse/UserStory7/1.png"  />
-<img src="FeatureImg/Ex05/ManageCourse/UserStory7/2.png"  />
-<img src="FeatureImg/Ex05/ManageCourse/UserStory7/3.png"  />
+<img src="FeatureImg/Ex05/ManageCourse/UserStory7/1.PNG"  />
+<img src="FeatureImg/Ex05/ManageCourse/UserStory7/2.PNG"  />
+<img src="FeatureImg/Ex05/ManageCourse/UserStory7/3.PNG"  />
 
 4. **Unit Test**
 
-<img src="FeatureImg/Ex05/ManageCourse/unittest.png"  />
+<img src="FeatureImg/Ex05/ManageCourse/unittest.PNG"  />
