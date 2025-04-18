@@ -68,7 +68,7 @@ npm start
 <img src="FeatureImg/Ex05/ManageCourse/UserStory4/image2.png"  />
 <img src="FeatureImg/Ex05/ManageCourse/UserStory4/image3.png"  />
 
-### **2.1 2.2 Đăng Ký Khóa Học Cho Sinh Viên (Thủ Công Bởi Giáo Vụ)**
+### **2.2 Đăng Ký Khóa Học Cho Sinh Viên (Thủ Công Bởi Giáo Vụ)**
 
 #### **User Story 5: Đăng ký khóa học cho sinh viên**
 
