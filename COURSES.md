@@ -70,8 +70,24 @@ npm start
 
 ### **2.2 Đăng Ký Khóa Học Cho Sinh Viên (Thủ Công Bởi Giáo Vụ)**
 
-#### **User Story 5: Đăng ký khóa học cho sinh viên**
+#### **User Story 5: Đăng ký khóa học cho sinh viên**  
+
+<img src="FeatureImg/Ex05/ManageCourse/UserStory5/1.png"  />
+<img src="FeatureImg/Ex05/ManageCourse/UserStory5/2.png"  />
+<img src="FeatureImg/Ex05/ManageCourse/UserStory5/3.png"  />
+
 
 #### **User Story 6: Hủy đăng ký khóa học của sinh viên**
 
+<img src="FeatureImg/Ex05/ManageCourse/UserStory6/1.png"  />
+<img src="FeatureImg/Ex05/ManageCourse/UserStory6/2.png"  />
+<img src="FeatureImg/Ex05/ManageCourse/UserStory6/3.png"  />
+
 #### **User Story 7: In bảng điểm chính thức**
+
+<img src="FeatureImg/Ex05/ManageCourse/UserStory7/1.png"  />
+<img src="FeatureImg/Ex05/ManageCourse/UserStory7/2.png"  />
+<img src="FeatureImg/Ex05/ManageCourse/UserStory7/3.png"  />
+
+4. **Unit Test**
+

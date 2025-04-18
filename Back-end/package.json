@@ -35,11 +35,13 @@
   "devDependencies": {
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
+    "@types/jest": "^29.5.14",
     "@types/mongoose": "^5.11.96",
     "@types/multer": "^1.4.12",
     "@types/node": "^22.13.10",
     "morgan": "^1.10.0",
     "nodemon": "^3.1.9",
+    "ts-jest": "^29.3.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.2"
   }

@@ -76,6 +76,8 @@ app.listen(port, () => {
   });
 });
 
+// Cuối file, thêm dòng này:
+export default app;
 // Handle process termination
 process.on('SIGINT', () => {
   logger.info('Server shutting down', { module: 'Server' });
