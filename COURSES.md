@@ -72,9 +72,9 @@ npm start
 
 #### **User Story 5: Đăng ký khóa học cho sinh viên**  
 
-<img src="FeatureImg/Ex05/ManageCourse/UserStory5/1.png"  />
-<img src="FeatureImg/Ex05/ManageCourse/UserStory5/2.png"  />
-<img src="FeatureImg/Ex05/ManageCourse/UserStory5/3.png"  />
+<img src="FeatureImg/Ex05/ManageCourse/UserStory5/1.PNG"  />
+<img src="FeatureImg/Ex05/ManageCourse/UserStory5/2.PNG"  />
+<img src="FeatureImg/Ex05/ManageCourse/UserStory5/3.PNG"  />
 
 
 #### **User Story 6: Hủy đăng ký khóa học của sinh viên**
@@ -91,4 +91,4 @@ npm start
 
 4. **Unit Test**
 
-<img src="FeatureImg/Ex05/ManageCourse/unittest.PNG"  />
+<img src="FeatureImg/Ex05/ManageCourse/unittest.png"  />
