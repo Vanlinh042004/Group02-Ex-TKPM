@@ -52,7 +52,7 @@ function Course() {
 
   const handleAddCourse = async (values) => {
     try {
-      //console.log(values);
+      console.log(values);
       if (values.credits < 2) {
         swal("Thất bại!", "Số tín chỉ phải lớn hơn hoặc bằng 2!", "error");
         return;
@@ -293,6 +293,14 @@ function Course() {
                       <b>Mô tả:</b> {course.description}
                     </p>
                     <p>
+                      <b>Môn tiên quyết:</b>{" "}
+                      {course.prerequisites.length > 0
+                        ? course.prerequisites
+                            .map((item) => item.name)
+                            .join(", ")
+                        : "Không có"}
+                    </p>
+                    <p>
                       <b>Ngày tạo:</b>{" "}
                       {new Date(course.createdAt).toLocaleString()}
                     </p>
@@ -389,15 +397,17 @@ function Course() {
             <Input.TextArea rows={4} placeholder="Nhập mô tả khóa học" />
           </Form.Item>
 
-          <Form.Item name="prerequisite" label="Môn tiên quyết">
+          <Form.Item name="prerequisites" label="Môn tiên quyết">
             <Select
               mode="multiple"
               placeholder="Chọn môn tiên quyết (nếu có)"
               allowClear
             >
-              <Select.Option value="MON001">Lập trình cơ bản</Select.Option>
-              <Select.Option value="MON002">Cơ sở dữ liệu</Select.Option>
-              <Select.Option value="MON003">Cấu trúc dữ liệu</Select.Option>
+              {courses.map((course) => (
+                <Select.Option key={course._id} value={course._id}>
+                  {course.name} ({course.courseId})
+                </Select.Option>
+              ))}
             </Select>
           </Form.Item>
 
