@@ -1,4 +1,4 @@
-import { post, get, remove, patch } from "../Utils/request";
+import { post, get, remove, put } from "../Utils/request";
 
 // Lấy danh sách khóa học
 export const getCourses = async () => {
@@ -17,10 +17,10 @@ export const deleteCourse = async (courseId) => {
 
 // Deactivate khóa học
 export const deactivateCourse = async (courseId) => {
-  return patch(`/courses/deactivate/${courseId}`);
+  return put(`/courses/${courseId}/deactivate`);
 };
 
 // Cập nhật khóa học
 export const updateCourse = async (courseId, courseData) => {
-  return patch(`/courses/${courseId}`, courseData);
+  return put(`/courses/${courseId}`, courseData);
 };

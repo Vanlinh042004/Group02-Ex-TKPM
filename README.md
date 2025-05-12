@@ -272,7 +272,7 @@ npm start
 
 ## Hình ảnh minh họa
 
-### QUẢN LÝ DANH SÁCH SINH VIÊN & BẢNG ĐIỂM
+### QUẢN LÝ KHÓA HỌC & BẢNG ĐIỂM SINH VIÊN
 
 #### **2.1 Quản Lý Khóa Học**
 

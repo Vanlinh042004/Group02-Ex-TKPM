@@ -38,3 +38,10 @@ export const patch = async (url, data) => {
   }
   return response.data;
 };
+export const put = async (url, data) => {
+  const response = await axios.put(`${API_DOMAIN}${url}`, data);
+  if (response.status !== 200) {
+    throw new Error(response.data.message);
+  }
+  return response.data;
+};

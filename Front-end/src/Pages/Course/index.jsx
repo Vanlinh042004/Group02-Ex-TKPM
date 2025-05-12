@@ -52,7 +52,7 @@ function Course() {
 
   const handleAddCourse = async (values) => {
     try {
-      console.log(values);
+      //console.log(values);
       if (values.credits < 2) {
         swal("Thất bại!", "Số tín chỉ phải lớn hơn hoặc bằng 2!", "error");
         return;
@@ -66,7 +66,7 @@ function Course() {
       setIsAddModalVisible(false);
       form.resetFields();
     } catch (error) {
-      console.error("Error adding course:", error);
+      //console.error("Error adding course:", error);
       message.error("Có lỗi xảy ra khi thêm khóa học!");
     }
   };
@@ -92,19 +92,10 @@ function Course() {
           const res = await getCourses();
           setCourses(res.data);
         } catch (error) {
-          if (error.response?.data?.code === "TIME_LIMIT_EXCEEDED") {
-            const deactivateResult = await swal({
-              title: "Không thể xóa!",
-              text: "Khóa học đã tồn tại quá 30 phút. Bạn có muốn deactivate khóa học này không?",
-              icon: "warning",
-              buttons: ["Hủy", "Deactivate"],
-              dangerMode: true,
-            });
-
-            if (deactivateResult) {
-              await handleDeactivateCourse(courseId);
-            }
-          } else if (error.response?.data?.code === "HAS_REGISTRATIONS") {
+          if (
+            error.response?.data?.message ===
+            "Không thể xóa khóa học vì đã có lớp học được mở"
+          ) {
             const deactivateResult = await swal({
               title: "Không thể xóa!",
               text: "Khóa học đã có sinh viên đăng ký. Bạn có muốn deactivate khóa học này không?",
@@ -116,12 +107,6 @@ function Course() {
             if (deactivateResult) {
               await handleDeactivateCourse(courseId);
             }
-          } else if (error.response?.data?.code === "IS_PREREQUISITE") {
-            swal(
-              "Không thể xóa!",
-              "Khóa học này đang là môn tiên quyết cho các khóa học khác.",
-              "error"
-            );
           } else {
             swal(
               "Lỗi!",
@@ -133,7 +118,7 @@ function Course() {
         }
       }
     } catch (error) {
-      console.error("Error handling course deletion:", error);
+      //console.error("Error handling course deletion:", error);
       swal("Lỗi!", "Có lỗi xảy ra khi xử lý yêu cầu!", "error");
     } finally {
       setLoading(false);
@@ -522,11 +507,14 @@ function Course() {
             rules={[{ required: true, message: "Vui lòng chọn khóa học!" }]}
           >
             <Select placeholder="Chọn khóa học">
-              {courses.map((course) => (
-                <Select.Option key={course._id} value={course._id}>
-                  {course.name} ({course.courseId})
-                </Select.Option>
-              ))}
+              {courses.map(
+                (course) =>
+                  course.isActive && (
+                    <Select.Option key={course._id} value={course._id}>
+                      {course.name} ({course.courseId})
+                    </Select.Option>
+                  )
+              )}
             </Select>
           </Form.Item>
 
