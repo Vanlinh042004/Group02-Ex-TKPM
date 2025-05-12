@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Modal, Input, Form, Select, message } from "antd";
+import { useState, useEffect } from "react";
+import { Modal, Input, Form, Select } from "antd";
 import swal from "sweetalert";
 import { getAllowedEmails } from "../../Services/emailService";
 import { getCountries, getCountryConfig } from "../../Services/phoneService";
@@ -397,73 +397,73 @@ const EditStudentModal = ({
             <Input />
           </Form.Item>
           <Form.Item
-  label="Số điện thoại *"
-  name="phone"
-  rules={[
-   
-    {
-      validator: (_, value) => {
-        if (!value) return Promise.resolve();
-        return checkValidPhone(value)
-          ? Promise.resolve()
-          : Promise.reject("Số điện thoại không hợp lệ");
-      },
-    },
-  ]}
->
-  <div className="d-flex align-items-center">
-    <Select
-      placeholder="Chọn mã quốc gia"
-      className="me-2"
-      onChange={async (value) => {
-        const config = await getCountryConfig(value);
-        const escapedRegex = config.regex
-          .replace(/\+/g, "\\+")
-          .replace(/d/g, "\\d");
-        setPhoneRegex(escapedRegex); // Lưu regex đã được xử lý
-      //  console.log("regex:", escapedRegex);
-        form.setFieldsValue({ phone: "" }); // Reset trường số điện thoại
-      }}
-    >
-      {Array.isArray(countries) ? (
-        countries.map((country, index) => (
-          <Option key={index} value={country.country}>
-            {country.country}
-          </Option>
-        ))
-      ) : (
-        <Option disabled>Không có dữ liệu</Option>
-      )}
-    </Select>
-
-    <Input
-      // value={form.getFieldValue("phone")} // Hiển thị số điện thoại hiện tại
-       onChange={(e) => form.setFieldsValue({ phone: e.target.value })} // Cập nhật giá trị khi người dùng nhập
-    placeholder="Nhập số điện thoại" /> {/* Không cần value và onChange */}
-  </div>
-</Form.Item>
-<Form.Item
-  name={["permanentAddress", "country"]}
-  label="Quốc tịch"
-  rules={[{  message: "Vui lòng chọn quốc tịch!" }]}
->
-<Select
-  placeholder="Chọn quốc tịch"
-  onChange={(value) => {
-    form.setFieldsValue({ permanentAddress: { country: value } }); // Cập nhật giá trị quốc tịch trong form
-  }}
->
-  {Array.isArray(countries) ? (
-    countries.map((country, index) => (
-      <Select.Option key={index} value={country.country}>
-        {country.country}
-      </Select.Option>
-    ))
-  ) : (
-    <Select.Option disabled>Không có dữ liệu</Select.Option>
-  )}
-</Select>
-</Form.Item>
+            label="Số điện thoại *"
+            name="phone"
+            rules={[
+              {
+                validator: (_, value) => {
+                  if (!value) return Promise.resolve();
+                  return checkValidPhone(value)
+                    ? Promise.resolve()
+                    : Promise.reject("Số điện thoại không hợp lệ");
+                },
+              },
+            ]}
+          >
+            <div className="d-flex align-items-center">
+              <Select
+                placeholder="Chọn mã quốc gia"
+                className="me-2"
+                onChange={async (value) => {
+                  const config = await getCountryConfig(value);
+                  const escapedRegex = config.regex
+                    .replace(/\+/g, "\\+")
+                    .replace(/d/g, "\\d");
+                  setPhoneRegex(escapedRegex); // Lưu regex đã được xử lý
+                  //  console.log("regex:", escapedRegex);
+                  form.setFieldsValue({ phone: "" }); // Reset trường số điện thoại
+                }}
+              >
+                {Array.isArray(countries) ? (
+                  countries.map((country, index) => (
+                    <Option key={index} value={country.country}>
+                      {country.country}
+                    </Option>
+                  ))
+                ) : (
+                  <Option disabled>Không có dữ liệu</Option>
+                )}
+              </Select>
+              <Input
+                // value={form.getFieldValue("phone")} // Hiển thị số điện thoại hiện tại
+                onChange={(e) => form.setFieldsValue({ phone: e.target.value })} // Cập nhật giá trị khi người dùng nhập
+                placeholder="Nhập số điện thoại"
+              />{" "}
+              {/* Không cần value và onChange */}
+            </div>
+          </Form.Item>
+          <Form.Item
+            name={["permanentAddress", "country"]}
+            label="Quốc tịch"
+            rules={[{ message: "Vui lòng chọn quốc tịch!" }]}
+          >
+            <Select
+              placeholder="Chọn quốc tịch"
+              onChange={(value) => {
+                form.setFieldsValue({ permanentAddress: { country: value } }); // Cập nhật giá trị quốc tịch trong form
+              }}
+            >
+              {Array.isArray(countries) ? (
+                countries.map((country, index) => (
+                  <Select.Option key={index} value={country.country}>
+                    {country.country}
+                  </Select.Option>
+                ))
+              ) : (
+                <Select.Option disabled>Không có dữ liệu</Select.Option>
+              )}
+            </Select>
+          </Form.Item>
 
           <Form.Item label="Khoa" name="faculty">
             <Select

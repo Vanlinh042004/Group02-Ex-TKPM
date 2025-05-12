@@ -16,10 +16,18 @@ function Header() {
           <Navbar.Collapse id="navbar-nav">
             <Nav className="ml-auto">
               <Nav.Link as={NavLink} to="/" className="navbar__item">
-                Trang chủ
+                Quản lý sinh viên
               </Nav.Link>
-              <Nav.Link as={NavLink} to="/course" className="navbar__item">Quản lý khóa học </Nav.Link>
-              <Nav.Link as={NavLink} to="/course-registration" className="navbar__item">Đăng ký khóa học </Nav.Link>
+              <Nav.Link as={NavLink} to="/course" className="navbar__item">
+                Quản lý khóa học{" "}
+              </Nav.Link>
+              <Nav.Link
+                as={NavLink}
+                to="/course-registration"
+                className="navbar__item"
+              >
+                Đăng ký khóa học{" "}
+              </Nav.Link>
             </Nav>
           </Navbar.Collapse>
         </Container>

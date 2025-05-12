@@ -1,6 +1,6 @@
 import CourseRegistration from "../Pages/CourseRegistration/CourseRegistration";
 import Layout from "../LayoutDefaut/Layout";
-import Home from "../Pages/Home/indexHome";
+import Student from "../Pages/Student";
 import Course from "../Pages/Course/index";
 
 export const Routes = [
@@ -10,7 +10,7 @@ export const Routes = [
     children: [
       {
         index: true,
-        element: <Home />,
+        element: <Student />,
       },
       {
         path: "course-registration",
