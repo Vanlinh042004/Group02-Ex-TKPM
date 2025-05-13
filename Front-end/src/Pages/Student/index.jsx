@@ -21,13 +21,10 @@ import {
 } from "../../Services/studentService";
 import AddStudentModal from "./AddStudentModal";
 import EditStudentModal from "./EditStudentModal";
-import {
-  exportStudentsToCSV,
-  exportStudentsToJSON,
-} from "./ExportStudents";
+import { exportStudentsToCSV, exportStudentsToJSON } from "./ExportStudents";
 import swal from "sweetalert";
 
-function Home() {
+function Student() {
   const [students, setStudents] = useState([]);
   const [check, setCheck] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -261,8 +258,8 @@ function Home() {
           Export JSON
         </Button>
 
-         {/* ✅ NEW BUTTON: Đăng ký khóa học */}
-         <Button
+        {/* ✅ NEW BUTTON: Đăng ký khóa học */}
+        <Button
           type="primary"
           icon={<BookOutlined />}
           size="large"
@@ -372,4 +369,4 @@ function Home() {
   );
 }
 
-export default Home;
+export default Student;
