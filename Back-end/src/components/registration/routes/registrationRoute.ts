@@ -15,7 +15,6 @@ router.patch('/grade/:registrationId', RegistrationController.updateGrade)
 // Get all students in specific class
 router.get('/:classId', RegistrationController.getAllStudentsFromClass);
 // Get student's transcript
-router.get('/transcript/:studentId', RegistrationController.generateTranscript);
+router.get('/transcript/:studentId', RegistrationController.generateTranscript); 
 
 export default router;
-
