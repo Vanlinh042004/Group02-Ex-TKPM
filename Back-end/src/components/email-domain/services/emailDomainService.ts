@@ -16,7 +16,7 @@ class EmailDomainService {
      * @returns Promise<IEmailDomain> Domain đã xóa
      */
     async deleteAllowedEmailDomain(domain: string): Promise<IEmailDomain> {
-        const result = EmailDomain.findOneAndDelete({ domain })
+        const result = await EmailDomain.findOneAndDelete({ domain })
         if (!result) {
             throw new Error('Domain not found')
         }
