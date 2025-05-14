@@ -1,4 +1,4 @@
-import AllRoutes from "./Routes/indexRoutes";
+import AllRoutes from "./routes/indexRoutes";
 function App() {
   return (
     <>

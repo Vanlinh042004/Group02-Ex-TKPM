@@ -1,7 +1,7 @@
-import CourseRegistration from "../Pages/CourseRegistration/CourseRegistration";
-import Layout from "../LayoutDefaut/Layout";
-import Student from "../Pages/Student";
-import Course from "../Pages/Course/index";
+import CourseRegistration from "../pages/CourseRegistration/CourseRegistration";
+import Layout from "../layouts/Layout";
+import Student from "../pages/Student";
+import Course from "../pages/Course";
 
 export const Routes = [
   {

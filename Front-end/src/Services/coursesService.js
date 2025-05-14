@@ -1,4 +1,4 @@
-import { post, get, remove, put } from "../Utils/request";
+import { post, get, remove, put } from "../utils/request";
 
 // Lấy danh sách khóa học
 export const getCourses = async () => {

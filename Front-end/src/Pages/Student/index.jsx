@@ -1,7 +1,6 @@
 import "bootstrap/dist/css/bootstrap.min.css";
-import "../../Style/Home.scss";
-import { useNavigate } from "react-router-dom"; // ✅ import navigate
-import { BookOutlined } from "@ant-design/icons"; // ✅ import BookOutlined icon
+import "../../style/Home.scss";
+import { useNavigate } from "react-router-dom";
 import {
   DeleteOutlined,
   PlusOutlined,
@@ -18,10 +17,13 @@ import {
   getStudent,
   deleteStudent,
   importStudent,
-} from "../../Services/studentService";
-import AddStudentModal from "./AddStudentModal";
-import EditStudentModal from "./EditStudentModal";
-import { exportStudentsToCSV, exportStudentsToJSON } from "./ExportStudents";
+} from "../../services/studentService";
+import AddStudentModal from "../../components/AddStudentModal";
+import EditStudentModal from "../../components/EditStudentModal";
+import {
+  exportStudentsToCSV,
+  exportStudentsToJSON,
+} from "../../components/ExportStudent";
 import swal from "sweetalert";
 
 function Student() {
@@ -33,6 +35,18 @@ function Student() {
   const [searchId, setSearchID] = useState("");
   const [searchName, setSearchName] = useState("");
   const [searchFaculty, setSearchFaculty] = useState("");
+
+  useEffect(() => {
+    const fetchStudents = async () => {
+      try {
+        const data = await getStudent();
+        setStudents(data);
+      } catch (error) {
+        console.error("Lỗi khi lấy danh sách sinh viên:", error);
+      }
+    };
+    fetchStudents();
+  }, [check, isEditModalVisible, isModalVisible]);
 
   const handleSearch = async (e) => {
     e.preventDefault();
@@ -61,19 +75,6 @@ function Student() {
     setStudentToEdit(student);
     setIsEditModalVisible(true);
   };
-
-  useEffect(() => {
-    const fetchStudents = async () => {
-      try {
-        const data = await getStudent();
-        setStudents(data);
-      } catch (error) {
-        console.error("Lỗi khi lấy danh sách sinh viên:", error);
-      }
-    };
-    fetchStudents();
-  }, [check, isEditModalVisible, isModalVisible]);
-
   const handleImport = async (file) => {
     // Kiểm tra nếu file không tồn tại hoặc không hợp lệ
     if (!file || !(file instanceof Blob)) {
@@ -159,7 +160,7 @@ function Student() {
     }
     return false;
   };
-  const navigate = useNavigate(); // ✅
+  const navigate = useNavigate();
 
   return (
     <>
@@ -257,32 +258,7 @@ function Student() {
         >
           Export JSON
         </Button>
-
-        {/* ✅ NEW BUTTON: Đăng ký khóa học */}
-        <Button
-          type="primary"
-          icon={<BookOutlined />}
-          size="large"
-          shape="round"
-          onClick={() => navigate("/course-registration")}
-        >
-          Đăng ký khóa học cho sinh viên
-        </Button>
       </div>
-
-      {/* Modals */}
-      <AddStudentModal
-        isModalVisible={isModalVisible}
-        setIsModalVisible={setIsModalVisible}
-        students={students}
-        setStudents={setStudents}
-      />
-      <EditStudentModal
-        isModalVisible={isEditModalVisible}
-        setIsModalVisible={setIsEditModalVisible}
-        student={studentToEdit}
-        setStudents={setStudents}
-      />
 
       <section className="ftco-section">
         <div className="container">
@@ -365,6 +341,20 @@ function Student() {
           </div>
         </div>
       </section>
+
+      {/* Modals */}
+      <AddStudentModal
+        isModalVisible={isModalVisible}
+        setIsModalVisible={setIsModalVisible}
+        students={students}
+        setStudents={setStudents}
+      />
+      <EditStudentModal
+        isModalVisible={isEditModalVisible}
+        setIsModalVisible={setIsEditModalVisible}
+        student={studentToEdit}
+        setStudents={setStudents}
+      />
     </>
   );
 }

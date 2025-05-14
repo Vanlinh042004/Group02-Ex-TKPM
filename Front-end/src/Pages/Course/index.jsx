@@ -1,8 +1,8 @@
 import { Button, message, Modal, Form, Input, InputNumber, Select } from "antd";
 import { PlusOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
-import "../../Style/Courses.scss";
-import { getFaculty } from "../../Services/studentService";
-import { getClasses, addClass } from "../../Services/classService";
+import "../../style/Courses.scss";
+import { getFaculty } from "../../services/studentService";
+import { getClasses, addClass } from "../../services/classService";
 import swal from "sweetalert";
 import { useState, useEffect } from "react";
 import {
@@ -11,7 +11,7 @@ import {
   deleteCourse,
   deactivateCourse,
   updateCourse,
-} from "../../Services/coursesService";
+} from "../../services/coursesService";
 import { useNavigate } from "react-router-dom";
 
 function Course() {

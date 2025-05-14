@@ -1,4 +1,4 @@
-import { get, post, remove } from "../Utils/request";
+import { get, post, remove } from "../utils/request";
 
 export const getClasses = async () => {
   return get(`/classes`);
@@ -7,8 +7,6 @@ export const getClasses = async () => {
 export const addClass = async (classData) => {
   return post(`/classes`, classData);
 };
-
-
 
 export const deleteClass = async (classId) => {
   return remove(`/classes/${classId}`);
@@ -21,4 +19,3 @@ export const getClassById = async (classId) => {
 export const getClassesByCourse = async (courseId) => {
   return get(`/classes/course/${courseId}`);
 };
-

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
-import "../../Utils/RobotoCondensed-Regular-normal";
+import "../../utils/RobotoCondensed-Regular-normal";
 
 import {
   Tab,
@@ -18,16 +18,21 @@ import {
   Stack,
 } from "react-bootstrap";
 
-import { getClasses } from "../../Services/classService";
+import { getClasses } from "../../services/classService";
 import {
   registerCourse,
   getRegistration,
   cancelRegistration,
-  getTranscript
-} from "../../Services/courseRegistrationService";
+  getTranscript,
+} from "../../services/courseRegistrationService";
 
 import swal from "sweetalert";
-import { BsPrinter, BsFillTrashFill, BsCheck2Circle, BsBook } from "react-icons/bs";
+import {
+  BsPrinter,
+  BsFillTrashFill,
+  BsCheck2Circle,
+  BsBook,
+} from "react-icons/bs";
 
 const CourseRegistration = () => {
   const [studentId, setStudentId] = useState("");
@@ -53,7 +58,7 @@ const CourseRegistration = () => {
       return;
     }
 
-    const selectedClassObj = classList.find(cls => cls._id === selectedClass);
+    const selectedClassObj = classList.find((cls) => cls._id === selectedClass);
     if (!selectedClassObj) {
       swal("Lỗi", "Lớp học không hợp lệ!", "error");
       return;
@@ -61,10 +66,15 @@ const CourseRegistration = () => {
 
     registerCourse({ studentId, classId: selectedClassObj.classId })
       .then((res) => {
-        swal("Thành Công", res.data?.message || "Đăng ký thành công!", "success");
+        swal(
+          "Thành Công",
+          res.data?.message || "Đăng ký thành công!",
+          "success"
+        );
       })
       .catch((err) => {
-        const errorMessage = err.message || "Đăng ký thất bại. Vui lòng thử lại.";
+        const errorMessage =
+          err.message || "Đăng ký thất bại. Vui lòng thử lại.";
         swal("Lỗi", errorMessage, "error");
       });
   };
@@ -100,9 +110,15 @@ const CourseRegistration = () => {
 
       doc.autoTable({
         startY: 80,
-        head: [["#", "Mã MH", "Tên môn", "Lớp", "Số tín chỉ", "Điểm", "Kết quả"]],
+        head: [
+          ["#", "Mã MH", "Tên môn", "Lớp", "Số tín chỉ", "Điểm", "Kết quả"],
+        ],
         body: tableData,
-        styles: { font: "RobotoCondensed-Regular", fontStyle: "normal", fontSize: 11 },
+        styles: {
+          font: "RobotoCondensed-Regular",
+          fontStyle: "normal",
+          fontSize: 11,
+        },
       });
 
       const finalY = doc.autoTable.previous.finalY || 80;
@@ -123,13 +139,20 @@ const CourseRegistration = () => {
     if (!reason) return;
 
     try {
-      const res = await cancelRegistration(registrationId.registrationId, reason);
+      const res = await cancelRegistration(
+        registrationId.registrationId,
+        reason
+      );
       swal("Thành Công", res?.data?.message || "Hủy thành công!", "success");
 
       const refresh = await getRegistration(studentId);
       refresh.success && setRegistrations(refresh.data);
     } catch (error) {
-      swal("Lỗi", error?.response?.data?.message || "Hủy đăng ký thất bại.", "error");
+      swal(
+        "Lỗi",
+        error?.response?.data?.message || "Hủy đăng ký thất bại.",
+        "error"
+      );
     }
   };
 
@@ -144,9 +167,15 @@ const CourseRegistration = () => {
           <Row>
             <Col sm={3}>
               <Nav variant="pills" className="flex-column">
-                <Nav.Item><Nav.Link eventKey="register">📌 Đăng ký</Nav.Link></Nav.Item>
-                <Nav.Item><Nav.Link eventKey="cancel">🗑️ Hủy đăng ký</Nav.Link></Nav.Item>
-                <Nav.Item><Nav.Link eventKey="transcript">🖨️ In bảng điểm</Nav.Link></Nav.Item>
+                <Nav.Item>
+                  <Nav.Link eventKey="register">📌 Đăng ký</Nav.Link>
+                </Nav.Item>
+                <Nav.Item>
+                  <Nav.Link eventKey="cancel">🗑️ Hủy đăng ký</Nav.Link>
+                </Nav.Item>
+                <Nav.Item>
+                  <Nav.Link eventKey="transcript">🖨️ In bảng điểm</Nav.Link>
+                </Nav.Item>
               </Nav>
             </Col>
 
@@ -174,7 +203,8 @@ const CourseRegistration = () => {
                           <option value="">-- Chọn lớp --</option>
                           {classList.map((cls) => (
                             <option key={cls._id} value={cls._id}>
-                              {cls.classId} - {cls.course?.name} ({cls.instructor})
+                              {cls.classId} - {cls.course?.name} (
+                              {cls.instructor})
                             </option>
                           ))}
                         </Form.Select>
@@ -204,7 +234,11 @@ const CourseRegistration = () => {
                     </thead>
                     <tbody>
                       {registrations.length === 0 ? (
-                        <tr><td colSpan="7" className="text-center">Không có đăng ký nào.</td></tr>
+                        <tr>
+                          <td colSpan="7" className="text-center">
+                            Không có đăng ký nào.
+                          </td>
+                        </tr>
                       ) : (
                         registrations.map((reg, index) => (
                           <tr key={reg._id}>
@@ -213,13 +247,19 @@ const CourseRegistration = () => {
                             <td>{reg.class.course.name}</td>
                             <td>{reg.class.classId}</td>
                             <td>{reg.class.instructor}</td>
-                            <td>{reg.status === "cancelled" ? "Đã hủy" : "Hoạt động"}</td>
+                            <td>
+                              {reg.status === "cancelled"
+                                ? "Đã hủy"
+                                : "Hoạt động"}
+                            </td>
                             <td>
                               {reg.status !== "cancelled" && (
                                 <Button
                                   variant="danger"
                                   size="sm"
-                                  onClick={() => handleCancel({ registrationId: reg._id })}
+                                  onClick={() =>
+                                    handleCancel({ registrationId: reg._id })
+                                  }
                                 >
                                   <BsFillTrashFill />
                                 </Button>
@@ -236,7 +276,9 @@ const CourseRegistration = () => {
                 <Tab.Pane eventKey="transcript">
                   <h5 className="mb-3">In bảng điểm sinh viên</h5>
                   {registrations.length === 0 ? (
-                    <Alert variant="info">Không có sinh viên đang đăng ký.</Alert>
+                    <Alert variant="info">
+                      Không có sinh viên đang đăng ký.
+                    </Alert>
                   ) : (
                     <Table bordered hover>
                       <thead>
@@ -259,7 +301,9 @@ const CourseRegistration = () => {
                               <Button
                                 variant="outline-primary"
                                 size="sm"
-                                onClick={() => handlePrint(reg.student.studentId)}
+                                onClick={() =>
+                                  handlePrint(reg.student.studentId)
+                                }
                               >
                                 <BsPrinter className="me-1" /> In PDF
                               </Button>

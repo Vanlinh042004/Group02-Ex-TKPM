@@ -1,4 +1,4 @@
-import { get } from "../Utils/request";
+import { get } from "../utils/request";
 export const getCountries = async () => {
   return get(`/phone-numbers`);
 };

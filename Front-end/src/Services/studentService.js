@@ -1,4 +1,4 @@
-import { post, get, remove, patch } from "../Utils/request";
+import { post, get, remove, patch } from "../utils/request";
 export const getStudent = async () => {
   return get(`/students`);
 };

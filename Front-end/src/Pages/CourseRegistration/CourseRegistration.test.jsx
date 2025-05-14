@@ -14,8 +14,8 @@ jest.mock("../../Services/courseRegistrationService", () => ({
 
 jest.mock("sweetalert", () => jest.fn());
 
-import * as classService from "../../Services/classService";
-import * as courseRegistrationService from "../../Services/courseRegistrationService";
+import * as classService from "../../services/classService";
+import * as courseRegistrationService from "../../services/courseRegistrationService";
 import swal from "sweetalert";
 
 describe("CourseRegistration", () => {
@@ -31,7 +31,11 @@ describe("CourseRegistration", () => {
         {
           _id: "67fbde0d361222eec6cfd931",
           student: { studentId: "67fab093c2ee7a71f3eb27ef" },
-          class: { course: { name: "Math" }, classId: "CSC10001-11", instructor: "Mr.A" },
+          class: {
+            course: { name: "Math" },
+            classId: "CSC10001-11",
+            instructor: "Mr.A",
+          },
           status: "active",
         },
       ],
@@ -47,7 +51,9 @@ describe("CourseRegistration", () => {
 
   test("render input nhập mã sinh viên", () => {
     render(<CourseRegistration />);
-    expect(screen.getByPlaceholderText("Nhập mã sinh viên")).toBeInTheDocument();
+    expect(
+      screen.getByPlaceholderText("Nhập mã sinh viên")
+    ).toBeInTheDocument();
   });
 
   test("render combobox lớp học", async () => {
@@ -58,32 +64,48 @@ describe("CourseRegistration", () => {
   });
 
   test("hiển thị lỗi khi studentId không tồn tại", async () => {
-    courseRegistrationService.registerCourse.mockRejectedValue(new Error("Không tìm thấy sinh viên."));
+    courseRegistrationService.registerCourse.mockRejectedValue(
+      new Error("Không tìm thấy sinh viên.")
+    );
 
     render(<CourseRegistration />);
     await waitFor(() => expect(classService.getClasses).toHaveBeenCalled());
 
-    fireEvent.change(screen.getByPlaceholderText("Nhập mã sinh viên"), { target: { value: "SV0004" } });
-    fireEvent.change(screen.getByRole("combobox"), { target: { value: "CSC10001-11" } });
+    fireEvent.change(screen.getByPlaceholderText("Nhập mã sinh viên"), {
+      target: { value: "SV0004" },
+    });
+    fireEvent.change(screen.getByRole("combobox"), {
+      target: { value: "CSC10001-11" },
+    });
 
-    fireEvent.click(screen.getByRole('button', { name: /Xác nhận đăng ký/i }));
+    fireEvent.click(screen.getByRole("button", { name: /Xác nhận đăng ký/i }));
 
     await waitFor(() => {
       expect(courseRegistrationService.registerCourse).toHaveBeenCalled();
-      expect(swal).toHaveBeenCalledWith("Lỗi", "Không tìm thấy sinh viên.", "error");
+      expect(swal).toHaveBeenCalledWith(
+        "Lỗi",
+        "Không tìm thấy sinh viên.",
+        "error"
+      );
     });
   });
 
   test("hiển thị lỗi khi lớp đã đủ người", async () => {
-    courseRegistrationService.registerCourse.mockRejectedValue(new Error("Lớp đã đủ sinh viên."));
+    courseRegistrationService.registerCourse.mockRejectedValue(
+      new Error("Lớp đã đủ sinh viên.")
+    );
 
     render(<CourseRegistration />);
     await waitFor(() => expect(classService.getClasses).toHaveBeenCalled());
 
-    fireEvent.change(screen.getByPlaceholderText("Nhập mã sinh viên"), { target: { value: "SV004" } });
-    fireEvent.change(screen.getByRole("combobox"), { target: { value: "CSC10001-11" } });
+    fireEvent.change(screen.getByPlaceholderText("Nhập mã sinh viên"), {
+      target: { value: "SV004" },
+    });
+    fireEvent.change(screen.getByRole("combobox"), {
+      target: { value: "CSC10001-11" },
+    });
 
-    fireEvent.click(screen.getByRole('button', { name: /Xác nhận đăng ký/i }));
+    fireEvent.click(screen.getByRole("button", { name: /Xác nhận đăng ký/i }));
 
     await waitFor(() => {
       expect(courseRegistrationService.registerCourse).toHaveBeenCalled();
@@ -92,25 +114,37 @@ describe("CourseRegistration", () => {
   });
 
   test("hiển thị lỗi khi chưa học môn tiên quyết", async () => {
-    courseRegistrationService.registerCourse.mockRejectedValue(new Error("Chưa học môn tiên quyết."));
+    courseRegistrationService.registerCourse.mockRejectedValue(
+      new Error("Chưa học môn tiên quyết.")
+    );
 
     render(<CourseRegistration />);
     await waitFor(() => expect(classService.getClasses).toHaveBeenCalled());
 
-    fireEvent.change(screen.getByPlaceholderText("Nhập mã sinh viên"), { target: { value: "SV003" } });
-    fireEvent.change(screen.getByRole("combobox"), { target: { value: "CSC10001-11" } });
+    fireEvent.change(screen.getByPlaceholderText("Nhập mã sinh viên"), {
+      target: { value: "SV003" },
+    });
+    fireEvent.change(screen.getByRole("combobox"), {
+      target: { value: "CSC10001-11" },
+    });
 
     fireEvent.click(screen.getByText(/Xác nhận đăng ký/i));
 
     await waitFor(() => {
       expect(courseRegistrationService.registerCourse).toHaveBeenCalled();
-      expect(swal).toHaveBeenCalledWith("Lỗi", "Chưa học môn tiên quyết.", "error");
+      expect(swal).toHaveBeenCalledWith(
+        "Lỗi",
+        "Chưa học môn tiên quyết.",
+        "error"
+      );
     });
   });
 
   test("hủy đăng ký thành công", async () => {
     render(<CourseRegistration />);
-    await waitFor(() => expect(courseRegistrationService.getRegistration).toHaveBeenCalled());
+    await waitFor(() =>
+      expect(courseRegistrationService.getRegistration).toHaveBeenCalled()
+    );
 
     fireEvent.click(screen.getByText(/🗑️ Hủy đăng ký/i));
 
@@ -152,14 +186,22 @@ describe("CourseRegistration", () => {
 
   test("click vào nút xác nhận đăng ký", async () => {
     render(<CourseRegistration />);
-    await waitFor(() => expect(screen.getByRole("button", { name: /Xác nhận đăng ký/i })).toBeInTheDocument());
+    await waitFor(() =>
+      expect(
+        screen.getByRole("button", { name: /Xác nhận đăng ký/i })
+      ).toBeInTheDocument()
+    );
   });
 
   test("hiển thị lỗi khi không chọn lớp", async () => {
-    courseRegistrationService.registerCourse.mockRejectedValue(new Error("Chưa chọn lớp học"));
+    courseRegistrationService.registerCourse.mockRejectedValue(
+      new Error("Chưa chọn lớp học")
+    );
 
     render(<CourseRegistration />);
-    fireEvent.change(screen.getByPlaceholderText("Nhập mã sinh viên"), { target: { value: "SV002" } });
+    fireEvent.change(screen.getByPlaceholderText("Nhập mã sinh viên"), {
+      target: { value: "SV002" },
+    });
     fireEvent.click(screen.getByRole("button", { name: /Xác nhận đăng ký/i }));
 
     await waitFor(() => {
@@ -175,7 +217,9 @@ describe("CourseRegistration", () => {
   });
 
   test("load danh sách đăng ký lỗi", async () => {
-    courseRegistrationService.getRegistration.mockRejectedValue(new Error("API error"));
+    courseRegistrationService.getRegistration.mockRejectedValue(
+      new Error("API error")
+    );
 
     render(<CourseRegistration />);
     await waitFor(() => {
@@ -184,7 +228,9 @@ describe("CourseRegistration", () => {
   });
 
   test("hủy đăng ký thất bại", async () => {
-    courseRegistrationService.cancelRegistration.mockRejectedValue(new Error("Hủy thất bại"));
+    courseRegistrationService.cancelRegistration.mockRejectedValue(
+      new Error("Hủy thất bại")
+    );
 
     render(<CourseRegistration />);
     await waitFor(() => {
@@ -194,7 +240,9 @@ describe("CourseRegistration", () => {
 
   test("xác nhận hủy đăng ký từ swal", async () => {
     render(<CourseRegistration />);
-    await waitFor(() => expect(screen.getByText(/🗑️ Hủy đăng ký/i)).toBeInTheDocument());
+    await waitFor(() =>
+      expect(screen.getByText(/🗑️ Hủy đăng ký/i)).toBeInTheDocument()
+    );
     swal.mockResolvedValue("Lý do test");
   });
 });
