@@ -1,6 +1,5 @@
 import "bootstrap/dist/css/bootstrap.min.css";
-import "../../style/Home.scss";
-import { useNavigate } from "react-router-dom";
+import "../../styles/Home.scss";
 import {
   DeleteOutlined,
   PlusOutlined,
@@ -160,7 +159,6 @@ function Student() {
     }
     return false;
   };
-  const navigate = useNavigate();
 
   return (
     <>
