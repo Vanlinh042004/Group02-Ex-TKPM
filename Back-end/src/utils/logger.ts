@@ -16,15 +16,28 @@ export interface LogOptions {
   details?: any;
 }
 
+interface AuditOptions {
+  entityType: string;
+  entityId: string;
+  before?: any;
+  after?: any;
+  userId?: string;
+}
+
 export class Logger {
   private static instance: Logger;
-  private logDir: string;
+  private readonly logDir: string;
   private currentLogFile: string;
-  private logLevel: LogLevel;
+  private readonly logLevel: LogLevel;
+
+  private static readonly DEFAULT_MODULE = 'APP';
+  private static readonly DEFAULT_OPERATION = '-';
+  private static readonly SYSTEM_USER = 'SYSTEM';
+  private static readonly AUDIT_MODULE = 'AUDIT';
 
   private constructor() {
     this.logDir = path.join(process.cwd(), 'logs');
-    this.logLevel = (process.env.LOG_LEVEL as LogLevel) || LogLevel.INFO;
+    this.logLevel = this.determineLogLevel();
     this.ensureLogDirectory();
     this.setCurrentLogFile();
   }
@@ -34,6 +47,10 @@ export class Logger {
       Logger.instance = new Logger();
     }
     return Logger.instance;
+  }
+
+  private determineLogLevel(): LogLevel {
+    return (process.env.LOG_LEVEL as LogLevel) || LogLevel.INFO;
   }
 
   private ensureLogDirectory(): void {
@@ -61,26 +78,26 @@ export class Logger {
     options?: LogOptions
   ): string {
     const timestamp = format(new Date(), 'yyyy-MM-dd HH:mm:ss.SSS');
-    const module = options?.module || 'APP';
-    const operation = options?.operation || '-';
-    const userId = options?.userId || 'SYSTEM';
+    const module = options?.module || Logger.DEFAULT_MODULE;
+    const operation = options?.operation || Logger.DEFAULT_OPERATION;
+    const userId = options?.userId || Logger.SYSTEM_USER;
 
     let logEntry = `[${timestamp}] [${level}] [${module}] [${operation}] [${userId}] ${message}`;
 
     if (options?.details) {
-      let details: string;
-      try {
-        details =
-          typeof options.details === 'string'
-            ? options.details
-            : JSON.stringify(options.details);
-        logEntry += ` [DETAILS: ${details}]`;
-      } catch (error) {
-        logEntry += ` [DETAILS: Unable to stringify]`;
-      }
+      const details = this.formatDetails(options.details);
+      logEntry += ` [DETAILS: ${details}]`;
     }
 
     return logEntry;
+  }
+
+  private formatDetails(details: any): string {
+    try {
+      return typeof details === 'string' ? details : JSON.stringify(details);
+    } catch (error) {
+      return 'Unable to stringify';
+    }
   }
 
   private writeToFile(entry: string): void {
@@ -115,10 +132,7 @@ export class Logger {
 
     const logEntry = this.formatLogEntry(level, message, options);
 
-    // Write to console
     this.writeToConsole(level, logEntry);
-
-    // Write to file
     this.writeToFile(logEntry);
   }
 
@@ -147,19 +161,29 @@ export class Logger {
     after?: any,
     userId?: string
   ): void {
-    const options: LogOptions = {
-      module: 'AUDIT',
-      operation: operation,
-      userId: userId || 'SYSTEM',
-      details: {
+    const auditOptions: LogOptions = {
+      module: Logger.AUDIT_MODULE,
+      operation,
+      userId: userId || Logger.SYSTEM_USER,
+      details: this.prepareAuditDetails({
         entityType,
         entityId,
-        before: before ? JSON.stringify(before) : undefined,
-        after: after ? JSON.stringify(after) : undefined,
-      },
+        before,
+        after,
+        userId,
+      }),
     };
 
-    this.info(`${operation} ${entityType} ${entityId}`, options);
+    this.info(`${operation} ${entityType} ${entityId}`, auditOptions);
+  }
+
+  private prepareAuditDetails(options: AuditOptions): any {
+    return {
+      entityType: options.entityType,
+      entityId: options.entityId,
+      before: options.before ? JSON.stringify(options.before) : undefined,
+      after: options.after ? JSON.stringify(options.after) : undefined,
+    };
   }
 }
 
