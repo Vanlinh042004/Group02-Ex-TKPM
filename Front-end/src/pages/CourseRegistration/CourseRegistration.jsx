@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
-import "../../utils_tmp/RobotoCondensed-Regular-normal";
+import "../../utils/RobotoCondensed-Regular-normal";
 
 import {
   Tab,
@@ -18,13 +18,13 @@ import {
   Stack,
 } from "react-bootstrap";
 
-import { getClasses } from "../../services_tmp/classService";
+import { getClasses } from "../../services/classService";
 import {
   registerCourse,
   getRegistration,
   cancelRegistration,
   getTranscript,
-} from "../../services_tmp/courseRegistrationService";
+} from "../../services/courseRegistrationService";
 
 import swal from "sweetalert";
 import {

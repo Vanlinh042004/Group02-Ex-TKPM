@@ -7,12 +7,9 @@ import {
   getFaculty,
   getProgram,
   getStatus,
-} from "../../services_tmp/studentService";
-import { getAllowedEmails } from "../../services_tmp/emailService";
-import {
-  getCountries,
-  getCountryConfig,
-} from "../../services_tmp/phoneService";
+} from "../../services/studentService";
+import { getAllowedEmails } from "../../services/emailService";
+import { getCountries, getCountryConfig } from "../../services/phoneService";
 const { Option } = Select;
 
 const AddStudentModal = ({

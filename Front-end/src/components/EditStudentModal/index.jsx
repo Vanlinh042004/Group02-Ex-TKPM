@@ -1,11 +1,8 @@
 import { useState, useEffect } from "react";
 import { Modal, Input, Form, Select } from "antd";
 import swal from "sweetalert";
-import { getAllowedEmails } from "../../services_tmp/emailService";
-import {
-  getCountries,
-  getCountryConfig,
-} from "../../services_tmp/phoneService";
+import { getAllowedEmails } from "../../services/emailService";
+import { getCountries, getCountryConfig } from "../../services/phoneService";
 
 import {
   getFaculty,
@@ -18,7 +15,7 @@ import {
   updateFaculty,
   updateProgram,
   updateStatus,
-} from "../../services_tmp/studentService";
+} from "../../services/studentService";
 const { Option } = Select;
 const EditStudentModal = ({
   isModalVisible,
