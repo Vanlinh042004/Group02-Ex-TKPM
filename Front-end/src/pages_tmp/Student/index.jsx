@@ -16,7 +16,7 @@ import {
   getStudent,
   deleteStudent,
   importStudent,
-} from "../../services/studentService";
+} from "../../services_tmp/studentService";
 import AddStudentModal from "../../components/AddStudentModal";
 import EditStudentModal from "../../components/EditStudentModal";
 import {

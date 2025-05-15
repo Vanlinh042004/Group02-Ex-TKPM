@@ -1,4 +1,4 @@
-import { get, post, remove } from "../utils/request";
+import { get, post, remove } from "../utils_tmp/request";
 
 export const getClasses = async () => {
   return get(`/classes`);

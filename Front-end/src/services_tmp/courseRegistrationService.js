@@ -1,4 +1,4 @@
-import { post, get, remove, patch } from "../utils/request";
+import { post, get, remove, patch } from "../utils_tmp/request";
 export const getRegistration = async () => {
   return get(`/registrations`);
 };
