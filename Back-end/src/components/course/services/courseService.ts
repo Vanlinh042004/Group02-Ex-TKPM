@@ -2,7 +2,21 @@ import Course, { ICourse } from '../models/Course';
 import Class from '../../class/models/Class';
 import Registration from '../../registration/models/Registration';
 import logger from '../../../utils/logger';
-import { Types } from 'mongoose';
+import { Types, Schema } from 'mongoose';
+
+// Các hằng số sử dụng trong service
+const THIRTY_MINUTES_IN_MS = 30 * 60 * 1000;
+const ERROR_MESSAGES = {
+  PREREQUISITE_NOT_FOUND: (prereqId: string) =>
+    `Môn tiên quyết với ID ${prereqId} không tồn tại`,
+  COURSE_NOT_FOUND: 'Khóa học không tồn tại',
+  CANNOT_CHANGE_COURSE_ID: 'Không thể thay đổi mã khóa học',
+  CANNOT_CHANGE_CREDITS:
+    'Không thể thay đổi số tín chỉ vì đã có sinh viên đăng ký',
+  CANNOT_DELETE_AFTER_TIMEOUT:
+    'Không thể xóa khóa học sau 30 phút kể từ khi tạo',
+  CANNOT_DELETE_WITH_CLASSES: 'Không thể xóa khóa học vì đã có lớp học được mở',
+};
 
 class CourseService {
   /**
@@ -12,17 +26,8 @@ class CourseService {
    */
   async createCourse(courseData: Partial<ICourse>): Promise<ICourse> {
     try {
-      // Kiểm tra môn tiên quyết có tồn tại không
-      if (courseData.prerequisites && courseData.prerequisites.length > 0) {
-        for (const prereqId of courseData.prerequisites) {
-          const prereq = await Course.findById(prereqId);
-          if (!prereq) {
-            throw new Error(`Môn tiên quyết với ID ${prereqId} không tồn tại`);
-          }
-        }
-      }
+      await this.validatePrerequisites(courseData.prerequisites);
 
-      // Tạo khóa học mới
       const course = new Course({
         ...courseData,
         createdAt: new Date(),
@@ -31,14 +36,7 @@ class CourseService {
 
       return await course.save();
     } catch (error: any) {
-      logger.error('Error creating course', {
-        module: 'CourseService',
-        operation: 'createCourse',
-        details: {
-          error: error.message,
-          stack: error.stack,
-        },
-      });
+      this.logError('createCourse', error, { courseData });
       throw error;
     }
   }
@@ -54,15 +52,7 @@ class CourseService {
         .populate('faculty', 'name')
         .populate('prerequisites', 'courseId name');
     } catch (error: any) {
-      logger.error('Error getting courses', {
-        module: 'CourseService',
-        operation: 'getCourses',
-        details: {
-          filters,
-          error: error.message,
-          stack: error.stack,
-        },
-      });
+      this.logError('getCourses', error, { filters });
       throw error;
     }
   }
@@ -78,15 +68,7 @@ class CourseService {
         .populate('faculty', 'name')
         .populate('prerequisites', 'courseId name');
     } catch (error: any) {
-      logger.error('Error getting course by ID', {
-        module: 'CourseService',
-        operation: 'getCourseById',
-        details: {
-          courseId,
-          error: error.message,
-          stack: error.stack,
-        },
-      });
+      this.logError('getCourseById', error, { courseId });
       throw error;
     }
   }
@@ -100,37 +82,17 @@ class CourseService {
   async deleteCourse(courseId: string): Promise<boolean> {
     try {
       const course = await Course.findById(courseId);
-
       if (!course) {
-        throw new Error('Khóa học không tồn tại');
+        throw new Error(ERROR_MESSAGES.COURSE_NOT_FOUND);
       }
 
-      // Kiểm tra thời gian tạo (30 phút)
-      const timeElapsed = Date.now() - course.createdAt.getTime();
-      const thirtyMinutesInMs = 30 * 60 * 1000;
-
-      if (timeElapsed > thirtyMinutesInMs) {
-        throw new Error('Không thể xóa khóa học sau 30 phút kể từ khi tạo');
-      }
-
-      // Kiểm tra xem có lớp học nào được mở cho khóa học này không
-      const classes = await Class.find({ course: courseId });
-      if (classes.length > 0) {
-        throw new Error('Không thể xóa khóa học vì đã có lớp học được mở');
-      }
+      await this.validateDeletionTimeConstraint(course.createdAt);
+      await this.validateNoClassesExist(courseId);
 
       await Course.findByIdAndDelete(courseId);
       return true;
     } catch (error: any) {
-      logger.error('Error deleting course', {
-        module: 'CourseService',
-        operation: 'deleteCourse',
-        details: {
-          courseId,
-          error: error.message,
-          stack: error.stack,
-        },
-      });
+      this.logError('deleteCourse', error, { courseId });
       throw error;
     }
   }
@@ -147,49 +109,21 @@ class CourseService {
   ): Promise<ICourse | null> {
     try {
       const course = await Course.findById(courseId);
-
       if (!course) {
-        throw new Error('Khóa học không tồn tại');
+        throw new Error(ERROR_MESSAGES.COURSE_NOT_FOUND);
       }
 
-      // Không cho phép thay đổi mã khóa học
-      if (courseData.courseId && courseData.courseId !== course.courseId) {
-        throw new Error('Không thể thay đổi mã khóa học');
-      }
+      this.validateCourseIdUnchanged(course.courseId, courseData.courseId);
 
-      // Kiểm tra nếu thay đổi số tín chỉ
-      if (courseData.credits && courseData.credits !== course.credits) {
-        // Kiểm tra xem đã có sinh viên đăng ký chưa
-        const classes = await Class.find({ course: courseId });
-        if (classes.length > 0) {
-          const classIds = classes.map((c) => c._id);
-          const registrations = await Registration.findOne({
-            class: { $in: classIds },
-            status: 'active',
-          });
-
-          if (registrations) {
-            throw new Error(
-              'Không thể thay đổi số tín chỉ vì đã có sinh viên đăng ký'
-            );
-          }
-        }
+      if (this.isCreditsChanged(course.credits, courseData.credits)) {
+        await this.validateNoActiveRegistrations(courseId);
       }
 
       return await Course.findByIdAndUpdate(courseId, courseData, {
         new: true,
       });
     } catch (error: any) {
-      logger.error('Error updating course', {
-        module: 'CourseService',
-        operation: 'updateCourse',
-        details: {
-          courseId,
-          updateData: courseData,
-          error: error.message,
-          stack: error.stack,
-        },
-      });
+      this.logError('updateCourse', error, { courseId, courseData });
       throw error;
     }
   }
@@ -201,21 +135,19 @@ class CourseService {
    */
   async deactivateCourse(courseId: string): Promise<ICourse | null> {
     try {
-      return await Course.findByIdAndUpdate(
+      const result = await Course.findByIdAndUpdate(
         courseId,
         { isActive: false },
         { new: true }
       );
+
+      if (!result) {
+        throw new Error(ERROR_MESSAGES.COURSE_NOT_FOUND);
+      }
+
+      return result;
     } catch (error: any) {
-      logger.error('Error deactivating course', {
-        module: 'CourseService',
-        operation: 'deactivateCourse',
-        details: {
-          courseId,
-          error: error.message,
-          stack: error.stack,
-        },
-      });
+      this.logError('deactivateCourse', error, { courseId });
       throw error;
     }
   }
@@ -232,17 +164,82 @@ class CourseService {
       });
       return count > 0;
     } catch (error: any) {
-      logger.error('Error checking if course is prerequisite', {
-        module: 'CourseService',
-        operation: 'isPrerequisiteForOtherCourses',
-        details: {
-          courseId,
-          error: error.message,
-          stack: error.stack,
-        },
-      });
+      this.logError('isPrerequisiteForOtherCourses', error, { courseId });
       throw error;
     }
+  }
+
+  // Private helper methods
+
+  private async validatePrerequisites(
+    prerequisites?: Schema.Types.ObjectId[]
+  ): Promise<void> {
+    if (!prerequisites || prerequisites.length === 0) {
+      return;
+    }
+
+    for (const prereqId of prerequisites) {
+      const prereq = await Course.findById(prereqId);
+      if (!prereq) {
+        throw new Error(
+          ERROR_MESSAGES.PREREQUISITE_NOT_FOUND(prereqId.toString())
+        );
+      }
+    }
+  }
+
+  private async validateDeletionTimeConstraint(createdAt: Date): Promise<void> {
+    const timeElapsed = Date.now() - createdAt.getTime();
+    if (timeElapsed > THIRTY_MINUTES_IN_MS) {
+      throw new Error(ERROR_MESSAGES.CANNOT_DELETE_AFTER_TIMEOUT);
+    }
+  }
+
+  private async validateNoClassesExist(courseId: string): Promise<void> {
+    const classes = await Class.find({ course: courseId });
+    if (classes.length > 0) {
+      throw new Error(ERROR_MESSAGES.CANNOT_DELETE_WITH_CLASSES);
+    }
+  }
+
+  private validateCourseIdUnchanged(originalId: string, newId?: string): void {
+    if (newId && newId !== originalId) {
+      throw new Error(ERROR_MESSAGES.CANNOT_CHANGE_COURSE_ID);
+    }
+  }
+
+  private isCreditsChanged(
+    originalCredits: number,
+    newCredits?: number
+  ): boolean {
+    return newCredits !== undefined && newCredits !== originalCredits;
+  }
+
+  private async validateNoActiveRegistrations(courseId: string): Promise<void> {
+    const classes = await Class.find({ course: courseId });
+    if (classes.length > 0) {
+      const classIds = classes.map((c) => c._id);
+      const registrations = await Registration.findOne({
+        class: { $in: classIds },
+        status: 'active',
+      });
+
+      if (registrations) {
+        throw new Error(ERROR_MESSAGES.CANNOT_CHANGE_CREDITS);
+      }
+    }
+  }
+
+  private logError(operation: string, error: any, details?: any): void {
+    logger.error(`Error in ${operation}`, {
+      module: 'CourseService',
+      operation,
+      details: {
+        ...details,
+        error: error.message,
+        stack: error.stack,
+      },
+    });
   }
 }
 

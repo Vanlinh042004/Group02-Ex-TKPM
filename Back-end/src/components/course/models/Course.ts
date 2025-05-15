@@ -11,7 +11,7 @@ export interface ICourse extends Document {
   createdAt: Date;
 }
 
-const CourseSchema: Schema = new Schema(
+const CourseSchema = new Schema(
   {
     courseId: {
       type: String,
@@ -54,12 +54,12 @@ const CourseSchema: Schema = new Schema(
     },
   },
   {
-    timestamps: true,
+    timestamps: true, // Tự động tạo và cập nhật createdAt, updatedAt
   }
 );
 
-// Tạo index cho tìm kiếm nhanh hơn
-CourseSchema.index({ courseId: 1 });
-CourseSchema.index({ name: 'text' });
+// Tạo indexes để tối ưu hóa các truy vấn phổ biến
+CourseSchema.index({ courseId: 1 }); // Truy vấn theo courseId
+CourseSchema.index({ name: 'text' }); // Tìm kiếm theo tên
 
 export default mongoose.model<ICourse>('Course', CourseSchema);
