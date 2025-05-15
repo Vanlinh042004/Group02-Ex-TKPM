@@ -1,8 +1,8 @@
 import { Button, message, Modal, Form, Input, InputNumber, Select } from "antd";
 import { PlusOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
-import "../../style/Courses.scss";
+import "../../styles/Courses.scss";
 import { getFaculty } from "../../services/studentService";
-import { getClasses, addClass } from "../../services/classService";
+import { addClass } from "../../services/classService";
 import swal from "sweetalert";
 import { useState, useEffect } from "react";
 import {
@@ -12,7 +12,6 @@ import {
   deactivateCourse,
   updateCourse,
 } from "../../services/coursesService";
-import { useNavigate } from "react-router-dom";
 
 function Course() {
   const [courses, setCourses] = useState([]);
@@ -25,7 +24,6 @@ function Course() {
   const [editForm] = Form.useForm();
   const [classForm] = Form.useForm();
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchFaculties = async () => {

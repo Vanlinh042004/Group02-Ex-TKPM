@@ -1,8 +1,8 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Container, Navbar, Nav } from "react-bootstrap";
 import { Link, NavLink } from "react-router-dom";
-import "../../style/style.css";
-import "../../style/Header.scss";
+import "../../styles/style.css";
+import "../../styles/Header.scss";
 function Header() {
   return (
     <>
