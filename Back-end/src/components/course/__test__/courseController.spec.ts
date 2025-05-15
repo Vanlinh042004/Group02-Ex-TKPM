@@ -9,7 +9,7 @@ const mockRes = () => {
   res.json = jest.fn().mockReturnValue(res);
   return res;
 };
-
+ 
 describe('CourseController', () => {
   afterEach(() => {
     jest.clearAllMocks();
