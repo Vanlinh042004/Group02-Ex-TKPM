@@ -398,7 +398,7 @@ describe('RegistrationService - getAllRegistrations', () => {
   it('should return populated registrations', async () => {
     const mockData = [{ _id: '1' }];
 
-    // Mock chaining populate đúng cách và trả về mockData
+   
     const mockPopulateCourse = jest.fn().mockReturnThis();
     const mockPopulateClass = jest.fn().mockReturnValue(Promise.resolve(mockData));
 
@@ -412,12 +412,12 @@ describe('RegistrationService - getAllRegistrations', () => {
   });
 
   it('should log error and throw when find fails', async () => {
-    // Mock find ném lỗi
+  
     (Registration.find as jest.Mock).mockImplementation(() => {
       throw new Error('Database failure');
     });
 
-    // Giả lập logger.error để kiểm tra có được gọi
+   
     const loggerErrorSpy = jest.spyOn(require('../../../utils/logger'), 'error').mockImplementation(() => {});
 
     await expect(registrationService.getAllRegistrations()).rejects.toThrow('Database failure');
@@ -477,23 +477,23 @@ describe('RegistrationService - generateTranscript', () => {
       grade: 9,
     };
 
-    // Mock Student.findOne() với chuỗi .populate().populate()... và exec()
+   
     const mockPopulate = jest.fn()
-      .mockReturnThis(); // để chain populate
+      .mockReturnThis(); 
 
     (Student.findOne as jest.Mock).mockReturnValue({
       populate: mockPopulate,
       exec: jest.fn().mockResolvedValue(student),
     });
 
-    // Mock Registration.find().populate().exec() trả về mảng đăng ký
+  
     (Registration.find as jest.Mock).mockReturnValue({
       populate: jest.fn().mockResolvedValue([reg]),
     });
 
     const result = await registrationService.generateTranscript('s1');
 
-    // Kiểm tra các trường trả về
+    
     expect(result).toEqual(expect.objectContaining({
       studentInfo: expect.any(Object),
       courses: expect.any(Array),
@@ -501,7 +501,7 @@ describe('RegistrationService - generateTranscript', () => {
       totalCredits: expect.any(Number),
     }));
 
-    // Kiểm tra chi tiết khóa học trong bảng điểm
+    
     expect(result.courses[0]).toMatchObject({
       classId: 'cl1',
       courseId: 'c1',
@@ -511,7 +511,7 @@ describe('RegistrationService - generateTranscript', () => {
       status: 'Passed',
     });
 
-    // Kiểm tra gpa và totalCredits chính xác
+   
     expect(result.gpa).toBeCloseTo(9);
     expect(result.totalCredits).toBe(3);
   });
