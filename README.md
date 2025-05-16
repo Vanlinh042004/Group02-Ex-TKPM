@@ -369,3 +369,7 @@ npm start
 ## Hình ảnh minh họa
 
 ### **Unit Test**
+
+<img src="FeatureImg/Ex06/image1.png"  />
+<img src="FeatureImg/Ex06/image2.png"  />
+<img src="FeatureImg/Ex06/image3.png"  />
