@@ -1,0 +1,13 @@
+/Report
+README.md
+/FeatureImg
+/.node_modules
+.vscode
+package-lock.json
+package.json
+launch.json
+launch.json
+node_modules/
+dist/
+logs/
+coverage/
