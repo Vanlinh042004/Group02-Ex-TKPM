@@ -7,7 +7,6 @@ import { useTranslation } from "react-i18next";
 
 function Header() {
   const { t, i18n } = useTranslation("header");
-
   return (
     <>
       <Navbar variant="light" expand="lg" fixed="top">

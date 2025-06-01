@@ -12,6 +12,7 @@ import {
   deactivateCourse,
   updateCourse,
 } from "../../services/coursesService";
+import { useTranslation } from "react-i18next";
 
 function Course() {
   const [courses, setCourses] = useState([]);
@@ -24,6 +25,7 @@ function Course() {
   const [editForm] = Form.useForm();
   const [classForm] = Form.useForm();
   const [loading, setLoading] = useState(false);
+  const { t } = useTranslation("course");
 
   useEffect(() => {
     const fetchFaculties = async () => {
@@ -33,15 +35,12 @@ function Course() {
     fetchFaculties();
     const fetchCourses = async () => {
       const res = await getCourses();
-      //console.log(res);
       setCourses(res.data);
     };
     fetchCourses();
   }, []);
 
-  const showAddModal = () => {
-    setIsAddModalVisible(true);
-  };
+  const showAddModal = () => setIsAddModalVisible(true);
 
   const handleCancel = () => {
     setIsAddModalVisible(false);
@@ -50,22 +49,18 @@ function Course() {
 
   const handleAddCourse = async (values) => {
     try {
-      //console.log(values);
       if (values.credits < 2) {
-        swal("Thất bại!", "Số tín chỉ phải lớn hơn hoặc bằng 2!", "error");
+        swal(t("failAdd"), t("failCredit"), "error");
         return;
       }
       await addCourse(values);
-      swal("Thêm khóa học thành công!", {
-        icon: "success",
-      });
+      swal(t("successAdd"), { icon: "success" });
       const res = await getCourses();
       setCourses(res.data);
       setIsAddModalVisible(false);
       form.resetFields();
     } catch (error) {
-      //console.error("Error adding course:", error);
-      message.error("Có lỗi xảy ra khi thêm khóa học!");
+      message.error(t("failAdd"));
     }
   };
 
@@ -73,20 +68,17 @@ function Course() {
     try {
       setLoading(true);
       const result = await swal({
-        title: "Xác nhận xóa?",
-        text: "Bạn chỉ có thể xóa khóa học trong vòng 30 phút sau khi tạo và khi chưa có sinh viên đăng ký!",
+        title: t("confirmDeleteTitle"),
+        text: t("confirmDeleteText"),
         icon: "warning",
-        buttons: ["Hủy", "Xóa"],
+        buttons: [t("confirmDeleteCancel"), t("confirmDeleteOk")],
         dangerMode: true,
       });
 
       if (result) {
         try {
           await deleteCourse(courseId);
-          swal("Xóa khóa học thành công!", {
-            icon: "success",
-          });
-          // Refresh danh sách khóa học
+          swal(t("successDelete"), { icon: "success" });
           const res = await getCourses();
           setCourses(res.data);
         } catch (error) {
@@ -95,10 +87,10 @@ function Course() {
             "Không thể xóa khóa học vì đã có lớp học được mở"
           ) {
             const deactivateResult = await swal({
-              title: "Không thể xóa!",
-              text: "Khóa học đã có sinh viên đăng ký. Bạn có muốn deactivate khóa học này không?",
+              title: t("cannotDeleteTitle"),
+              text: t("cannotDeleteText"),
               icon: "warning",
-              buttons: ["Hủy", "Deactivate"],
+              buttons: [t("cannotDeleteCancel"), t("cannotDeleteOk")],
               dangerMode: true,
             });
 
@@ -107,17 +99,15 @@ function Course() {
             }
           } else {
             swal(
-              "Lỗi!",
-              error.response?.data?.message ||
-                "Có lỗi xảy ra khi xóa khóa học!",
-              "error"
+              t("failDelete"),
+              error.response?.data?.message || t("failDelete"),
+              "error",
             );
           }
         }
       }
     } catch (error) {
-      //console.error("Error handling course deletion:", error);
-      swal("Lỗi!", "Có lỗi xảy ra khi xử lý yêu cầu!", "error");
+      swal(t("failDelete"), t("failDelete"), "error");
     } finally {
       setLoading(false);
     }
@@ -126,17 +116,14 @@ function Course() {
   const handleDeactivateCourse = async (courseId) => {
     try {
       await deactivateCourse(courseId);
-      swal("Thành công!", "Khóa học đã được deactivate thành công!", "success");
-      // Refresh danh sách khóa học
+      swal(t("successDeactivate"), "success");
       const res = await getCourses();
       setCourses(res.data);
     } catch (error) {
-      console.error("Error deactivating course:", error);
       swal(
-        "Lỗi!",
-        error.response?.data?.message ||
-          "Có lỗi xảy ra khi deactivate khóa học!",
-        "error"
+        t("failDeactivate"),
+        error.response?.data?.message || t("failDeactivate"),
+        "error",
       );
     }
   };
@@ -161,11 +148,8 @@ function Course() {
   const handleEditCourse = async (values) => {
     try {
       if (!selectedCourse) return;
-
       await updateCourse(selectedCourse._id, values);
-      swal("Cập nhật khóa học thành công!", {
-        icon: "success",
-      });
+      swal(t("successUpdate"), { icon: "success" });
       const res = await getCourses();
       setCourses(res.data);
       setIsEditModalVisible(false);
@@ -173,21 +157,18 @@ function Course() {
       setSelectedCourse(null);
     } catch (error) {
       if (error.response?.data?.code === "HAS_REGISTRATIONS") {
-        swal("Lỗi!", "Đã có sinh viên đăng ký!", "error");
+        swal(t("hasRegistered"), t("hasRegistered"), "error");
       } else {
         swal(
-          "Lỗi!",
-          error.response?.data?.message ||
-            "Có lỗi xảy ra khi cập nhật khóa học!",
-          "error"
+          t("failUpdate"),
+          error.response?.data?.message || t("failUpdate"),
+          "error",
         );
       }
     }
   };
 
-  const showAddClassModal = () => {
-    setIsAddClassModalVisible(true);
-  };
+  const showAddClassModal = () => setIsAddClassModalVisible(true);
 
   const handleCancelAddClass = () => {
     setIsAddClassModalVisible(false);
@@ -204,17 +185,14 @@ function Course() {
       delete dataToSend.courseId;
 
       await addClass(dataToSend);
-      swal("Thêm lớp học thành công!", {
-        icon: "success",
-      });
+      swal(t("submit"), { icon: "success" });
       setIsAddClassModalVisible(false);
       classForm.resetFields();
     } catch (error) {
-      console.error("Error adding class:", error);
       swal(
-        "Lỗi!",
-        error.response?.data?.message || "Có lỗi xảy ra khi thêm lớp học!",
-        "error"
+        t("failAdd"),
+        error.response?.data?.message || t("failAdd"),
+        "error",
       );
     } finally {
       setLoading(false);
@@ -232,7 +210,7 @@ function Course() {
           className="me-5"
           onClick={showAddModal}
         >
-          Thêm Khóa học
+          {t("addCourse")}
         </Button>
 
         <Button
@@ -242,7 +220,7 @@ function Course() {
           shape="round"
           onClick={showAddClassModal}
         >
-          Mở lớp học
+          {t("openClass")}
         </Button>
       </div>
 
@@ -259,32 +237,35 @@ function Course() {
                   >
                     <div className="course-status">
                       {!course.isActive && (
-                        <span className="deactivated-badge">Đã deactivate</span>
+                        <span className="deactivated-badge">
+                          {t("deactivated")}
+                        </span>
                       )}
                     </div>
                     <h4 className="mb-3">{course.name}</h4>
                     <p>
-                      <b>Mã số khóa học:</b> {course.courseId}
+                      <b>{t("courseId")}:</b> {course.courseId}
                     </p>
                     <p>
-                      <b>Số tín chỉ:</b> {course.credits}
+                      <b>{t("credits")}:</b> {course.credits}
                     </p>
                     <p>
-                      <b>Khoa phụ trách:</b> {course.faculty?.name || "N/A"}
+                      <b>{t("faculty")}:</b>{" "}
+                      {course.faculty?.name || t("notAvailable")}
                     </p>
                     <p>
-                      <b>Mô tả:</b> {course.description}
+                      <b>{t("description")}:</b> {course.description}
                     </p>
                     <p>
-                      <b>Môn tiên quyết:</b>{" "}
+                      <b>{t("prerequisites")}:</b>{" "}
                       {course.prerequisites.length > 0
                         ? course.prerequisites
                             .map((item) => item.name)
                             .join(", ")
-                        : "Không có"}
+                        : t("noPrerequisite")}
                     </p>
                     <p>
-                      <b>Ngày tạo:</b>{" "}
+                      <b>{t("createdAt")}:</b>{" "}
                       {new Date(course.createdAt).toLocaleString()}
                     </p>
 
@@ -297,7 +278,7 @@ function Course() {
                         disabled={!course.isActive}
                         onClick={() => showEditModal(course)}
                       >
-                        Sửa
+                        {t("edit")}
                       </Button>
                       <Button
                         type="primary"
@@ -309,7 +290,7 @@ function Course() {
                         onClick={() => handleDeleteCourse(course._id)}
                         disabled={!course.isActive}
                       >
-                        {course.isActive ? "Xóa" : "Đã deactivate"}
+                        {course.isActive ? t("delete") : t("deactivatedBtn")}
                       </Button>
                     </div>
                   </div>
@@ -320,7 +301,7 @@ function Course() {
         </section>
       </div>
       <Modal
-        title="Thêm Khóa Học Mới"
+        title={t("addCourseModalTitle")}
         open={isAddModalVisible}
         onCancel={handleCancel}
         footer={null}
@@ -328,46 +309,41 @@ function Course() {
         <Form form={form} layout="vertical" onFinish={handleAddCourse}>
           <Form.Item
             name="courseId"
-            label="Mã khóa học"
-            rules={[{ required: true, message: "Vui lòng nhập mã khóa học!" }]}
+            label={t("courseId")}
+            rules={[{ required: true, message: t("failAdd") }]}
           >
-            <Input placeholder="Nhập mã khóa học" />
+            <Input placeholder={t("courseId")} />
           </Form.Item>
 
           <Form.Item
             name="name"
-            label="Tên khóa học"
-            rules={[{ required: true, message: "Vui lòng nhập tên khóa học!" }]}
+            label={t("addCourse")}
+            rules={[{ required: true, message: t("failAdd") }]}
           >
-            <Input placeholder="Nhập tên khóa học" />
+            <Input placeholder={t("addCourse")} />
           </Form.Item>
 
           <Form.Item
             name="credits"
-            label="Số tín chỉ"
+            label={t("credits")}
             rules={[
-              { required: true, message: "Vui lòng nhập số tín chỉ!" },
+              { required: true, message: t("failAdd") },
               {
                 type: "number",
                 min: 2,
-                message: "Số tín chỉ phải lớn hơn hoặc bằng 2",
+                message: t("failCredit"),
               },
             ]}
           >
-            <InputNumber
-              placeholder="Nhập số tín chỉ"
-              style={{ width: "100%" }}
-            />
+            <InputNumber placeholder={t("credits")} style={{ width: "100%" }} />
           </Form.Item>
 
           <Form.Item
             name="faculty"
-            label="Khoa phụ trách"
-            rules={[
-              { required: true, message: "Vui lòng chọn khoa phụ trách!" },
-            ]}
+            label={t("faculty")}
+            rules={[{ required: true, message: t("failAdd") }]}
           >
-            <Select placeholder="Chọn khoa phụ trách">
+            <Select placeholder={t("faculty")}>
               {faculties.map((faculty) => (
                 <Select.Option value={faculty._id} key={faculty._id}>
                   {faculty.name}
@@ -376,16 +352,12 @@ function Course() {
             </Select>
           </Form.Item>
 
-          <Form.Item name="description" label="Mô tả">
-            <Input.TextArea rows={4} placeholder="Nhập mô tả khóa học" />
+          <Form.Item name="description" label={t("description")}>
+            <Input.TextArea rows={4} placeholder={t("description")} />
           </Form.Item>
 
-          <Form.Item name="prerequisites" label="Môn tiên quyết">
-            <Select
-              mode="multiple"
-              placeholder="Chọn môn tiên quyết (nếu có)"
-              allowClear
-            >
+          <Form.Item name="prerequisites" label={t("prerequisites")}>
+            <Select mode="multiple" placeholder={t("prerequisites")} allowClear>
               {courses.map((course) => (
                 <Select.Option key={course._id} value={course._id}>
                   {course.name} ({course.courseId})
@@ -402,9 +374,9 @@ function Course() {
                 gap: "8px",
               }}
             >
-              <Button onClick={handleCancel}>Hủy</Button>
+              <Button onClick={handleCancel}>{t("cancel")}</Button>
               <Button type="primary" htmlType="submit">
-                Thêm khóa học
+                {t("add")}
               </Button>
             </div>
           </Form.Item>
@@ -412,7 +384,7 @@ function Course() {
       </Modal>
       {/* Modal for editing course */}
       <Modal
-        title="Chỉnh Sửa Khóa Học"
+        title={t("editCourseModalTitle")}
         open={isEditModalVisible}
         onCancel={handleEditCancel}
         footer={null}
@@ -420,27 +392,27 @@ function Course() {
         <Form form={editForm} layout="vertical" onFinish={handleEditCourse}>
           <Form.Item
             name="name"
-            label="Tên khóa học"
-            rules={[{ required: true, message: "Vui lòng nhập tên khóa học!" }]}
+            label={t("addCourse")}
+            rules={[{ required: true, message: t("failUpdate") }]}
           >
-            <Input placeholder="Nhập tên khóa học" />
+            <Input placeholder={t("addCourse")} />
           </Form.Item>
 
           <Form.Item
             name="credits"
-            label="Số tín chỉ"
+            label={t("credits")}
             rules={[
-              { required: true, message: "Vui lòng nhập số tín chỉ!" },
+              { required: true, message: t("failUpdate") },
               {
                 type: "number",
                 min: 2,
-                message: "Số tín chỉ phải lớn hơn hoặc bằng 2!",
+                message: t("failCredit"),
               },
             ]}
           >
             <InputNumber
               min={2}
-              placeholder="Nhập số tín chỉ"
+              placeholder={t("credits")}
               style={{ width: "100%" }}
               disabled={selectedCourse?.hasRegisteredStudents}
             />
@@ -448,12 +420,10 @@ function Course() {
 
           <Form.Item
             name="faculty"
-            label="Khoa phụ trách"
-            rules={[
-              { required: true, message: "Vui lòng chọn khoa phụ trách!" },
-            ]}
+            label={t("faculty")}
+            rules={[{ required: true, message: t("failUpdate") }]}
           >
-            <Select placeholder="Chọn khoa phụ trách">
+            <Select placeholder={t("faculty")}>
               {faculties.map((faculty) => (
                 <Select.Option value={faculty._id} key={faculty._id}>
                   {faculty.name}
@@ -462,8 +432,8 @@ function Course() {
             </Select>
           </Form.Item>
 
-          <Form.Item name="description" label="Mô tả">
-            <Input.TextArea rows={4} placeholder="Nhập mô tả khóa học" />
+          <Form.Item name="description" label={t("description")}>
+            <Input.TextArea rows={4} placeholder={t("description")} />
           </Form.Item>
 
           <Form.Item>
@@ -474,9 +444,9 @@ function Course() {
                 gap: "8px",
               }}
             >
-              <Button onClick={handleEditCancel}>Hủy</Button>
+              <Button onClick={handleEditCancel}>{t("cancel")}</Button>
               <Button type="primary" htmlType="submit">
-                Cập nhật
+                {t("update")}
               </Button>
             </div>
           </Form.Item>
@@ -484,7 +454,7 @@ function Course() {
       </Modal>
       {/* Modal for adding class */}
       <Modal
-        title="Mở Lớp Học Mới"
+        title={t("addClassModalTitle")}
         open={isAddClassModalVisible}
         onCancel={handleCancelAddClass}
         footer={null}
@@ -493,25 +463,25 @@ function Course() {
         <Form form={classForm} layout="vertical" onFinish={handleAddClass}>
           <Form.Item
             name="classId"
-            label="Mã lớp học"
-            rules={[{ required: true, message: "Vui lòng nhập mã lớp học!" }]}
+            label={t("classId")}
+            rules={[{ required: true, message: t("failAdd") }]}
           >
-            <Input placeholder="Nhập mã lớp học" />
+            <Input placeholder={t("classId")} />
           </Form.Item>
 
           <Form.Item
             name="courseId"
-            label="Khóa học"
-            rules={[{ required: true, message: "Vui lòng chọn khóa học!" }]}
+            label={t("selectCourse")}
+            rules={[{ required: true, message: t("failAdd") }]}
           >
-            <Select placeholder="Chọn khóa học">
+            <Select placeholder={t("selectCourse")}>
               {courses.map(
                 (course) =>
                   course.isActive && (
                     <Select.Option key={course._id} value={course._id}>
                       {course.name} ({course.courseId})
                     </Select.Option>
-                  )
+                  ),
               )}
             </Select>
           </Form.Item>
@@ -520,8 +490,8 @@ function Course() {
             <div className="col-md-6">
               <Form.Item
                 name="academicYear"
-                label="Năm học"
-                rules={[{ required: true, message: "Vui lòng nhập năm học!" }]}
+                label={t("academicYear")}
+                rules={[{ required: true, message: t("failAdd") }]}
               >
                 <Input placeholder="VD: 2023-2024" />
               </Form.Item>
@@ -529,13 +499,13 @@ function Course() {
             <div className="col-md-6">
               <Form.Item
                 name="semester"
-                label="Học kỳ"
-                rules={[{ required: true, message: "Vui lòng chọn học kỳ!" }]}
+                label={t("semester")}
+                rules={[{ required: true, message: t("failAdd") }]}
               >
-                <Select placeholder="Chọn học kỳ">
-                  <Select.Option value="1">Học kỳ 1</Select.Option>
-                  <Select.Option value="2">Học kỳ 2</Select.Option>
-                  <Select.Option value="3">Học kỳ hè</Select.Option>
+                <Select placeholder={t("semester")}>
+                  <Select.Option value="1">{t("semester1")}</Select.Option>
+                  <Select.Option value="2">{t("semester2")}</Select.Option>
+                  <Select.Option value="3">{t("semester3")}</Select.Option>
                 </Select>
               </Form.Item>
             </div>
@@ -543,50 +513,48 @@ function Course() {
 
           <Form.Item
             name="instructor"
-            label="Giảng viên"
-            rules={[
-              { required: true, message: "Vui lòng nhập tên giảng viên!" },
-            ]}
+            label={t("instructor")}
+            rules={[{ required: true, message: t("failAdd") }]}
           >
-            <Input placeholder="Nhập tên giảng viên" />
+            <Input placeholder={t("instructor")} />
           </Form.Item>
 
           <Form.Item
             name="maxStudents"
-            label="Số lượng sinh viên tối đa"
+            label={t("maxStudents")}
             rules={[
               {
                 required: true,
-                message: "Vui lòng nhập số lượng sinh viên tối đa!",
+                message: t("failAdd"),
               },
               {
                 type: "number",
                 min: 1,
-                message: "Số lượng sinh viên phải lớn hơn 0!",
+                message: t("failAdd"),
               },
             ]}
           >
             <InputNumber
               min={1}
-              placeholder="Nhập số lượng sinh viên tối đa"
+              placeholder={t("maxStudents")}
               style={{ width: "100%" }}
             />
           </Form.Item>
 
           <Form.Item
             name="schedule"
-            label="Lịch học"
-            rules={[{ required: true, message: "Vui lòng nhập lịch học!" }]}
+            label={t("schedule")}
+            rules={[{ required: true, message: t("failAdd") }]}
           >
-            <Input placeholder="VD: Thứ 2,4,6 - Tiết 1-3" />
+            <Input placeholder={t("schedule")} />
           </Form.Item>
 
           <Form.Item
             name="classroom"
-            label="Phòng học"
-            rules={[{ required: true, message: "Vui lòng nhập phòng học!" }]}
+            label={t("classroom")}
+            rules={[{ required: true, message: t("failAdd") }]}
           >
-            <Input placeholder="Nhập phòng học" />
+            <Input placeholder={t("classroom")} />
           </Form.Item>
 
           <Form.Item>
@@ -597,9 +565,9 @@ function Course() {
                 gap: "8px",
               }}
             >
-              <Button onClick={handleCancelAddClass}>Hủy</Button>
+              <Button onClick={handleCancelAddClass}>{t("cancel")}</Button>
               <Button type="primary" htmlType="submit" loading={loading}>
-                Tạo lớp học
+                {t("submit")}
               </Button>
             </div>
           </Form.Item>

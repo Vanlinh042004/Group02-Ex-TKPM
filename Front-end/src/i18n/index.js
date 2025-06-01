@@ -4,15 +4,23 @@ import enHeader from "./en/header.json";
 import viHeader from "./vi/header.json";
 import enStudent from "./en/student.json";
 import viStudent from "./vi/student.json";
+import enFooter from "./en/footer.json";
+import viFooter from "./vi/footer.json";
+import enCourse from "./en/course.json";
+import viCourse from "./vi/course.json";
 i18n.use(initReactI18next).init({
   resources: {
     en: {
       header: enHeader,
+      footer: enFooter,
       student: enStudent,
+      course: enCourse,
     },
     vi: {
       header: viHeader,
+      footer: viFooter,
       student: viStudent,
+      course: viCourse,
     },
   },
   lng: "vi",

@@ -15,7 +15,6 @@ import {
   Card,
   FloatingLabel,
   Alert,
-  Stack,
 } from "react-bootstrap";
 
 import { getClasses } from "../../services/classService";
@@ -69,7 +68,7 @@ const CourseRegistration = () => {
         swal(
           "Thành Công",
           res.data?.message || "Đăng ký thành công!",
-          "success"
+          "success",
         );
       })
       .catch((err) => {
@@ -141,7 +140,7 @@ const CourseRegistration = () => {
     try {
       const res = await cancelRegistration(
         registrationId.registrationId,
-        reason
+        reason,
       );
       swal("Thành Công", res?.data?.message || "Hủy thành công!", "success");
 
@@ -151,7 +150,7 @@ const CourseRegistration = () => {
       swal(
         "Lỗi",
         error?.response?.data?.message || "Hủy đăng ký thất bại.",
-        "error"
+        "error",
       );
     }
   };

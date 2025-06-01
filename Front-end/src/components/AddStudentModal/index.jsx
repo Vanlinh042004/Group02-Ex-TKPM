@@ -1,4 +1,4 @@
-import React, { useState, useEffect, use } from "react";
+import { useState, useEffect } from "react";
 import { Modal, Input, Form, Select } from "antd";
 import swal from "sweetalert";
 import { useWatch } from "antd/es/form/Form";
@@ -122,7 +122,7 @@ const AddStudentModal = ({
           ...values.identityDocument,
           issueDate: new Date(values.identityDocument.issueDate).toISOString(),
           expiryDate: new Date(
-            values.identityDocument.expiryDate
+            values.identityDocument.expiryDate,
           ).toISOString(),
         },
       };
@@ -135,7 +135,7 @@ const AddStudentModal = ({
           swal(
             "Thêm sinh viên thành công",
             "Sinh viên đã được thêm vào hệ thống",
-            "success"
+            "success",
           );
           setStudents([...students, response.data]);
           setIsModalVisible(false);
