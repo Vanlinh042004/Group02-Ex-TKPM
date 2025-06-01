@@ -24,6 +24,7 @@ import {
   exportStudentsToJSON,
 } from "../../components/ExportStudent";
 import swal from "sweetalert";
+import { useTranslation } from "react-i18next";
 
 function Student() {
   const [students, setStudents] = useState([]);
@@ -34,6 +35,7 @@ function Student() {
   const [searchId, setSearchID] = useState("");
   const [searchName, setSearchName] = useState("");
   const [searchFaculty, setSearchFaculty] = useState("");
+  const { t } = useTranslation("student");
 
   useEffect(() => {
     const fetchStudents = async () => {
@@ -53,15 +55,14 @@ function Student() {
       const data = await searchStudent(searchId, searchName, searchFaculty);
       setStudents(data);
     } catch (error) {
-      // console.error("Lỗi khi tìm kiếm sinh viên:", error);
-      swal("Không tìm thấy sinh viên", "Vui lòng thử lại", "error");
+      swal(t("swalNotFoundTitle"), t("swalNotFoundText"), "error");
     }
   };
 
   const handleDelete = async (id) => {
     try {
       await deleteStudent(id);
-      swal("Xóa thành công", "Sinh viên đã được xóa", "success");
+      swal(t("swalDeleteSuccessTitle"), t("swalDeleteSuccessText"), "success");
       setCheck(!check);
     } catch (error) {
       console.error("Lỗi khi xóa sinh viên:", error);
@@ -74,14 +75,12 @@ function Student() {
     setStudentToEdit(student);
     setIsEditModalVisible(true);
   };
+
   const handleImport = async (file) => {
-    // Kiểm tra nếu file không tồn tại hoặc không hợp lệ
     if (!file || !(file instanceof Blob)) {
-      swal("Thành Công", "Xóa File thành Công!", "success");
+      swal(t("swalDeleteSuccessTitle"), t("swalDeleteSuccessText"), "success");
       return false;
     }
-
-    // Kiểm tra nếu file không phải là JSON hoặc CSV
     if (
       !(
         file.type === "application/json" ||
@@ -90,32 +89,28 @@ function Student() {
         file.name.endsWith(".csv")
       )
     ) {
-      swal("Lỗi", "Chỉ hỗ trợ file CSV và JSON!", "error");
+      swal("Lỗi", t("swalOnlyCSVJSON"), "error");
       return false;
     }
-
     const reader = new FileReader();
-
     reader.onload = async (event) => {
       const fileData = event.target.result;
-      //console.log("File data:", fileData);
-
       if (file.type === "application/json" || file.name.endsWith(".json")) {
         try {
           const jsonData = JSON.parse(fileData);
-          console.log("Parsed JSON data:", jsonData);
           if (!Array.isArray(jsonData)) {
-            message.error("File JSON không hợp lệ!");
+            message.error(t("swalImportError"));
             return;
           }
-          // Send JSON data to the backend
           const response = await importStudent(jsonData, "json");
-          //console.log("Response from server:", jsonData);
           setStudents(response.data.data);
-          //message.success("Import JSON thành công!");
-          swal("Import thành công", "Dữ liệu đã được import", "success");
+          swal(
+            t("swalImportSuccessTitle"),
+            t("swalImportSuccessText"),
+            "success",
+          );
         } catch (error) {
-          message.error("Lỗi khi đọc file JSON!");
+          message.error(t("swalImportError"));
         }
       } else if (file.type === "text/csv" || file.name.endsWith(".csv")) {
         Papa.parse(fileData, {
@@ -123,29 +118,28 @@ function Student() {
           skipEmptyLines: true,
           complete: async (result) => {
             if (!result.data || result.data.length === 0) {
-              //message.error("File CSV không hợp lệ hoặc trống!");
-              swal("Lỗi", "File CSV không hợp lệ hoặc trống", "error");
+              swal("Lỗi", t("swalImportInvalid"), "error");
               return;
             }
-            // Send CSV data to the backend
             const response = await importStudent(result.data, "csv");
             setStudents(response.data.data);
-            //message.success("Import CSV thành công!");
-            swal("Import thành công", "Dữ liệu đã được import", "success");
+            swal(
+              t("swalImportSuccessTitle"),
+              t("swalImportSuccessText"),
+              "success",
+            );
           },
           error: () => {
-            message.error("Lỗi khi đọc file CSV!");
+            message.error(t("swalImportError"));
           },
         });
       }
     };
-
     reader.readAsText(file);
     return false;
   };
 
   const beforeUpload = (file) => {
-    // Kiểm tra nếu file không phải là JSON hoặc CSV
     if (
       !(
         file.type === "application/json" ||
@@ -154,7 +148,7 @@ function Student() {
         file.name.endsWith(".csv")
       )
     ) {
-      swal("Lỗi", "Chỉ hỗ trợ file CSV và JSON!", "error");
+      swal("Lỗi", t("swalOnlyCSVJSON"), "error");
       return Upload.LIST_IGNORE;
     }
     return false;
@@ -168,27 +162,26 @@ function Student() {
             <div className="col-md-12">
               <div className="full-wrap">
                 <div className="one-third search p-5">
-                  <h3 className="text-center mb-4">Bạn muốn tìm kiếm?</h3>
+                  <h3 className="text-center mb-4">{t("searchTitle")}</h3>
                   <form className="course-search-form">
                     <input
                       type="text"
                       className="form-control mb-3"
-                      placeholder="Nhập Họ và Tên"
+                      placeholder={t("searchName")}
                       onChange={(e) => setSearchName(e.target.value)}
                     />
                     <input
                       type="text"
                       className="form-control mb-3"
-                      placeholder="Nhập Mã sinh viên"
+                      placeholder={t("searchId")}
                       onChange={(e) => setSearchID(e.target.value)}
                     />
                     <input
                       type="text"
                       className="form-control mb-3"
-                      placeholder="Nhập Tên khoa"
+                      placeholder={t("searchFaculty")}
                       onChange={(e) => setSearchFaculty(e.target.value)}
                     />
-
                     <Button
                       type="primary"
                       icon={<SearchOutlined />}
@@ -201,7 +194,7 @@ function Student() {
                         width: "25%",
                       }}
                     >
-                      Tìm kiếm
+                      {t("searchBtn")}
                     </Button>
                   </form>
                 </div>
@@ -220,7 +213,7 @@ function Student() {
           shape="round"
           onClick={showModal}
         >
-          Thêm Sinh viên
+          {t("addBtn")}
         </Button>
 
         <Upload
@@ -233,7 +226,7 @@ function Student() {
             size="large"
             shape="round"
           >
-            Import CSV/JSON
+            {t("importBtn")}
           </Button>
         </Upload>
 
@@ -244,7 +237,7 @@ function Student() {
           shape="round"
           onClick={() => exportStudentsToCSV(students)}
         >
-          Export CSV
+          {t("exportCsvBtn")}
         </Button>
 
         <Button
@@ -254,7 +247,7 @@ function Student() {
           shape="round"
           onClick={() => exportStudentsToJSON(students)}
         >
-          Export JSON
+          {t("exportJsonBtn")}
         </Button>
       </div>
 
@@ -266,52 +259,53 @@ function Student() {
                 <div className="student-card align-self-stretch p-4 mb-4">
                   <h4 className="mb-3">{student.fullName}</h4>
                   <p>
-                    <b>Mã số sinh viên:</b> {student.studentId}
+                    <b>{t("studentId")}:</b> {student.studentId}
                   </p>
                   <p>
-                    <b>Ngày sinh:</b>{" "}
+                    <b>{t("dateOfBirth")}:</b>{" "}
                     {new Date(student.dateOfBirth).toLocaleDateString()}
                   </p>
                   <p>
-                    <b>Giới tính:</b> {student.gender}
+                    <b>{t("gender")}:</b> {student.gender}
                   </p>
                   <p>
-                    <b>Khoa:</b> {student.faculty?.name || "N/A"}
+                    <b>{t("faculty")}:</b>{" "}
+                    {student.faculty?.name || t("notAvailable")}
                   </p>
                   <p>
-                    <b>Khóa:</b> {student.course}
+                    <b>{t("course")}:</b> {student.course}
                   </p>
                   <p>
-                    <b>Chương trình:</b> {student.program?.name} (
+                    <b>{t("program")}:</b> {student.program?.name} (
                     {student.program?.programId})
                   </p>
                   <p>
-                    <b>Email:</b> {student.email}
+                    <b>{t("email")}:</b> {student.email}
                   </p>
                   <p>
-                    <b>Điện thoại:</b> {student.phone}
+                    <b>{t("phone")}:</b> {student.phone}
                   </p>
                   <p>
-                    <b>Trạng thái:</b> {student.status?.name || "N/A"}
+                    <b>{t("status")}:</b>{" "}
+                    {student.status?.name || t("notAvailable")}
                   </p>
-
                   {/* Địa chỉ thường trú */}
                   <p>
-                    <b>Địa chỉ thường trú:</b>{" "}
+                    <b>{t("address")}:</b>{" "}
                     {student.permanentAddress
                       ? `${student.permanentAddress.streetAddress}, ${student.permanentAddress.district}, ${student.permanentAddress.city}`
-                      : "N/A"}
+                      : t("notAvailable")}
                   </p>
-
                   {/* Chứng minh nhân dân */}
                   <p>
-                    <b>CMND:</b> {student.identityDocument?.number || "N/A"} -{" "}
+                    <b>{t("identity")}:</b>{" "}
+                    {student.identityDocument?.number || t("notAvailable")}{" "}
+                    -{" "}
                   </p>
                   <p>
-                    <b>Nơi cấp:</b>{" "}
-                    {student.identityDocument?.issuePlace || "N/A"}
+                    <b>{t("issuePlace")}:</b>{" "}
+                    {student.identityDocument?.issuePlace || t("notAvailable")}
                   </p>
-
                   <div className="d-flex justify-content-between">
                     <Button
                       type="primary"
@@ -320,7 +314,7 @@ function Student() {
                       shape="round"
                       onClick={() => showEditModal(student)}
                     >
-                      Sửa
+                      {t("editBtn")}
                     </Button>
                     <Button
                       type="primary"
@@ -330,7 +324,7 @@ function Student() {
                       danger
                       onClick={() => handleDelete(student.studentId)}
                     >
-                      Xóa
+                      {t("deleteBtn")}
                     </Button>
                   </div>
                 </div>

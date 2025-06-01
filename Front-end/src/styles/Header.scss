@@ -15,4 +15,11 @@ nav {
       color: #167ce9 !important;
     }
   }
+  &__language {
+    color: rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+    &--active {
+      color: #167ce9 !important;
+    }
+  }
 }
