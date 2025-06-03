@@ -1,18 +1,18 @@
-import express from 'express';
-import PhoneNumberConfigController from '../controllers/phoneNumberConfigController';
+import express from "express";
+import PhoneNumberConfigController from "../controllers/phoneNumberConfigController";
 
 const router = express.Router();
 
 // CRUD endpoints
 // Get all countries
-router.get('/', PhoneNumberConfigController.getAllPhoneNumberConfigs);
+router.get("/", PhoneNumberConfigController.getAllPhoneNumberConfigs);
 // Get phone number config by country
-router.get('/:country', PhoneNumberConfigController.getPhoneNumberConfig);
+router.get("/:country", PhoneNumberConfigController.getPhoneNumberConfig);
 // Add new phone number config
-router.post('/', PhoneNumberConfigController.addPhoneNumberConfig);
+router.post("/", PhoneNumberConfigController.addPhoneNumberConfig);
 // Update phone number config by country
-router.patch('/:country', PhoneNumberConfigController.updatePhoneNumberConfig);
+router.patch("/:country", PhoneNumberConfigController.updatePhoneNumberConfig);
 // Delete phone number config by country
-router.delete('/:country', PhoneNumberConfigController.deletePhoneNumberConfig);
+router.delete("/:country", PhoneNumberConfigController.deletePhoneNumberConfig);
 
 export default router;

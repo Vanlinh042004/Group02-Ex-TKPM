@@ -1,7 +1,7 @@
-import courseController from '../controllers/courseController';
-import courseService from '../services/courseService';
+import courseController from "../controllers/courseController";
+import courseService from "../services/courseService";
 
-jest.mock('../services/courseService');
+jest.mock("../services/courseService");
 
 const mockRes = () => {
   const res: any = {};
@@ -10,15 +10,15 @@ const mockRes = () => {
   return res;
 };
 
-describe('CourseController', () => {
+describe("CourseController", () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
 
-  it('should return all courses', async () => {
+  it("should return all courses", async () => {
     const req: any = { query: {} };
     const res = mockRes();
-    const mockCourses = [{ courseId: 'CS101', name: 'Intro', credits: 3 }];
+    const mockCourses = [{ courseId: "CS101", name: "Intro", credits: 3 }];
     (courseService.getCourses as jest.Mock).mockResolvedValue(mockCourses);
 
     await courseController.getCourses(req, res);
@@ -31,15 +31,15 @@ describe('CourseController', () => {
     });
   });
 
-  it('should return course by id', async () => {
-    const req: any = { params: { id: 'courseId' } };
+  it("should return course by id", async () => {
+    const req: any = { params: { id: "courseId" } };
     const res = mockRes();
-    const mockCourse = { courseId: 'CS101', name: 'Intro', credits: 3 };
+    const mockCourse = { courseId: "CS101", name: "Intro", credits: 3 };
     (courseService.getCourseById as jest.Mock).mockResolvedValue(mockCourse);
 
     await courseController.getCourseById(req, res);
 
-    expect(courseService.getCourseById).toHaveBeenCalledWith('courseId');
+    expect(courseService.getCourseById).toHaveBeenCalledWith("courseId");
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith({
       success: true,
@@ -47,10 +47,10 @@ describe('CourseController', () => {
     });
   });
 
-  it('should create a new course', async () => {
-    const req: any = { body: { courseId: 'CS102', name: 'DSA', credits: 4 } };
+  it("should create a new course", async () => {
+    const req: any = { body: { courseId: "CS102", name: "DSA", credits: 4 } };
     const res = mockRes();
-    const mockCourse = { courseId: 'CS102', name: 'DSA', credits: 4 };
+    const mockCourse = { courseId: "CS102", name: "DSA", credits: 4 };
     (courseService.createCourse as jest.Mock).mockResolvedValue(mockCourse);
 
     await courseController.createCourse(req, res);
@@ -63,11 +63,11 @@ describe('CourseController', () => {
     });
   });
 
-  it('should handle error when creating course', async () => {
-    const req: any = { body: { courseId: 'CS102', name: 'DSA', credits: 4 } };
+  it("should handle error when creating course", async () => {
+    const req: any = { body: { courseId: "CS102", name: "DSA", credits: 4 } };
     const res = mockRes();
     (courseService.createCourse as jest.Mock).mockRejectedValue(
-      new Error('Create error')
+      new Error("Create error"),
     );
 
     await courseController.createCourse(req, res);
@@ -75,15 +75,15 @@ describe('CourseController', () => {
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith({
       success: false,
-      message: 'Create error',
+      message: "Create error",
     });
   });
 
-  it('should handle error when getting all courses', async () => {
+  it("should handle error when getting all courses", async () => {
     const req: any = { query: {} };
     const res = mockRes();
     (courseService.getCourses as jest.Mock).mockRejectedValue(
-      new Error('Get error')
+      new Error("Get error"),
     );
 
     await courseController.getCourses(req, res);
@@ -91,12 +91,12 @@ describe('CourseController', () => {
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith({
       success: false,
-      message: 'Get error',
+      message: "Get error",
     });
   });
 
-  it('should handle not found when getting course by id', async () => {
-    const req: any = { params: { id: 'notfound' } };
+  it("should handle not found when getting course by id", async () => {
+    const req: any = { params: { id: "notfound" } };
     const res = mockRes();
     (courseService.getCourseById as jest.Mock).mockResolvedValue(null);
 
@@ -105,15 +105,15 @@ describe('CourseController', () => {
     expect(res.status).toHaveBeenCalledWith(404);
     expect(res.json).toHaveBeenCalledWith({
       success: false,
-      message: 'Khóa học không tồn tại',
+      message: "Khóa học không tồn tại",
     });
   });
 
-  it('should handle error when getting course by id', async () => {
-    const req: any = { params: { id: 'courseId' } };
+  it("should handle error when getting course by id", async () => {
+    const req: any = { params: { id: "courseId" } };
     const res = mockRes();
     (courseService.getCourseById as jest.Mock).mockRejectedValue(
-      new Error('Find error')
+      new Error("Find error"),
     );
 
     await courseController.getCourseById(req, res);
@@ -121,18 +121,18 @@ describe('CourseController', () => {
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith({
       success: false,
-      message: 'Find error',
+      message: "Find error",
     });
   });
 
-  it('should handle error when deleting course', async () => {
-    const req: any = { params: { id: 'courseId' } };
+  it("should handle error when deleting course", async () => {
+    const req: any = { params: { id: "courseId" } };
     const res = mockRes();
     (courseService.getCourseById as jest.Mock).mockResolvedValue({
-      courseId: 'courseId',
+      courseId: "courseId",
     });
     (courseService.deleteCourse as jest.Mock).mockRejectedValue(
-      new Error('Delete error')
+      new Error("Delete error"),
     );
 
     await courseController.deleteCourse(req, res);
@@ -140,15 +140,15 @@ describe('CourseController', () => {
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith({
       success: false,
-      message: 'Delete error',
+      message: "Delete error",
     });
   });
 
-  it('should handle not found when updating course', async () => {
-    const req: any = { params: { id: 'notfound' }, body: { name: 'New' } };
+  it("should handle not found when updating course", async () => {
+    const req: any = { params: { id: "notfound" }, body: { name: "New" } };
     const res = mockRes();
     (courseService.getCourseById as jest.Mock).mockResolvedValue({
-      courseId: 'notfound',
+      courseId: "notfound",
     });
     (courseService.updateCourse as jest.Mock).mockResolvedValue(null);
 
@@ -157,18 +157,18 @@ describe('CourseController', () => {
     expect(res.status).toHaveBeenCalledWith(404);
     expect(res.json).toHaveBeenCalledWith({
       success: false,
-      message: 'Khóa học không tồn tại',
+      message: "Khóa học không tồn tại",
     });
   });
 
-  it('should handle error when updating course', async () => {
-    const req: any = { params: { id: 'courseId' }, body: { name: 'New' } };
+  it("should handle error when updating course", async () => {
+    const req: any = { params: { id: "courseId" }, body: { name: "New" } };
     const res = mockRes();
     (courseService.getCourseById as jest.Mock).mockResolvedValue({
-      courseId: 'courseId',
+      courseId: "courseId",
     });
     (courseService.updateCourse as jest.Mock).mockRejectedValue(
-      new Error('Update error')
+      new Error("Update error"),
     );
 
     await courseController.updateCourse(req, res);
@@ -176,15 +176,15 @@ describe('CourseController', () => {
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith({
       success: false,
-      message: 'Update error',
+      message: "Update error",
     });
   });
 
-  it('should handle not found when deactivating course', async () => {
-    const req: any = { params: { id: 'notfound' } };
+  it("should handle not found when deactivating course", async () => {
+    const req: any = { params: { id: "notfound" } };
     const res = mockRes();
     (courseService.getCourseById as jest.Mock).mockResolvedValue({
-      courseId: 'notfound',
+      courseId: "notfound",
     });
     (courseService.deactivateCourse as jest.Mock).mockResolvedValue(null);
 
@@ -193,18 +193,18 @@ describe('CourseController', () => {
     expect(res.status).toHaveBeenCalledWith(404);
     expect(res.json).toHaveBeenCalledWith({
       success: false,
-      message: 'Khóa học không tồn tại',
+      message: "Khóa học không tồn tại",
     });
   });
 
-  it('should handle error when deactivating course', async () => {
-    const req: any = { params: { id: 'courseId' } };
+  it("should handle error when deactivating course", async () => {
+    const req: any = { params: { id: "courseId" } };
     const res = mockRes();
     (courseService.getCourseById as jest.Mock).mockResolvedValue({
-      courseId: 'courseId',
+      courseId: "courseId",
     });
     (courseService.deactivateCourse as jest.Mock).mockRejectedValue(
-      new Error('Deactivate error')
+      new Error("Deactivate error"),
     );
 
     await courseController.deactivateCourse(req, res);
@@ -212,7 +212,7 @@ describe('CourseController', () => {
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith({
       success: false,
-      message: 'Deactivate error',
+      message: "Deactivate error",
     });
   });
 });

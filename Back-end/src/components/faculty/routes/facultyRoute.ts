@@ -1,14 +1,14 @@
-import express from 'express';
-import FacultyController from '../controllers/facultyController';
+import express from "express";
+import FacultyController from "../controllers/facultyController";
 
 const router = express.Router();
 
 // CRUD endpoints
 // Add faculty
-router.post('/', FacultyController.addFaculty);
+router.post("/", FacultyController.addFaculty);
 // Rename faculty by ID
-router.patch('/:facultyId', FacultyController.renameFaculty);
+router.patch("/:facultyId", FacultyController.renameFaculty);
 // Get all faculties
-router.get('/', FacultyController.getAllFaculties);
+router.get("/", FacultyController.getAllFaculties);
 
 export default router;

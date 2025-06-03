@@ -1,4 +1,4 @@
-import mongoose, { Document, Schema } from 'mongoose';
+import mongoose, { Document, Schema } from "mongoose";
 
 export interface IProgram extends Document {
   programId: string;
@@ -15,24 +15,24 @@ const ProgramSchema = new Schema<IProgram>(
       type: String,
       required: true,
     },
-    name: { 
-      type: String, 
-      required: true, 
+    name: {
+      type: String,
+      required: true,
       unique: true,
-      trim: true 
+      trim: true,
     },
     duration: {
       type: Number,
-      required: true
+      required: true,
     },
     isActive: {
       type: Boolean,
-      default: true
-    }
+      default: true,
+    },
   },
   {
     timestamps: true,
-  }
+  },
 );
 
-export default mongoose.model<IProgram>('Program', ProgramSchema);
+export default mongoose.model<IProgram>("Program", ProgramSchema);

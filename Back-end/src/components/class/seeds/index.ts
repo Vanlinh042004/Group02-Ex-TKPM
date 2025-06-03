@@ -1,9 +1,9 @@
-import mongoose from 'mongoose';
-import Class from '../models/Class';
-import Course from '../../course/models/Course';
-import { connect } from '../../../config/database';
-import logger from '../../../utils/logger';
-import dotenv from 'dotenv';
+import mongoose from "mongoose";
+import Class from "../models/Class";
+import Course from "../../course/models/Course";
+import { connect } from "../../../config/database";
+import logger from "../../../utils/logger";
+import dotenv from "dotenv";
 
 dotenv.config();
 
@@ -13,13 +13,13 @@ dotenv.config();
 const seedClasses = async () => {
   try {
     // Kết nối đến database
-    await mongoose.connect(process.env.MONGODB_URI || '');
-    console.log('🔗 Connected to MongoDB');
+    await mongoose.connect(process.env.MONGODB_URI || "");
+    console.log("🔗 Connected to MongoDB");
 
     // Kiểm tra nếu đã có dữ liệu trong collection
     const classCount = await Class.countDocuments();
     if (classCount > 0) {
-      console.log('Classes already seeded.');
+      console.log("Classes already seeded.");
       return;
     }
 
@@ -27,65 +27,65 @@ const seedClasses = async () => {
     const courses = await Course.find({ isActive: true });
 
     if (courses.length === 0) {
-      console.log('No active courses found. Please run course seed first.');
+      console.log("No active courses found. Please run course seed first.");
       return;
     }
 
     // Tạo mảng các học kỳ
-    const semesters = ['1', '2', '3']; // 1, 2, Hè
+    const semesters = ["1", "2", "3"]; // 1, 2, Hè
 
     // Tạo mảng các phòng học
     const classrooms = [
-      'B11',
-      'B12',
-      'B13',
-      'B21',
-      'B22',
-      'B23',
-      'C11',
-      'C12',
-      'C13',
-      'C21',
-      'C22',
-      'C23',
+      "B11",
+      "B12",
+      "B13",
+      "B21",
+      "B22",
+      "B23",
+      "C11",
+      "C12",
+      "C13",
+      "C21",
+      "C22",
+      "C23",
     ];
 
     // Tạo mảng các khung giờ học
     const schedules = [
-      'Thứ 2 (7:30-9:30)',
-      'Thứ 2 (9:45-11:45)',
-      'Thứ 2 (13:00-15:00)',
-      'Thứ 2 (15:15-17:15)',
-      'Thứ 3 (7:30-9:30)',
-      'Thứ 3 (9:45-11:45)',
-      'Thứ 3 (13:00-15:00)',
-      'Thứ 3 (15:15-17:15)',
-      'Thứ 4 (7:30-9:30)',
-      'Thứ 4 (9:45-11:45)',
-      'Thứ 4 (13:00-15:00)',
-      'Thứ 4 (15:15-17:15)',
-      'Thứ 5 (7:30-9:30)',
-      'Thứ 5 (9:45-11:45)',
-      'Thứ 5 (13:00-15:00)',
-      'Thứ 5 (15:15-17:15)',
-      'Thứ 6 (7:30-9:30)',
-      'Thứ 6 (9:45-11:45)',
-      'Thứ 6 (13:00-15:00)',
-      'Thứ 6 (15:15-17:15)',
-      'Thứ 7 (7:30-9:30)',
-      'Thứ 7 (9:45-11:45)',
+      "Thứ 2 (7:30-9:30)",
+      "Thứ 2 (9:45-11:45)",
+      "Thứ 2 (13:00-15:00)",
+      "Thứ 2 (15:15-17:15)",
+      "Thứ 3 (7:30-9:30)",
+      "Thứ 3 (9:45-11:45)",
+      "Thứ 3 (13:00-15:00)",
+      "Thứ 3 (15:15-17:15)",
+      "Thứ 4 (7:30-9:30)",
+      "Thứ 4 (9:45-11:45)",
+      "Thứ 4 (13:00-15:00)",
+      "Thứ 4 (15:15-17:15)",
+      "Thứ 5 (7:30-9:30)",
+      "Thứ 5 (9:45-11:45)",
+      "Thứ 5 (13:00-15:00)",
+      "Thứ 5 (15:15-17:15)",
+      "Thứ 6 (7:30-9:30)",
+      "Thứ 6 (9:45-11:45)",
+      "Thứ 6 (13:00-15:00)",
+      "Thứ 6 (15:15-17:15)",
+      "Thứ 7 (7:30-9:30)",
+      "Thứ 7 (9:45-11:45)",
     ];
 
     // Tạo mảng tên các giảng viên
     const instructors = [
-      'TS. Nguyễn Văn A',
-      'PGS. TS. Trần Thị B',
-      'TS. Lê Văn C',
-      'ThS. Phạm Thị D',
-      'PGS. TS. Hoàng Văn E',
-      'GS. TS. Vũ Thị F',
-      'TS. Đặng Văn G',
-      'ThS. Bùi Thị H',
+      "TS. Nguyễn Văn A",
+      "PGS. TS. Trần Thị B",
+      "TS. Lê Văn C",
+      "ThS. Phạm Thị D",
+      "PGS. TS. Hoàng Văn E",
+      "GS. TS. Vũ Thị F",
+      "TS. Đặng Văn G",
+      "ThS. Bùi Thị H",
     ];
 
     // Tạo các lớp học cho năm học hiện tại
@@ -136,13 +136,13 @@ const seedClasses = async () => {
     console.log(`Creating ${classes.length} classes...`);
     await Class.insertMany(classes);
 
-    console.log('✅ Seeded classes successfully');
+    console.log("✅ Seeded classes successfully");
   } catch (error) {
-    console.error('Error seeding classes:', error);
+    console.error("Error seeding classes:", error);
   } finally {
     // Đóng kết nối
     await mongoose.connection.close();
-    console.log('🔌 Disconnected from MongoDB');
+    console.log("🔌 Disconnected from MongoDB");
   }
 };
 

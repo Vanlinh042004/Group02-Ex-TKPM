@@ -1,4 +1,4 @@
-import mongoose, { Document, Schema } from 'mongoose';
+import mongoose, { Document, Schema } from "mongoose";
 
 export interface IFaculty extends Document {
   facultyId: string;
@@ -12,17 +12,17 @@ const facultySchema = new Schema<IFaculty>(
     facultyId: {
       type: String,
       required: true,
-      unique: true
+      unique: true,
     },
-    name: { 
-      type: String, 
-      required: true, 
-      unique: true 
-    }
+    name: {
+      type: String,
+      required: true,
+      unique: true,
+    },
   },
   {
     timestamps: true,
-  }
+  },
 );
 
-export default mongoose.model<IFaculty>('Faculty', facultySchema);
+export default mongoose.model<IFaculty>("Faculty", facultySchema);

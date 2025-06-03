@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema, Document } from "mongoose";
 
 export interface IClass extends Document {
   classId: string;
@@ -23,7 +23,7 @@ const ClassSchema: Schema = new Schema(
     },
     course: {
       type: Schema.Types.ObjectId,
-      ref: 'Course',
+      ref: "Course",
       required: true,
     },
     academicYear: {
@@ -59,7 +59,7 @@ const ClassSchema: Schema = new Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 // Tạo index cho tìm kiếm nhanh hơn
@@ -67,4 +67,4 @@ ClassSchema.index({ classId: 1 });
 ClassSchema.index({ course: 1 });
 ClassSchema.index({ academicYear: 1, semester: 1 });
 
-export default mongoose.model<IClass>('Class', ClassSchema);
+export default mongoose.model<IClass>("Class", ClassSchema);

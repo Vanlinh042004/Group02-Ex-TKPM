@@ -1,15 +1,15 @@
-import mongoose, { Document, Schema } from 'mongoose';
-import emailDomainService from '../../email-domain/services/emailDomainService';
+import mongoose, { Document, Schema } from "mongoose";
+import emailDomainService from "../../email-domain/services/emailDomainService";
 
 export enum Gender {
-  MALE = 'Nam',
-  FEMALE = 'Nữ'
+  MALE = "Nam",
+  FEMALE = "Nữ",
 }
 
 export enum IdentityDocumentType {
-  CMND = 'CMND',
-  CCCD = 'CCCD',
-  PASSPORT = 'Hộ chiếu'
+  CMND = "CMND",
+  CCCD = "CCCD",
+  PASSPORT = "Hộ chiếu",
 }
 
 // Interface cho địa chỉ
@@ -57,15 +57,15 @@ export interface IStudent extends Document {
   faculty: mongoose.Types.ObjectId; // Reference to Faculty
   course: string;
   program: mongoose.Types.ObjectId; // Reference to Program
-  
+
   // Địa chỉ
   permanentAddress?: IAddress; // Địa chỉ thường trú (nếu có)
   temporaryAddress?: IAddress; // Địa chỉ tạm trú (nếu có)
   mailingAddress: IAddress; // Địa chỉ nhận thư
-  
+
   // Giấy tờ tùy thân
   identityDocument: IdentityDocument;
-  
+
   email: string;
   phone: string;
   phoneNumberConfig: mongoose.Types.ObjectId; // Reference to PhoneNumberConfig
@@ -80,135 +80,136 @@ const addressSchema = new Schema<IAddress>({
   ward: { type: String },
   district: { type: String },
   city: { type: String },
-  country: { type: String}
+  country: { type: String },
 });
 
 // Schema cơ bản cho Identity Documents
-const identityDocumentSchema = new Schema<IIdentityBase>({
-  type: { 
-    type: String, 
-    enum: Object.values(IdentityDocumentType),
-    required: true 
+const identityDocumentSchema = new Schema<IIdentityBase>(
+  {
+    type: {
+      type: String,
+      enum: Object.values(IdentityDocumentType),
+      required: true,
+    },
+    number: { type: String, required: true },
+    issueDate: { type: Date, required: true },
+    issuePlace: { type: String, required: true },
+    expiryDate: { type: Date, required: true },
   },
-  number: { type: String, required: true },
-  issueDate: { type: Date, required: true },
-  issuePlace: { type: String, required: true },
-  expiryDate: { type: Date, required: true }
-}, { 
-  discriminatorKey: 'type' 
-});
+  {
+    discriminatorKey: "type",
+  },
+);
 
 // Schema cho Student
 const studentSchema = new Schema<IStudent>(
   {
-    studentId: { 
-      type: String, 
-      required: true, 
-      unique: true 
+    studentId: {
+      type: String,
+      required: true,
+      unique: true,
     },
-    fullName: { 
-      type: String, 
-      required: true 
+    fullName: {
+      type: String,
+      required: true,
     },
-    dateOfBirth: { 
-      type: Date, 
-      required: true 
+    dateOfBirth: {
+      type: Date,
+      required: true,
     },
-    gender: { 
-      type: String, 
+    gender: {
+      type: String,
       enum: Object.values(Gender),
-      required: true 
+      required: true,
     },
-    nationality: { 
-      type: String, 
-      required: true, 
-      default: 'Việt Nam' 
+    nationality: {
+      type: String,
+      required: true,
+      default: "Việt Nam",
     },
     faculty: {
       type: Schema.Types.ObjectId,
-      ref: 'Faculty',
-      required: true
+      ref: "Faculty",
+      required: true,
     },
-    course: { 
-      type: String, 
-      required: true 
+    course: {
+      type: String,
+      required: true,
     },
-    program: { 
-      type: Schema.Types.ObjectId, 
-      ref: 'Program', 
-      required: true
+    program: {
+      type: Schema.Types.ObjectId,
+      ref: "Program",
+      required: true,
     },
-    
+
     // Địa chỉ
     permanentAddress: addressSchema,
     temporaryAddress: addressSchema,
-    mailingAddress: { 
-      type: addressSchema, 
-     
+    mailingAddress: {
+      type: addressSchema,
     },
-    
+
     // Giấy tờ tùy thân
-    identityDocument: { 
-      type: identityDocumentSchema, 
-      required: true 
+    identityDocument: {
+      type: identityDocumentSchema,
+      required: true,
     },
-    
-    email: { 
-      type: String, 
-      required: true, 
+
+    email: {
+      type: String,
+      required: true,
       unique: true,
       validate: {
-        validator: async function(email: string) {
+        validator: async function (email: string) {
           return await emailDomainService.isValidEmailDomain(email);
         },
-        message: 'Invalid email domain'
-      } 
+        message: "Invalid email domain",
+      },
     },
-    phone: { 
-      type: String, 
-      required: true 
+    phone: {
+      type: String,
+      required: true,
     },
     phoneNumberConfig: {
       type: Schema.Types.ObjectId,
-      ref: 'PhoneNumberConfig',
-      required: true
+      ref: "PhoneNumberConfig",
+      required: true,
     },
     status: {
       type: Schema.Types.ObjectId,
-      ref: 'Status',
-      required: true
-    }
+      ref: "Status",
+      required: true,
+    },
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 // Tạo index cho tìm kiếm nhanh hơn
-studentSchema.index({ fullName: 'text', studentId: 1 });
+studentSchema.index({ fullName: "text", studentId: 1 });
 
 // Tạo discriminator cho các loại giấy tờ tùy thân
 // @ts-ignore - Để tránh lỗi TypeScript với discriminator
-studentSchema.path('identityDocument').discriminator(
-  IdentityDocumentType.CMND, 
-  new Schema({})
-);
+studentSchema
+  .path("identityDocument")
+  .discriminator(IdentityDocumentType.CMND, new Schema({}));
 
 // @ts-ignore
-studentSchema.path('identityDocument').discriminator(
-  IdentityDocumentType.CCCD, 
+studentSchema.path("identityDocument").discriminator(
+  IdentityDocumentType.CCCD,
   new Schema({
-    hasChip: { type: Boolean, required: true }
-  })
+    hasChip: { type: Boolean, required: true },
+  }),
 );
 
 // @ts-ignore
-studentSchema.path('identityDocument').discriminator(
-  IdentityDocumentType.PASSPORT, 
+studentSchema.path("identityDocument").discriminator(
+  IdentityDocumentType.PASSPORT,
   new Schema({
     issuingCountry: { type: String, required: true },
-    notes: { type: String }
-  })
+    notes: { type: String },
+  }),
 );
 
-export default mongoose.model<IStudent>('Student', studentSchema);
+export default mongoose.model<IStudent>("Student", studentSchema);

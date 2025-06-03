@@ -1,7 +1,7 @@
-import Class, { IClass } from '../models/Class';
-import Course from '../../course/models/Course';
-import Registration from '../../registration/models/Registration';
-import logger from '../../../utils/logger';
+import Class, { IClass } from "../models/Class";
+import Course from "../../course/models/Course";
+import Registration from "../../registration/models/Registration";
+import logger from "../../../utils/logger";
 
 class ClassService {
   /**
@@ -14,19 +14,19 @@ class ClassService {
       // Kiểm tra khóa học có tồn tại và đang active không
       const course = await Course.findById(classData.course);
       if (!course) {
-        throw new Error('Khóa học không tồn tại');
+        throw new Error("Khóa học không tồn tại");
       }
 
       if (!course.isActive) {
-        throw new Error('Không thể tạo lớp học cho khóa học đã bị deactivate');
+        throw new Error("Không thể tạo lớp học cho khóa học đã bị deactivate");
       }
 
       const newClass = new Class(classData);
       return await newClass.save();
     } catch (error: any) {
-      logger.error('Error creating class', {
-        module: 'ClassService',
-        operation: 'createClass',
+      logger.error("Error creating class", {
+        module: "ClassService",
+        operation: "createClass",
         details: {
           error: error.message,
           stack: error.stack,
@@ -44,16 +44,16 @@ class ClassService {
   async getClasses(filters: any = {}): Promise<IClass[]> {
     try {
       return await Class.find(filters).populate({
-        path: 'course',
+        path: "course",
         populate: {
-          path: 'faculty',
-          select: 'name',
+          path: "faculty",
+          select: "name",
         },
       });
     } catch (error: any) {
-      logger.error('Error getting classes', {
-        module: 'ClassService',
-        operation: 'getClasses',
+      logger.error("Error getting classes", {
+        module: "ClassService",
+        operation: "getClasses",
         details: {
           filters,
           error: error.message,
@@ -72,16 +72,16 @@ class ClassService {
   async getClassById(classId: string): Promise<IClass | null> {
     try {
       return await Class.findById(classId).populate({
-        path: 'course',
+        path: "course",
         populate: {
-          path: 'faculty',
-          select: 'name',
+          path: "faculty",
+          select: "name",
         },
       });
     } catch (error: any) {
-      logger.error('Error getting class by ID', {
-        module: 'ClassService',
-        operation: 'getClassById',
+      logger.error("Error getting class by ID", {
+        module: "ClassService",
+        operation: "getClassById",
         details: {
           classId,
           error: error.message,
@@ -100,14 +100,14 @@ class ClassService {
    */
   async updateClass(
     classId: string,
-    classData: Partial<IClass>
+    classData: Partial<IClass>,
   ): Promise<IClass | null> {
     try {
       return await Class.findByIdAndUpdate(classId, classData, { new: true });
     } catch (error: any) {
-      logger.error('Error updating class', {
-        module: 'ClassService',
-        operation: 'updateClass',
+      logger.error("Error updating class", {
+        module: "ClassService",
+        operation: "updateClass",
         details: {
           classId,
           updateData: classData,
@@ -128,12 +128,12 @@ class ClassService {
     try {
       return await Registration.countDocuments({
         class: classId,
-        status: 'active',
+        status: "active",
       });
     } catch (error: any) {
-      logger.error('Error getting enrollment count', {
-        module: 'ClassService',
-        operation: 'getEnrollmentCount',
+      logger.error("Error getting enrollment count", {
+        module: "ClassService",
+        operation: "getEnrollmentCount",
         details: {
           classId,
           error: error.message,
@@ -153,15 +153,15 @@ class ClassService {
     try {
       const classInfo = await Class.findById(classId);
       if (!classInfo) {
-        throw new Error('Lớp học không tồn tại');
+        throw new Error("Lớp học không tồn tại");
       }
 
       const currentEnrollment = await this.getEnrollmentCount(classId);
       return currentEnrollment < classInfo.maxStudents;
     } catch (error: any) {
-      logger.error('Error checking available slots', {
-        module: 'ClassService',
-        operation: 'hasAvailableSlots',
+      logger.error("Error checking available slots", {
+        module: "ClassService",
+        operation: "hasAvailableSlots",
         details: {
           classId,
           error: error.message,

@@ -1,22 +1,22 @@
-import mongoose, { Document, Schema } from "mongoose"
+import mongoose, { Document, Schema } from "mongoose";
 
 export interface IEmailDomain extends Document {
-    domain: string
+  domain: string;
 }
 
 const emailDomainSchema = new Schema<IEmailDomain>(
-    {
-        domain: {
-            type: String,
-            required: true,
-            unique: true,
-            trim: true,
-            lowercase: true
-        }
+  {
+    domain: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+      lowercase: true,
     },
-    {
-        timestamps: true
-    }   
-)
+  },
+  {
+    timestamps: true,
+  },
+);
 
-export default mongoose.model<IEmailDomain>('EmailDomain', emailDomainSchema)
+export default mongoose.model<IEmailDomain>("EmailDomain", emailDomainSchema);

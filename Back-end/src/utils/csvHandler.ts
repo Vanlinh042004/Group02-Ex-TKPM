@@ -1,6 +1,6 @@
-import { parse } from 'csv-parse';
-import { stringify } from 'csv-stringify';
-import fs from 'fs';
+import { parse } from "csv-parse";
+import { stringify } from "csv-stringify";
+import fs from "fs";
 
 /**
  * Đọc và phân tích dữ liệu từ file CSV
@@ -15,11 +15,11 @@ export const importCSV = (filePath: string): Promise<any[]> => {
       .pipe(
         parse({
           columns: true, // Sử dụng header đầu tiên làm key cho mỗi row
-        })
+        }),
       )
-      .on('data', (data) => results.push(data))
-      .on('end', () => resolve(results))
-      .on('error', (error) => reject(error));
+      .on("data", (data) => results.push(data))
+      .on("end", () => resolve(results))
+      .on("error", (error) => reject(error));
   });
 };
 

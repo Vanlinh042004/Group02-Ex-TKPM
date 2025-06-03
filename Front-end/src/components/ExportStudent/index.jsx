@@ -29,8 +29,10 @@ const ExportStudent = () => {
       [t("phone")]: student.phone,
       [t("status")]: student.status,
       [t("identity")]: student.identityDocument?.number || t("notAvailable"),
-      [t("issuePlace")]: student.identityDocument?.issuePlace || t("notAvailable"),
-      [t("address")]: `${student.permanentAddress?.streetAddress || ""}, ${student.permanentAddress?.district || ""}, ${student.permanentAddress?.city || ""}`,
+      [t("issuePlace")]:
+        student.identityDocument?.issuePlace || t("notAvailable"),
+      [t("address")]:
+        `${student.permanentAddress?.streetAddress || ""}, ${student.permanentAddress?.district || ""}, ${student.permanentAddress?.city || ""}`,
     }));
 
     // Convert to CSV

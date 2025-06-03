@@ -1,12 +1,12 @@
-import fs from 'fs';
-import path from 'path';
-import { format } from 'date-fns';
+import fs from "fs";
+import path from "path";
+import { format } from "date-fns";
 
 export enum LogLevel {
-  ERROR = 'ERROR',
-  WARN = 'WARN',
-  INFO = 'INFO',
-  DEBUG = 'DEBUG',
+  ERROR = "ERROR",
+  WARN = "WARN",
+  INFO = "INFO",
+  DEBUG = "DEBUG",
 }
 
 export interface LogOptions {
@@ -30,13 +30,13 @@ export class Logger {
   private currentLogFile: string;
   private readonly logLevel: LogLevel;
 
-  private static readonly DEFAULT_MODULE = 'APP';
-  private static readonly DEFAULT_OPERATION = '-';
-  private static readonly SYSTEM_USER = 'SYSTEM';
-  private static readonly AUDIT_MODULE = 'AUDIT';
+  private static readonly DEFAULT_MODULE = "APP";
+  private static readonly DEFAULT_OPERATION = "-";
+  private static readonly SYSTEM_USER = "SYSTEM";
+  private static readonly AUDIT_MODULE = "AUDIT";
 
   private constructor() {
-    this.logDir = path.join(process.cwd(), 'logs');
+    this.logDir = path.join(process.cwd(), "logs");
     this.logLevel = this.determineLogLevel();
     this.ensureLogDirectory();
     this.setCurrentLogFile();
@@ -60,7 +60,7 @@ export class Logger {
   }
 
   private setCurrentLogFile(): void {
-    const currentDate = format(new Date(), 'yyyy-MM-dd');
+    const currentDate = format(new Date(), "yyyy-MM-dd");
     this.currentLogFile = path.join(this.logDir, `app-${currentDate}.log`);
   }
 
@@ -75,9 +75,9 @@ export class Logger {
   private formatLogEntry(
     level: LogLevel,
     message: string,
-    options?: LogOptions
+    options?: LogOptions,
   ): string {
-    const timestamp = format(new Date(), 'yyyy-MM-dd HH:mm:ss.SSS');
+    const timestamp = format(new Date(), "yyyy-MM-dd HH:mm:ss.SSS");
     const module = options?.module || Logger.DEFAULT_MODULE;
     const operation = options?.operation || Logger.DEFAULT_OPERATION;
     const userId = options?.userId || Logger.SYSTEM_USER;
@@ -94,17 +94,17 @@ export class Logger {
 
   private formatDetails(details: any): string {
     try {
-      return typeof details === 'string' ? details : JSON.stringify(details);
+      return typeof details === "string" ? details : JSON.stringify(details);
     } catch (error) {
-      return 'Unable to stringify';
+      return "Unable to stringify";
     }
   }
 
   private writeToFile(entry: string): void {
     try {
-      fs.appendFileSync(this.currentLogFile, entry + '\n');
+      fs.appendFileSync(this.currentLogFile, entry + "\n");
     } catch (error) {
-      console.error('Failed to write to log file:', error);
+      console.error("Failed to write to log file:", error);
     }
   }
 
@@ -159,7 +159,7 @@ export class Logger {
     entityId: string,
     before?: any,
     after?: any,
-    userId?: string
+    userId?: string,
   ): void {
     const auditOptions: LogOptions = {
       module: Logger.AUDIT_MODULE,

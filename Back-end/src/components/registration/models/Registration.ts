@@ -1,6 +1,6 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema, Document } from "mongoose";
 
-export type RegistrationStatus = 'active' | 'cancelled';
+export type RegistrationStatus = "active" | "cancelled";
 
 export interface IRegistration extends Document {
   student: Schema.Types.ObjectId;
@@ -18,12 +18,12 @@ const RegistrationSchema: Schema = new Schema(
   {
     student: {
       type: Schema.Types.ObjectId,
-      ref: 'Student',
+      ref: "Student",
       required: true,
     },
     class: {
       type: Schema.Types.ObjectId,
-      ref: 'Class',
+      ref: "Class",
       required: true,
     },
     registrationDate: {
@@ -32,13 +32,13 @@ const RegistrationSchema: Schema = new Schema(
     },
     grade: {
       type: Number,
-      min: [0, 'Grade can not be smaller than 0'],
-      max: [10, 'Grade can not be bigger than 10']
+      min: [0, "Grade can not be smaller than 0"],
+      max: [10, "Grade can not be bigger than 10"],
     },
     status: {
       type: String,
-      enum: ['active', 'cancelled'],
-      default: 'active',
+      enum: ["active", "cancelled"],
+      default: "active",
     },
     cancellationDate: {
       type: Date,
@@ -50,7 +50,7 @@ const RegistrationSchema: Schema = new Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 // Đảm bảo mỗi sinh viên chỉ đăng ký mỗi lớp một lần
@@ -58,6 +58,6 @@ RegistrationSchema.index({ student: 1, class: 1 }, { unique: true });
 RegistrationSchema.index({ student: 1, status: 1 });
 
 export default mongoose.model<IRegistration>(
-  'Registration',
-  RegistrationSchema
+  "Registration",
+  RegistrationSchema,
 );

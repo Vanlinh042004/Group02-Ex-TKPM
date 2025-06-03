@@ -176,11 +176,19 @@ const EditStudentModal = ({
       .validateFields()
       .then((values) => {
         if (!checkValidEmail(values.email)) {
-          swal(t("addEditStudent.error"), t("addEditStudent.invalidEmail"), "error");
+          swal(
+            t("addEditStudent.error"),
+            t("addEditStudent.invalidEmail"),
+            "error",
+          );
           return;
         }
         if (!checkValidPhone(values.phone)) {
-          swal(t("addEditStudent.error"), t("addEditStudent.invalidPhone"), "error");
+          swal(
+            t("addEditStudent.error"),
+            t("addEditStudent.invalidPhone"),
+            "error",
+          );
           return;
         }
         const updatedStudentData = {
@@ -238,7 +246,11 @@ const EditStudentModal = ({
       setIsAddFacultyModalVisible(false);
       setNewFacultyName("");
       setCheck(!check);
-      swal(t("addEditStudent.success"), t("addEditStudent.addFacultySuccess"), "success");
+      swal(
+        t("addEditStudent.success"),
+        t("addEditStudent.addFacultySuccess"),
+        "success",
+      );
     } catch (error) {
       console.log(error);
     }
@@ -256,7 +268,11 @@ const EditStudentModal = ({
       setNewProgramName("");
       setNewProgramDuration("");
       setCheck(!check);
-      swal(t("addEditStudent.success"), t("addEditStudent.addProgramSuccess"), "success");
+      swal(
+        t("addEditStudent.success"),
+        t("addEditStudent.addProgramSuccess"),
+        "success",
+      );
     } catch (error) {
       console.log(error);
     }
@@ -276,7 +292,11 @@ const EditStudentModal = ({
       setNewStatusName("");
       setNewStatusDescription("");
       setCheck(!check);
-      swal(t("addEditStudent.success"), t("addEditStudent.addStatusSuccess"), "success");
+      swal(
+        t("addEditStudent.success"),
+        t("addEditStudent.addStatusSuccess"),
+        "success",
+      );
     } catch (error) {
       console.log(error);
     }
@@ -310,7 +330,11 @@ const EditStudentModal = ({
       setIsEditFacultyModalVisible(false);
       setNewFacultyName("");
       setCheck(!check);
-      swal(t("addEditStudent.success"), t("addEditStudent.updateFacultySuccess"), "success");
+      swal(
+        t("addEditStudent.success"),
+        t("addEditStudent.updateFacultySuccess"),
+        "success",
+      );
     } catch (error) {
       console.log(error);
     }
@@ -345,7 +369,11 @@ const EditStudentModal = ({
       setNewProgramName("");
       setNewProgramDuration("");
       setCheck(!check);
-      swal(t("addEditStudent.success"), t("addEditStudent.updateProgramSuccess"), "success");
+      swal(
+        t("addEditStudent.success"),
+        t("addEditStudent.updateProgramSuccess"),
+        "success",
+      );
     } catch (error) {
       console.log(error);
     }
@@ -371,7 +399,11 @@ const EditStudentModal = ({
       setNewStatusName("");
       setNewStatusDescription("");
       setCheck(!check);
-      swal(t("addEditStudent.success"), t("addEditStudent.updateStatusSuccess"), "success");
+      swal(
+        t("addEditStudent.success"),
+        t("addEditStudent.updateStatusSuccess"),
+        "success",
+      );
     } catch (error) {
       console.log(error);
     }
@@ -601,7 +633,7 @@ const EditStudentModal = ({
                   addressType === "permanentAddress"
                     ? t("addEditStudent.permanentAddress")
                     : addressType === "temporaryAddress"
-                      ?t("addEditStudent.temporaryAddress")
+                      ? t("addEditStudent.temporaryAddress")
                       : t("addEditStudent.mailingAddress")
                 }
               >
@@ -672,7 +704,7 @@ const EditStudentModal = ({
             >
               <Select>
                 <Option value={true}>{t("addEditStudent.yes")}</Option>
-      <Option value={false}>{t("addEditStudent.no")}</Option>
+                <Option value={false}>{t("addEditStudent.no")}</Option>
               </Select>
             </Form.Item>
           )}
@@ -686,10 +718,10 @@ const EditStudentModal = ({
                 <Input placeholder="Nhập quốc gia cấp hộ chiếu" />
               </Form.Item>
               <Form.Item
-      label={t("addEditStudent.notes")}
+                label={t("addEditStudent.notes")}
                 name={["identityDocument", "notes"]}
               >
-      <Input placeholder={t("addEditStudent.notesPlaceholder")} />
+                <Input placeholder={t("addEditStudent.notesPlaceholder")} />
               </Form.Item>
             </>
           )}

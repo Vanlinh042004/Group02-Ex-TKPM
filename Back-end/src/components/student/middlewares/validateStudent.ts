@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response, NextFunction } from "express";
 
 /**
  * Middleware để xác thực dữ liệu sinh viên trước khi xử lý
@@ -6,7 +6,11 @@ import { Request, Response, NextFunction } from 'express';
  * @param res Response
  * @param next NextFunction
  */
-function validateStudent(req: Request, res: Response, next: NextFunction): void {
+function validateStudent(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): void {
   const { email, phone, faculty, status } = req.body;
 
   // Kiểm tra định dạng email
@@ -15,7 +19,7 @@ function validateStudent(req: Request, res: Response, next: NextFunction): void 
       /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z]{2,}$/i;
 
     if (!email || !emailRegex.test(email)) {
-      res.status(400).json({ message: 'Invalid email format' });
+      res.status(400).json({ message: "Invalid email format" });
       return;
     }
   }
@@ -24,7 +28,7 @@ function validateStudent(req: Request, res: Response, next: NextFunction): void 
   if (phone !== undefined) {
     const phoneRegex = /^[0-9]{10,}$/;
     if (!phone || !phoneRegex.test(phone)) {
-      res.status(400).json({ message: 'Invalid phone number format' });
+      res.status(400).json({ message: "Invalid phone number format" });
       return;
     }
   }

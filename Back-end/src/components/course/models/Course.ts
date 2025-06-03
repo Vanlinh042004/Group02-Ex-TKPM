@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema, Document } from "mongoose";
 
 export interface ICourse extends Document {
   courseId: string;
@@ -31,7 +31,7 @@ const CourseSchema = new Schema(
     },
     faculty: {
       type: Schema.Types.ObjectId,
-      ref: 'Faculty',
+      ref: "Faculty",
       required: true,
     },
     description: {
@@ -41,7 +41,7 @@ const CourseSchema = new Schema(
     prerequisites: [
       {
         type: Schema.Types.ObjectId,
-        ref: 'Course',
+        ref: "Course",
       },
     ],
     isActive: {
@@ -55,11 +55,11 @@ const CourseSchema = new Schema(
   },
   {
     timestamps: true, // Tự động tạo và cập nhật createdAt, updatedAt
-  }
+  },
 );
 
 // Tạo indexes để tối ưu hóa các truy vấn phổ biến
 CourseSchema.index({ courseId: 1 }); // Truy vấn theo courseId
-CourseSchema.index({ name: 'text' }); // Tìm kiếm theo tên
+CourseSchema.index({ name: "text" }); // Tìm kiếm theo tên
 
-export default mongoose.model<ICourse>('Course', CourseSchema);
+export default mongoose.model<ICourse>("Course", CourseSchema);

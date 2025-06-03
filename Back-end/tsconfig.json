@@ -2,24 +2,24 @@
   "compilerOptions": {
     /* Language and Environment */
     "target": "es2016",
-    
+
     /* Modules */
     "module": "commonjs",
     "rootDir": "./src",
     "moduleResolution": "node",
     "resolveJsonModule": true,
-    
+
     /* JavaScript Support */
     "allowJs": true,
-    
+
     /* Emit */
     "outDir": "./dist",
     "sourceMap": true,
-    
+
     /* Interop Constraints */
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    
+
     /* Type Checking */
     "strict": false,
     "noImplicitAny": false,
@@ -27,7 +27,7 @@
     "strictFunctionTypes": false,
     "strictBindCallApply": false,
     "noImplicitThis": false,
-    
+
     /* Completeness */
     "skipLibCheck": true
   },

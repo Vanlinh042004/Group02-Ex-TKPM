@@ -1,11 +1,11 @@
-import Student, { IStudent } from '../models/Student';
-import Faculty from '../../faculty/models/Faculty';
-import Program from '../../program/models/program';
-import Status from '../../status/models/Status';
-import PhoneNumberConfig from '../../phone-number/models/PhoneNumberConfig';
-import { importCSV, exportCSV } from '../../../utils/csvHandler';
-import { importJSON, exportJSON } from '../../../utils/jsonHandler';
-import mongoose from 'mongoose';
+import Student, { IStudent } from "../models/Student";
+import Faculty from "../../faculty/models/Faculty";
+import Program from "../../program/models/program";
+import Status from "../../status/models/Status";
+import PhoneNumberConfig from "../../phone-number/models/PhoneNumberConfig";
+import { importCSV, exportCSV } from "../../../utils/csvHandler";
+import { importJSON, exportJSON } from "../../../utils/jsonHandler";
+import mongoose from "mongoose";
 import {
   validStatuses,
   statusTransitionRules,
@@ -163,12 +163,11 @@ class StudentService {
       console.log("phoneNumberConfig", phoneNumberConfig);
       // Tìm phoneNumberConfig bằng tên hoặc ID
       const phoneNumberConfigDoc = await PhoneNumberConfig.findOne({
-       
-       country: phoneNumberConfig
+        country: phoneNumberConfig,
       });
 
       if (!phoneNumberConfigDoc) {
-        throw new Error('PhoneNumberConfig not found');
+        throw new Error("PhoneNumberConfig not found");
       }
 
       // Tạo sinh viên mới
@@ -223,7 +222,7 @@ class StudentService {
    */
   async updateStudent(
     studentId: string,
-    updateData: IUpdateStudentDTO
+    updateData: IUpdateStudentDTO,
   ): Promise<IStudent> {
     try {
       if (!studentId || !updateData) {
@@ -233,12 +232,12 @@ class StudentService {
         const phoneNumberConfigDoc = await PhoneNumberConfig.findOne({
           $or: [
             { _id: updateData.phoneNumberConfig },
-            { country: updateData.phoneNumberConfig }
-          ]
+            { country: updateData.phoneNumberConfig },
+          ],
         });
 
         if (!phoneNumberConfigDoc) {
-          throw new Error('Phone number configuration not found');
+          throw new Error("Phone number configuration not found");
         }
 
         // Thay thế bằng ID của phoneNumberConfig
@@ -282,7 +281,7 @@ class StudentService {
           statusTransitionRules[currentStatusName] || [];
         if (!allowedTransitions.includes(newStatusName)) {
           throw new Error(
-            `Không thể đổi trạng thái "${currentStatusName}" sang "${newStatusName}"`
+            `Không thể đổi trạng thái "${currentStatusName}" sang "${newStatusName}"`,
           );
         }
 
@@ -311,7 +310,7 @@ class StudentService {
    * @returns Promise<IStudent[]> Danh sách sinh viên phù hợp
    */
   async searchStudent(
-    searchParams: IStudentSearchTermsDTO
+    searchParams: IStudentSearchTermsDTO,
   ): Promise<IStudent[]> {
     try {
       // Kiểm tra nếu không có bất kỳ tham số tìm kiếm nào
@@ -364,10 +363,10 @@ class StudentService {
       const result = await Student.find({
         $and: searchConditions,
       })
-        .populate('faculty')
-        .populate('program')
-        .populate('status')
-        .populate('phoneNumberConfig');
+        .populate("faculty")
+        .populate("program")
+        .populate("status")
+        .populate("phoneNumberConfig");
 
       return result;
     } catch (error) {
@@ -383,10 +382,10 @@ class StudentService {
   async getAllStudent(): Promise<IStudent[]> {
     try {
       const result = await Student.find({})
-        .populate('faculty')
-        .populate('program')
-        .populate('status')
-        .populate('phoneNumberConfig');
+        .populate("faculty")
+        .populate("program")
+        .populate("status")
+        .populate("phoneNumberConfig");
       return result;
     } catch (error) {
       console.log("Error retrieving all students: ", error);
@@ -402,10 +401,10 @@ class StudentService {
   async getStudentById(studentId: string): Promise<IStudent | null> {
     try {
       const student = await Student.findOne({ studentId })
-        .populate('faculty')
-        .populate('program')
-        .populate('status')
-        .populate('phoneNumberConfig');
+        .populate("faculty")
+        .populate("program")
+        .populate("status")
+        .populate("phoneNumberConfig");
       return student;
     } catch (error) {
       console.log("Error retrieving student: ", error);

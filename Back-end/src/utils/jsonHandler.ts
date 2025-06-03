@@ -1,4 +1,4 @@
-import fs from 'fs';
+import fs from "fs";
 
 /**
  * Đọc và phân tích dữ liệu từ file JSON
@@ -7,7 +7,7 @@ import fs from 'fs';
  */
 export const importJSON = (filePath: string): Promise<any[]> => {
   return new Promise((resolve, reject) => {
-    fs.readFile(filePath, 'utf8', (err, data) => {
+    fs.readFile(filePath, "utf8", (err, data) => {
       if (err) return reject(err);
       try {
         const parsedData = JSON.parse(data);
@@ -29,13 +29,15 @@ export const exportJSON = (data: any[], filePath: string): Promise<void> => {
   return new Promise((resolve, reject) => {
     try {
       const jsonString = JSON.stringify(data, null, 2);
-      fs.writeFile(filePath, jsonString, 'utf8', (writeErr) => {
+      fs.writeFile(filePath, jsonString, "utf8", (writeErr) => {
         if (writeErr) return reject(writeErr);
         resolve();
       });
     } catch (stringifyError) {
       reject(
-        new Error(`Lỗi chuyển đổi dữ liệu sang JSON: ${stringifyError.message}`)
+        new Error(
+          `Lỗi chuyển đổi dữ liệu sang JSON: ${stringifyError.message}`,
+        ),
       );
     }
   });

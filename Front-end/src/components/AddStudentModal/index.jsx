@@ -106,11 +106,19 @@ const AddStudentModal = ({
         return;
       }
       if (!checkValidEmail(values.email)) {
-        swal(t("addEditStudent.error"), t("addEditStudent.invalidEmail"), "error");
+        swal(
+          t("addEditStudent.error"),
+          t("addEditStudent.invalidEmail"),
+          "error",
+        );
         return;
       }
       if (!checkValidPhone(values.phone)) {
-        swal(t("addEditStudent.error"), t("addEditStudent.invalidPhone"), "error");
+        swal(
+          t("addEditStudent.error"),
+          t("addEditStudent.invalidPhone"),
+          "error",
+        );
         return;
       }
 
@@ -144,7 +152,11 @@ const AddStudentModal = ({
         }
       } catch (error) {
         console.error(error);
-        swal(t("addEditStudent.error"), t("addEditStudent.errorMessage"), "error");
+        swal(
+          t("addEditStudent.error"),
+          t("addEditStudent.errorMessage"),
+          "error",
+        );
       }
     } catch (error) {
       swal(t("addEditStudent.error"), t("addEditStudent.required"), "error");
@@ -230,35 +242,35 @@ const AddStudentModal = ({
           ]}
         >
           <div className="d-flex align-items-center">
-           <Select
-  placeholder={t("addEditStudent.selectCountryCode")}
-  className="me-2"
-  onChange={async (value) => {
-    const config = await getCountryConfig(value);
-    const escapedRegex = config.regex
-      .replace(/\+/g, "\\+")
-      .replace(/d/g, "\\d");
+            <Select
+              placeholder={t("addEditStudent.selectCountryCode")}
+              className="me-2"
+              onChange={async (value) => {
+                const config = await getCountryConfig(value);
+                const escapedRegex = config.regex
+                  .replace(/\+/g, "\\+")
+                  .replace(/d/g, "\\d");
 
-    setPhoneRegex(escapedRegex);
-    setPphoneNumberConfig(config.country); // Lưu country (ví dụ: "Việt Nam")
-    form.setFieldsValue({ phoneNumberConfig: config.country }); // Lưu country vào form
-  }}
->
-  {Array.isArray(countries) ? (
-    countries.map((country, index) => (
-      <Option key={index} value={country.country}>
-        {country.country}
-      </Option>
-    ))
-  ) : (
-    <Option disabled>{t("addEditStudent.noData")}</Option>
-  )}
-</Select>
-<Input placeholder={t("addEditStudent.inputPhonePlaceholder")} />
+                setPhoneRegex(escapedRegex);
+                setPphoneNumberConfig(config.country); // Lưu country (ví dụ: "Việt Nam")
+                form.setFieldsValue({ phoneNumberConfig: config.country }); // Lưu country vào form
+              }}
+            >
+              {Array.isArray(countries) ? (
+                countries.map((country, index) => (
+                  <Option key={index} value={country.country}>
+                    {country.country}
+                  </Option>
+                ))
+              ) : (
+                <Option disabled>{t("addEditStudent.noData")}</Option>
+              )}
+            </Select>
+            <Input placeholder={t("addEditStudent.inputPhonePlaceholder")} />
           </div>
         </Form.Item>
         {/* Quốc tịch */}
-          <Form.Item
+        <Form.Item
           name={["permanentAddress", "country"]}
           label={t("addEditStudent.nationality")}
           rules={[{ message: t("addEditStudent.selectNationality") }]}
@@ -276,7 +288,9 @@ const AddStudentModal = ({
                 </Select.Option>
               ))
             ) : (
-              <Select.Option disabled>{t("addEditStudent.noData")}</Select.Option>
+              <Select.Option disabled>
+                {t("addEditStudent.noData")}
+              </Select.Option>
             )}
           </Select>
         </Form.Item>
@@ -321,209 +335,211 @@ const AddStudentModal = ({
         </Form.Item>
 
         {/* Địa chỉ tạm trú */}
-<Form.Item label={t("addEditStudent.temporaryAddress")}>
-  <Form.Item
-    name={["temporaryAddress", "streetAddress"]}
-    label={t("addEditStudent.streetAddress")}
-  >
-    <Input />
-  </Form.Item>
-  <Form.Item
-    name={["temporaryAddress", "ward"]}
-    label={t("addEditStudent.ward")}
-  >
-    <Input />
-  </Form.Item>
-  <Form.Item
-    name={["temporaryAddress", "district"]}
-    label={t("addEditStudent.district")}
-  >
-    <Input />
-  </Form.Item>
-  <Form.Item
-    name={["temporaryAddress", "city"]}
-    label={t("addEditStudent.city")}
-  >
-    <Input />
-  </Form.Item>
-  <Form.Item
-    name={["temporaryAddress", "country"]}
-    label={t("addEditStudent.country")}
-  >
-    <Input />
-  </Form.Item>
-</Form.Item>
+        <Form.Item label={t("addEditStudent.temporaryAddress")}>
+          <Form.Item
+            name={["temporaryAddress", "streetAddress"]}
+            label={t("addEditStudent.streetAddress")}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name={["temporaryAddress", "ward"]}
+            label={t("addEditStudent.ward")}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name={["temporaryAddress", "district"]}
+            label={t("addEditStudent.district")}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name={["temporaryAddress", "city"]}
+            label={t("addEditStudent.city")}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name={["temporaryAddress", "country"]}
+            label={t("addEditStudent.country")}
+          >
+            <Input />
+          </Form.Item>
+        </Form.Item>
 
-{/* Địa chỉ nhận thư */}
-<Form.Item label={t("addEditStudent.mailingAddress")}>
-  <Form.Item
-    name={["mailingAddress", "streetAddress"]}
-    label={t("addEditStudent.streetAddress")}
-    rules={[{ required: true, message: t("addEditStudent.required") }]}
-  >
-    <Input />
-  </Form.Item>
-  <Form.Item
-    name={["mailingAddress", "ward"]}
-    label={t("addEditStudent.ward")}
-    rules={[{ required: true, message: t("addEditStudent.required") }]}
-  >
-    <Input />
-  </Form.Item>
-  <Form.Item
-    name={["mailingAddress", "district"]}
-    label={t("addEditStudent.district")}
-    rules={[{ required: true, message: t("addEditStudent.required") }]}
-  >
-    <Input />
-  </Form.Item>
-  <Form.Item
-    name={["mailingAddress", "city"]}
-    label={t("addEditStudent.city")}
-    rules={[{ required: true, message: t("addEditStudent.required") }]}
-  >
-    <Input />
-  </Form.Item>
-  <Form.Item
-    name={["mailingAddress", "country"]}
-    label={t("addEditStudent.country")}
-    rules={[{ required: true, message: t("addEditStudent.required") }]}
-  >
-    <Input />
-  </Form.Item>
-</Form.Item>
+        {/* Địa chỉ nhận thư */}
+        <Form.Item label={t("addEditStudent.mailingAddress")}>
+          <Form.Item
+            name={["mailingAddress", "streetAddress"]}
+            label={t("addEditStudent.streetAddress")}
+            rules={[{ required: true, message: t("addEditStudent.required") }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name={["mailingAddress", "ward"]}
+            label={t("addEditStudent.ward")}
+            rules={[{ required: true, message: t("addEditStudent.required") }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name={["mailingAddress", "district"]}
+            label={t("addEditStudent.district")}
+            rules={[{ required: true, message: t("addEditStudent.required") }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name={["mailingAddress", "city"]}
+            label={t("addEditStudent.city")}
+            rules={[{ required: true, message: t("addEditStudent.required") }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name={["mailingAddress", "country"]}
+            label={t("addEditStudent.country")}
+            rules={[{ required: true, message: t("addEditStudent.required") }]}
+          >
+            <Input />
+          </Form.Item>
+        </Form.Item>
 
-{/* Khoa */}
-<Form.Item
-  label={t("addEditStudent.faculty")}
-  name="faculty"
-  rules={[{ required: true, message: t("addEditStudent.required") }]}
->
-  <Select>
-    {Array.isArray(faculties) ? (
-      faculties.map((faculty) => (
-        <Option key={faculty._id} value={faculty._id}>
-          {faculty.name}
-        </Option>
-      ))
-    ) : (
-      <Option disabled>{t("addEditStudent.noData")}</Option>
-    )}
-  </Select>
-</Form.Item>
+        {/* Khoa */}
+        <Form.Item
+          label={t("addEditStudent.faculty")}
+          name="faculty"
+          rules={[{ required: true, message: t("addEditStudent.required") }]}
+        >
+          <Select>
+            {Array.isArray(faculties) ? (
+              faculties.map((faculty) => (
+                <Option key={faculty._id} value={faculty._id}>
+                  {faculty.name}
+                </Option>
+              ))
+            ) : (
+              <Option disabled>{t("addEditStudent.noData")}</Option>
+            )}
+          </Select>
+        </Form.Item>
 
-<Form.Item
-  label={t("addEditStudent.course")}
-  name="course"
-  rules={[{ required: true, message: t("addEditStudent.required") }]}
->
-  <Input />
-</Form.Item>
+        <Form.Item
+          label={t("addEditStudent.course")}
+          name="course"
+          rules={[{ required: true, message: t("addEditStudent.required") }]}
+        >
+          <Input />
+        </Form.Item>
 
-{/* Chương trình */}
-<Form.Item
-  label={t("addEditStudent.program")}
-  name="program"
-  rules={[{ required: true, message: t("addEditStudent.required") }]}
->
-  <Select>
-    {programs.map((program) => (
-      <Option key={program._id} value={program._id}>
-        {program.name}
-      </Option>
-    ))}
-  </Select>
-</Form.Item>
+        {/* Chương trình */}
+        <Form.Item
+          label={t("addEditStudent.program")}
+          name="program"
+          rules={[{ required: true, message: t("addEditStudent.required") }]}
+        >
+          <Select>
+            {programs.map((program) => (
+              <Option key={program._id} value={program._id}>
+                {program.name}
+              </Option>
+            ))}
+          </Select>
+        </Form.Item>
 
-{/* Trạng thái */}
-<Form.Item
-  label={t("addEditStudent.status")}
-  name="status"
-  rules={[{ required: true, message: t("addEditStudent.required") }]}
->
-  <Select>
-    {statuses.map((status) => (
-      <Option key={status._id} value={status._id}>
-        {status.name}
-      </Option>
-    ))}
-  </Select>
-</Form.Item>
+        {/* Trạng thái */}
+        <Form.Item
+          label={t("addEditStudent.status")}
+          name="status"
+          rules={[{ required: true, message: t("addEditStudent.required") }]}
+        >
+          <Select>
+            {statuses.map((status) => (
+              <Option key={status._id} value={status._id}>
+                {status.name}
+              </Option>
+            ))}
+          </Select>
+        </Form.Item>
 
-{/* Giấy tờ tùy thân */}
-<Form.Item
-  label={t("addEditStudent.identityType")}
-  name={["identityDocument", "type"]}
-  rules={[{ required: true, message: t("addEditStudent.required") }]}
->
-  <Select>
-    <Option value="CMND">{t("addEditStudent.cmnd")}</Option>
-    <Option value="CCCD">{t("addEditStudent.cccd")}</Option>
-    <Option value="Passport">{t("addEditStudent.passport")}</Option>
-  </Select>
-</Form.Item>
+        {/* Giấy tờ tùy thân */}
+        <Form.Item
+          label={t("addEditStudent.identityType")}
+          name={["identityDocument", "type"]}
+          rules={[{ required: true, message: t("addEditStudent.required") }]}
+        >
+          <Select>
+            <Option value="CMND">{t("addEditStudent.cmnd")}</Option>
+            <Option value="CCCD">{t("addEditStudent.cccd")}</Option>
+            <Option value="Passport">{t("addEditStudent.passport")}</Option>
+          </Select>
+        </Form.Item>
 
-<Form.Item
-  label={t("addEditStudent.identityNumber")}
-  name={["identityDocument", "number"]}
-  rules={[{ required: true, message: t("addEditStudent.required") }]}
->
-  <Input />
-</Form.Item>
+        <Form.Item
+          label={t("addEditStudent.identityNumber")}
+          name={["identityDocument", "number"]}
+          rules={[{ required: true, message: t("addEditStudent.required") }]}
+        >
+          <Input />
+        </Form.Item>
 
-<Form.Item
-  label={t("addEditStudent.issueDate")}
-  name={["identityDocument", "issueDate"]}
-  rules={[{ required: true, message: t("addEditStudent.required") }]}
->
-  <Input type="date" />
-</Form.Item>
+        <Form.Item
+          label={t("addEditStudent.issueDate")}
+          name={["identityDocument", "issueDate"]}
+          rules={[{ required: true, message: t("addEditStudent.required") }]}
+        >
+          <Input type="date" />
+        </Form.Item>
 
-<Form.Item
-  label={t("addEditStudent.issuePlace")}
-  name={["identityDocument", "issuePlace"]}
-  rules={[{ required: true, message: t("addEditStudent.required") }]}
->
-  <Input />
-</Form.Item>
+        <Form.Item
+          label={t("addEditStudent.issuePlace")}
+          name={["identityDocument", "issuePlace"]}
+          rules={[{ required: true, message: t("addEditStudent.required") }]}
+        >
+          <Input />
+        </Form.Item>
 
-<Form.Item
-  label={t("addEditStudent.expiryDate")}
-  name={["identityDocument", "expiryDate"]}
-  rules={[{ required: true, message: t("addEditStudent.required") }]}
->
-  <Input type="date" />
-</Form.Item>
+        <Form.Item
+          label={t("addEditStudent.expiryDate")}
+          name={["identityDocument", "expiryDate"]}
+          rules={[{ required: true, message: t("addEditStudent.required") }]}
+        >
+          <Input type="date" />
+        </Form.Item>
 
-{documentType === "CCCD" && (
-  <Form.Item
-    label={t("addEditStudent.hasChip")}
-    name={["identityDocument", "hasChip"]}
-  >
-    <Select>
-      <Option value={true}>{t("addEditStudent.yes")}</Option>
-      <Option value={false}>{t("addEditStudent.no")}</Option>
-    </Select>
-  </Form.Item>
-)}
+        {documentType === "CCCD" && (
+          <Form.Item
+            label={t("addEditStudent.hasChip")}
+            name={["identityDocument", "hasChip"]}
+          >
+            <Select>
+              <Option value={true}>{t("addEditStudent.yes")}</Option>
+              <Option value={false}>{t("addEditStudent.no")}</Option>
+            </Select>
+          </Form.Item>
+        )}
 
-{documentType === "Passport" && (
-  <>
-    <Form.Item
-      label={t("addEditStudent.issuingCountry")}
-      name={["identityDocument", "issuingCountry"]}
-      rules={[{ required: true, message: t("addEditStudent.required") }]}
-    >
-      <Input placeholder={t("addEditStudent.issuingCountryPlaceholder")} />
-    </Form.Item>
-    <Form.Item
-      label={t("addEditStudent.notes")}
-      name={["identityDocument", "notes"]}
-    >
-      <Input placeholder={t("addEditStudent.notesPlaceholder")} />
-    </Form.Item>
-  
-
+        {documentType === "Passport" && (
+          <>
+            <Form.Item
+              label={t("addEditStudent.issuingCountry")}
+              name={["identityDocument", "issuingCountry"]}
+              rules={[
+                { required: true, message: t("addEditStudent.required") },
+              ]}
+            >
+              <Input
+                placeholder={t("addEditStudent.issuingCountryPlaceholder")}
+              />
+            </Form.Item>
+            <Form.Item
+              label={t("addEditStudent.notes")}
+              name={["identityDocument", "notes"]}
+            >
+              <Input placeholder={t("addEditStudent.notesPlaceholder")} />
+            </Form.Item>
           </>
         )}
       </Form>
