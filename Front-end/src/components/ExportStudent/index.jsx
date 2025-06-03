@@ -1,65 +1,96 @@
 import Papa from "papaparse";
 import { saveAs } from "file-saver";
+import { useTranslation } from "react-i18next";
+import Swal from "sweetalert2";
 
-// Xuất CSV với dữ liệu đúng format
-export const exportStudentsToCSV = (students) => {
-  if (!students || students.length === 0) {
-    alert("Không có dữ liệu để xuất!");
-    return;
-  }
+const ExportStudent = () => {
+  const { t } = useTranslation("student");
 
-  // Chỉ chọn các trường cần thiết
-  const formattedData = students.map((student) => ({
-    Mã_SV: student.studentId,
-    Họ_Tên: student.fullName,
-    Ngày_Sinh: new Date(student.dateOfBirth).toLocaleDateString(),
-    Giới_Tính: student.gender,
-    Khoa: student.faculty?.name || "N/A",
-    Chương_Trình: student.program?.name || "N/A",
-    Khóa: student.course,
-    Email: student.email,
-    SĐT: student.phone,
-    Trạng_Thái: student.status,
-    CMND: student.identityDocument?.number || "N/A",
-    "Nơi Cấp CMND": student.identityDocument?.issuePlace || "N/A",
-    "Địa Chỉ Thường Trú": `${student.permanentAddress?.streetAddress || ""}, ${student.permanentAddress?.district || ""}, ${student.permanentAddress?.city || ""}`,
-  }));
+  const exportStudentsToCSV = (students) => {
+    if (!students || students.length === 0) {
+      Swal.fire({
+        icon: "warning",
+        title: t("export.noData"),
+        text: t("export.noData"),
+      });
+      return;
+    }
 
-  // Chuyển thành CSV
-  const csv = Papa.unparse(formattedData);
-  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-  saveAs(blob, "students.csv");
+    // Select necessary fields
+    const formattedData = students.map((student) => ({
+      [t("studentId")]: student.studentId,
+      [t("fullName")]: student.fullName,
+      [t("dateOfBirth")]: new Date(student.dateOfBirth).toLocaleDateString(),
+      [t("gender")]: student.gender,
+      [t("faculty")]: student.faculty?.name || t("notAvailable"),
+      [t("program")]: student.program?.name || t("notAvailable"),
+      [t("course")]: student.course,
+      [t("email")]: student.email,
+      [t("phone")]: student.phone,
+      [t("status")]: student.status,
+      [t("identity")]: student.identityDocument?.number || t("notAvailable"),
+      [t("issuePlace")]: student.identityDocument?.issuePlace || t("notAvailable"),
+      [t("address")]: `${student.permanentAddress?.streetAddress || ""}, ${student.permanentAddress?.district || ""}, ${student.permanentAddress?.city || ""}`,
+    }));
+
+    // Convert to CSV
+    const csv = Papa.unparse(formattedData);
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+    saveAs(blob, "students.csv");
+
+    Swal.fire({
+      icon: "success",
+      title: t("export.success"),
+      text: t("export.downloadTitle"),
+    });
+  };
+
+  const exportStudentsToJSON = (students) => {
+    if (!students || students.length === 0) {
+      Swal.fire({
+        icon: "warning",
+        title: t("export.noData"),
+        text: t("export.noData"),
+      });
+      return;
+    }
+
+    const jsonData = students.map((student) => ({
+      studentId: student.studentId,
+      fullName: student.fullName,
+      dateOfBirth: student.dateOfBirth,
+      gender: student.gender,
+      faculty: student.faculty?.name || t("notAvailable"),
+      program: student.program?.name || t("notAvailable"),
+      course: student.course,
+      email: student.email,
+      phone: student.phone,
+      status: student.status,
+      identityDocument: {
+        number: student.identityDocument?.number || t("notAvailable"),
+        issuePlace: student.identityDocument?.issuePlace || t("notAvailable"),
+      },
+      permanentAddress: {
+        fullAddress: `${student.permanentAddress?.streetAddress || ""}, ${student.permanentAddress?.district || ""}, ${student.permanentAddress?.city || ""}`,
+      },
+    }));
+
+    const blob = new Blob([JSON.stringify(jsonData, null, 2)], {
+      type: "application/json",
+    });
+    saveAs(blob, "students.json");
+
+    Swal.fire({
+      icon: "success",
+      title: t("export.success"),
+      text: t("export.downloadTitle"),
+    });
+  };
+
+  return {
+    exportStudentsToCSV,
+    exportStudentsToJSON,
+  };
 };
 
-export const exportStudentsToJSON = (students) => {
-  if (!students || students.length === 0) {
-    alert("Không có dữ liệu để xuất!");
-    return;
-  }
-
-  // Chỉ chọn dữ liệu cần thiết
-  const formattedData = students.map((student) => ({
-    studentId: student.studentId,
-    fullName: student.fullName,
-    dateOfBirth: student.dateOfBirth,
-    gender: student.gender,
-    faculty: student.faculty?.name || "N/A",
-    program: student.program?.name || "N/A",
-    course: student.course,
-    email: student.email,
-    phone: student.phone,
-    status: student.status,
-    identityDocument: {
-      number: student.identityDocument?.number || "N/A",
-      issuePlace: student.identityDocument?.issuePlace || "N/A",
-    },
-    permanentAddress: {
-      fullAddress: `${student.permanentAddress?.streetAddress || ""}, ${student.permanentAddress?.district || ""}, ${student.permanentAddress?.city || ""}`,
-    },
-  }));
-
-  // Chuyển thành JSON
-  const json = JSON.stringify(formattedData, null, 2);
-  const blob = new Blob([json], { type: "application/json;charset=utf-8;" });
-  saveAs(blob, "students.json");
-};
+export default ExportStudent;

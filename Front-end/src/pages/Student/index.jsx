@@ -19,10 +19,7 @@ import {
 } from "../../services/studentService";
 import AddStudentModal from "../../components/AddStudentModal";
 import EditStudentModal from "../../components/EditStudentModal";
-import {
-  exportStudentsToCSV,
-  exportStudentsToJSON,
-} from "../../components/ExportStudent";
+import ExportStudent from "../../components/ExportStudent";
 import swal from "sweetalert";
 import { useTranslation } from "react-i18next";
 
@@ -36,6 +33,7 @@ function Student() {
   const [searchName, setSearchName] = useState("");
   const [searchFaculty, setSearchFaculty] = useState("");
   const { t } = useTranslation("student");
+  const { exportStudentsToCSV, exportStudentsToJSON } = ExportStudent();
 
   useEffect(() => {
     const fetchStudents = async () => {
