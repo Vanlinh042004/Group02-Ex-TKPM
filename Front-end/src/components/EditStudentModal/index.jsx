@@ -187,10 +187,10 @@ const EditStudentModal = ({
           identityDocument: {
             ...values.identityDocument,
             issueDate: new Date(
-              values.identityDocument.issueDate
+              values.identityDocument.issueDate,
             ).toISOString(),
             expiryDate: new Date(
-              values.identityDocument.expiryDate
+              values.identityDocument.expiryDate,
             ).toISOString(),
           },
         };
@@ -199,14 +199,14 @@ const EditStudentModal = ({
           .then(() => {
             setStudents((students) =>
               students.map((s) =>
-                s._id === student._id ? { ...s, ...updatedStudentData } : s
-              )
+                s._id === student._id ? { ...s, ...updatedStudentData } : s,
+              ),
             );
             setIsModalVisible(false);
             swal(
               "Thành công!",
               "Cập nhật thông tin sinh viên thành công!",
-              "success"
+              "success",
             );
           })
           .catch((error) => {
@@ -302,8 +302,8 @@ const EditStudentModal = ({
                 name: newFacultyName,
                 facultyId: selectedFaculty.facultyId,
               }
-            : f
-        )
+            : f,
+        ),
       );
       setIsEditFacultyModalVisible(false);
       setNewFacultyName("");
@@ -336,8 +336,8 @@ const EditStudentModal = ({
                 name: newProgramName,
                 programId: selectedProgram.programId,
               }
-            : p
-        )
+            : p,
+        ),
       );
       setIsEditProgramModalVisible(false);
       setNewProgramName("");
@@ -362,8 +362,8 @@ const EditStudentModal = ({
       //console.log(res.data);
       setStatuses(
         statuses.map((s) =>
-          s._id === selectedStatus ? { ...s, name: newStatusName } : s
-        )
+          s._id === selectedStatus ? { ...s, name: newStatusName } : s,
+        ),
       );
       setIsEditStatusModalVisible(false);
       setNewStatusName("");
@@ -565,8 +565,8 @@ const EditStudentModal = ({
                   addressType === "permanentAddress"
                     ? "Địa chỉ thường trú"
                     : addressType === "temporaryAddress"
-                    ? "Địa chỉ tạm trú"
-                    : "Địa chỉ nhận thư"
+                      ? "Địa chỉ tạm trú"
+                      : "Địa chỉ nhận thư"
                 }
               >
                 <Input.Group compact>
@@ -587,7 +587,7 @@ const EditStudentModal = ({
                   </Form.Item>
                 </Input.Group>
               </Form.Item>
-            )
+            ),
           )}
 
           <Form.Item

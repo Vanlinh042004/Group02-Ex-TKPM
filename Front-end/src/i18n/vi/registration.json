@@ -1,0 +1,76 @@
+{
+  "title": "Đăng Ký Môn Học Cho Sinh Viên",
+  "tabs": {
+    "register": "📌 Đăng ký",
+    "cancel": "🗑️ Hủy đăng ký",
+    "transcript": "🖨️ In bảng điểm"
+  },
+  "registerForm": {
+    "title": "Thông tin đăng ký",
+    "studentId": "Mã sinh viên",
+    "studentIdPlaceholder": "Nhập mã sinh viên",
+    "selectClass": "Chọn lớp học",
+    "selectClassPlaceholder": "Chọn lớp",
+    "submit": "Xác nhận đăng ký"
+  },
+  "errors": {
+    "missingInfo": "Vui lòng nhập đầy đủ thông tin!",
+    "invalidClass": "Lớp học không hợp lệ!",
+    "registrationFailed": "Đăng ký thất bại. Vui lòng thử lại.",
+    "transcriptError": "Không thể lấy bảng điểm!",
+    "printError": "In bảng điểm thất bại!"
+  },
+  "success": {
+    "registration": "Đăng ký thành công!",
+    "cancellation": "Hủy thành công!"
+  },
+  "cancel": {
+    "reason": "Nhập lý do hủy đăng ký:",
+    "cancelButton": "Hủy",
+    "confirmButton": "Xác nhận"
+  },
+  "registrationList": {
+    "title": "Danh sách đăng ký",
+    "noRegistrations": "Không có đăng ký nào.",
+    "table": {
+      "no": "#",
+      "studentId": "Mã SV",
+      "course": "Môn học",
+      "class": "Lớp",
+      "instructor": "Giảng viên",
+      "status": "Trạng thái",
+      "actions": "Thao tác"
+    },
+    "status": {
+      "cancelled": "Đã hủy",
+      "active": "Hoạt động"
+    }
+  },
+  "transcript": {
+    "title": "BẢNG ĐIỂM SINH VIÊN",
+    "printTitle": "In bảng điểm sinh viên",
+    "noStudents": "Không có sinh viên đang đăng ký.",
+    "action": "In bảng điểm",
+    "studentInfo": {
+      "name": "Họ tên",
+      "id": "Mã SV",
+      "email": "Email",
+      "faculty": "Khoa",
+      "program": "Chương trình",
+      "status": "Trạng thái"
+    },
+    "table": {
+      "no": "#",
+      "courseId": "Mã MH",
+      "courseName": "Tên môn",
+      "classId": "Lớp",
+      "credits": "Số tín chỉ",
+      "grade": "Điểm",
+      "result": "Kết quả"
+    },
+    "summary": {
+      "totalCredits": "Tổng số tín chỉ",
+      "gpa": "GPA"
+    }
+  }
+}

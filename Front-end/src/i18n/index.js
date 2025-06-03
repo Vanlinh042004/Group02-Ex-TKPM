@@ -8,6 +8,8 @@ import enFooter from "./en/footer.json";
 import viFooter from "./vi/footer.json";
 import enCourse from "./en/course.json";
 import viCourse from "./vi/course.json";
+import enRegistration from "./en/registration.json";
+import viRegistration from "./vi/registration.json";
 i18n.use(initReactI18next).init({
   resources: {
     en: {
@@ -15,17 +17,19 @@ i18n.use(initReactI18next).init({
       footer: enFooter,
       student: enStudent,
       course: enCourse,
+      registration: enRegistration,
     },
     vi: {
       header: viHeader,
       footer: viFooter,
       student: viStudent,
       course: viCourse,
+      registration: viRegistration,
     },
   },
   lng: "vi",
   fallbackLng: "vi",
-  ns: ["header", "student"],
+  ns: ["header", "student", "registration"],
   defaultNS: "header",
   interpolation: { escapeValue: false },
 });

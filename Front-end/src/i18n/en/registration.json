@@ -1,0 +1,76 @@
+{
+  "title": "Course Registration for Students",
+  "tabs": {
+    "register": "📌 Register",
+    "cancel": "🗑️ Cancel Registration",
+    "transcript": "🖨️ Print Transcript"
+  },
+  "registerForm": {
+    "title": "Registration Information",
+    "studentId": "Student ID",
+    "studentIdPlaceholder": "Enter student ID",
+    "selectClass": "Select Class",
+    "selectClassPlaceholder": "Choose a class",
+    "submit": "Confirm Registration"
+  },
+  "errors": {
+    "missingInfo": "Please fill in all required information!",
+    "invalidClass": "Invalid class!",
+    "registrationFailed": "Registration failed. Please try again.",
+    "transcriptError": "Cannot get transcript!",
+    "printError": "Failed to print transcript!"
+  },
+  "success": {
+    "registration": "Registration successful!",
+    "cancellation": "Cancellation successful!"
+  },
+  "cancel": {
+    "reason": "Enter cancellation reason:",
+    "cancelButton": "Cancel",
+    "confirmButton": "Confirm"
+  },
+  "registrationList": {
+    "title": "Registration List",
+    "noRegistrations": "No registrations found.",
+    "table": {
+      "no": "#",
+      "studentId": "Student ID",
+      "course": "Course",
+      "class": "Class",
+      "instructor": "Instructor",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "status": {
+      "cancelled": "Cancelled",
+      "active": "Active"
+    }
+  },
+  "transcript": {
+    "title": "STUDENT TRANSCRIPT",
+    "printTitle": "Print Student Transcript",
+    "noStudents": "No students currently registered.",
+    "action": "Print",
+    "studentInfo": {
+      "name": "Full Name",
+      "id": "Student ID",
+      "email": "Email",
+      "faculty": "Faculty",
+      "program": "Program",
+      "status": "Status"
+    },
+    "table": {
+      "no": "#",
+      "courseId": "Course ID",
+      "courseName": "Course Name",
+      "classId": "Class",
+      "credits": "Credits",
+      "grade": "Grade",
+      "result": "Result"
+    },
+    "summary": {
+      "totalCredits": "Total Credits",
+      "gpa": "GPA"
+    }
+  }
+}

@@ -31,11 +31,13 @@
   --breakpoint-md: 768px;
   --breakpoint-lg: 992px;
   --breakpoint-xl: 1200px;
-  --font-family-sans-serif: "Work Sans", -apple-system, BlinkMacSystemFont,
-    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji",
-    "Segoe UI Emoji", "Segoe UI Symbol";
-  --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas,
-    "Liberation Mono", "Courier New", monospace;
+  --font-family-sans-serif:
+    "Work Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol";
+  --font-family-monospace:
+    SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New",
+    monospace;
 }
 
 *,
@@ -74,9 +76,18 @@ section {
 
 body {
   margin: 0;
-  font-family: "Work Sans", -apple-system, BlinkMacSystemFont, "Segoe UI",
-    Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji",
-    "Segoe UI Emoji", "Segoe UI Symbol";
+  font-family:
+    "Work Sans",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    "Helvetica Neue",
+    Arial,
+    sans-serif,
+    "Apple Color Emoji",
+    "Segoe UI Emoji",
+    "Segoe UI Symbol";
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.5;
@@ -546,8 +557,9 @@ code,
 kbd,
 pre,
 samp {
-  font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
-    "Courier New", monospace;
+  font-family:
+    SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New",
+    monospace;
 }
 
 code {
@@ -2046,13 +2058,21 @@ pre code {
   background-clip: padding-box;
   border: 1px solid #ced4da;
   border-radius: 0.25rem;
-  -webkit-transition: border-color 0.15s ease-in-out,
+  -webkit-transition:
+    border-color 0.15s ease-in-out,
     -webkit-box-shadow 0.15s ease-in-out;
-  transition: border-color 0.15s ease-in-out,
+  transition:
+    border-color 0.15s ease-in-out,
     -webkit-box-shadow 0.15s ease-in-out;
-  -o-transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out,
+  -o-transition:
+    border-color 0.15s ease-in-out,
+    box-shadow 0.15s ease-in-out;
+  transition:
+    border-color 0.15s ease-in-out,
+    box-shadow 0.15s ease-in-out;
+  transition:
+    border-color 0.15s ease-in-out,
+    box-shadow 0.15s ease-in-out,
     -webkit-box-shadow 0.15s ease-in-out;
 }
 @media screen and (prefers-reduced-motion: reduce) {
@@ -2366,8 +2386,12 @@ select.form-control-lg:not([size]):not([multiple]),
   .custom-control-input:valid:focus
   ~ .custom-control-label::before,
 .custom-control-input.is-valid:focus ~ .custom-control-label::before {
-  -webkit-box-shadow: 0 0 0 1px #fff, 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
-  box-shadow: 0 0 0 1px #fff, 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+  -webkit-box-shadow:
+    0 0 0 1px #fff,
+    0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+  box-shadow:
+    0 0 0 1px #fff,
+    0 0 0 0.2rem rgba(40, 167, 69, 0.25);
 }
 
 .was-validated .custom-file-input:valid ~ .custom-file-label,
@@ -2479,8 +2503,12 @@ select.form-control-lg:not([size]):not([multiple]),
   .custom-control-input:invalid:focus
   ~ .custom-control-label::before,
 .custom-control-input.is-invalid:focus ~ .custom-control-label::before {
-  -webkit-box-shadow: 0 0 0 1px #fff, 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
-  box-shadow: 0 0 0 1px #fff, 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+  -webkit-box-shadow:
+    0 0 0 1px #fff,
+    0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+  box-shadow:
+    0 0 0 1px #fff,
+    0 0 0 0.2rem rgba(220, 53, 69, 0.25);
 }
 
 .was-validated .custom-file-input:invalid ~ .custom-file-label,
@@ -2608,17 +2636,31 @@ select.form-control-lg:not([size]):not([multiple]),
   font-size: 1rem;
   line-height: 1.5;
   border-radius: 0.25rem;
-  -webkit-transition: color 0.15s ease-in-out,
-    background-color 0.15s ease-in-out, border-color 0.15s ease-in-out,
+  -webkit-transition:
+    color 0.15s ease-in-out,
+    background-color 0.15s ease-in-out,
+    border-color 0.15s ease-in-out,
     -webkit-box-shadow 0.15s ease-in-out;
-  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
-    border-color 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
-  -o-transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
-    border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
-    border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
-    border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out,
+  transition:
+    color 0.15s ease-in-out,
+    background-color 0.15s ease-in-out,
+    border-color 0.15s ease-in-out,
+    -webkit-box-shadow 0.15s ease-in-out;
+  -o-transition:
+    color 0.15s ease-in-out,
+    background-color 0.15s ease-in-out,
+    border-color 0.15s ease-in-out,
+    box-shadow 0.15s ease-in-out;
+  transition:
+    color 0.15s ease-in-out,
+    background-color 0.15s ease-in-out,
+    border-color 0.15s ease-in-out,
+    box-shadow 0.15s ease-in-out;
+  transition:
+    color 0.15s ease-in-out,
+    background-color 0.15s ease-in-out,
+    border-color 0.15s ease-in-out,
+    box-shadow 0.15s ease-in-out,
     -webkit-box-shadow 0.15s ease-in-out;
 }
 @media screen and (prefers-reduced-motion: reduce) {
@@ -3823,8 +3865,12 @@ input[type="button"].btn-block {
   background-color: #78d5ef;
 }
 .custom-control-input:focus ~ .custom-control-label::before {
-  -webkit-box-shadow: 0 0 0 1px #fff, 0 0 0 0.2rem rgba(120, 213, 239, 0.25);
-  box-shadow: 0 0 0 1px #fff, 0 0 0 0.2rem rgba(120, 213, 239, 0.25);
+  -webkit-box-shadow:
+    0 0 0 1px #fff,
+    0 0 0 0.2rem rgba(120, 213, 239, 0.25);
+  box-shadow:
+    0 0 0 1px #fff,
+    0 0 0 0.2rem rgba(120, 213, 239, 0.25);
 }
 .custom-control-input:active ~ .custom-control-label::before {
   color: #fff;
@@ -3943,9 +3989,11 @@ input[type="button"].btn-block {
 .custom-select:focus {
   border-color: #eaf8fd;
   outline: 0;
-  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.075),
+  -webkit-box-shadow:
+    inset 0 1px 2px rgba(0, 0, 0, 0.075),
     0 0 5px rgba(234, 248, 253, 0.5);
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.075),
+  box-shadow:
+    inset 0 1px 2px rgba(0, 0, 0, 0.075),
     0 0 5px rgba(234, 248, 253, 0.5);
 }
 .custom-select:focus::-ms-value {
@@ -4065,8 +4113,12 @@ input[type="button"].btn-block {
 }
 .custom-range::-webkit-slider-thumb:focus {
   outline: none;
-  -webkit-box-shadow: 0 0 0 1px #fff, 0 0 0 0.2rem rgba(120, 213, 239, 0.25);
-  box-shadow: 0 0 0 1px #fff, 0 0 0 0.2rem rgba(120, 213, 239, 0.25);
+  -webkit-box-shadow:
+    0 0 0 1px #fff,
+    0 0 0 0.2rem rgba(120, 213, 239, 0.25);
+  box-shadow:
+    0 0 0 1px #fff,
+    0 0 0 0.2rem rgba(120, 213, 239, 0.25);
 }
 .custom-range::-webkit-slider-thumb:active {
   background-color: white;
@@ -4091,7 +4143,9 @@ input[type="button"].btn-block {
 }
 .custom-range::-moz-range-thumb:focus {
   outline: none;
-  box-shadow: 0 0 0 1px #fff, 0 0 0 0.2rem rgba(120, 213, 239, 0.25);
+  box-shadow:
+    0 0 0 1px #fff,
+    0 0 0 0.2rem rgba(120, 213, 239, 0.25);
 }
 .custom-range::-moz-range-thumb:active {
   background-color: white;
@@ -4115,7 +4169,9 @@ input[type="button"].btn-block {
 }
 .custom-range::-ms-thumb:focus {
   outline: none;
-  box-shadow: 0 0 0 1px #fff, 0 0 0 0.2rem rgba(120, 213, 239, 0.25);
+  box-shadow:
+    0 0 0 1px #fff,
+    0 0 0 0.2rem rgba(120, 213, 239, 0.25);
 }
 .custom-range::-ms-thumb:active {
   background-color: white;
@@ -5689,7 +5745,9 @@ button.close {
   transition: -webkit-transform 0.3s ease-out;
   -o-transition: transform 0.3s ease-out;
   transition: transform 0.3s ease-out;
-  transition: transform 0.3s ease-out, -webkit-transform 0.3s ease-out;
+  transition:
+    transform 0.3s ease-out,
+    -webkit-transform 0.3s ease-out;
   -webkit-transform: translate(0, -25%);
   -ms-transform: translate(0, -25%);
   transform: translate(0, -25%);
@@ -5836,9 +5894,18 @@ button.close {
   z-index: 1070;
   display: block;
   margin: 0;
-  font-family: "Work Sans", -apple-system, BlinkMacSystemFont, "Segoe UI",
-    Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji",
-    "Segoe UI Emoji", "Segoe UI Symbol";
+  font-family:
+    "Work Sans",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    "Helvetica Neue",
+    Arial,
+    sans-serif,
+    "Apple Color Emoji",
+    "Segoe UI Emoji",
+    "Segoe UI Symbol";
   font-style: normal;
   font-weight: 400;
   line-height: 1.5;
@@ -5952,9 +6019,18 @@ button.close {
   z-index: 1060;
   display: block;
   max-width: 276px;
-  font-family: "Work Sans", -apple-system, BlinkMacSystemFont, "Segoe UI",
-    Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji",
-    "Segoe UI Emoji", "Segoe UI Symbol";
+  font-family:
+    "Work Sans",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    "Helvetica Neue",
+    Arial,
+    sans-serif,
+    "Apple Color Emoji",
+    "Segoe UI Emoji",
+    "Segoe UI Symbol";
   font-style: normal;
   font-weight: 400;
   line-height: 1.5;
@@ -6152,7 +6228,9 @@ button.close {
   transition: -webkit-transform 0.6s ease;
   -o-transition: transform 0.6s ease;
   transition: transform 0.6s ease;
-  transition: transform 0.6s ease, -webkit-transform 0.6s ease;
+  transition:
+    transform 0.6s ease,
+    -webkit-transform 0.6s ease;
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
   -webkit-perspective: 1000px;
@@ -9205,8 +9283,9 @@ button.bg-dark:focus {
 }
 
 .text-monospace {
-  font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
-    "Courier New", monospace;
+  font-family:
+    SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New",
+    monospace;
 }
 
 .text-justify {
@@ -10827,9 +10906,18 @@ textarea.form-control {
   text-transform: uppercase;
   letter-spacing: 0.5em;
   color: #d4d4d4;
-  font-family: "Work Sans", -apple-system, BlinkMacSystemFont, "Segoe UI",
-    Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji",
-    "Segoe UI Emoji", "Segoe UI Symbol";
+  font-family:
+    "Work Sans",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    "Helvetica Neue",
+    Arial,
+    sans-serif,
+    "Apple Color Emoji",
+    "Segoe UI Emoji",
+    "Segoe UI Symbol";
   font-weight: 300;
 }
 
@@ -12165,9 +12253,15 @@ textarea.form-control {
   border-radius: 16px;
   opacity: 0;
   visibility: hidden;
-  -webkit-transition: opacity 0.2s ease-out, visibility 0s linear 0.2s;
-  -o-transition: opacity 0.2s ease-out, visibility 0s linear 0.2s;
-  transition: opacity 0.2s ease-out, visibility 0s linear 0.2s;
+  -webkit-transition:
+    opacity 0.2s ease-out,
+    visibility 0s linear 0.2s;
+  -o-transition:
+    opacity 0.2s ease-out,
+    visibility 0s linear 0.2s;
+  transition:
+    opacity 0.2s ease-out,
+    visibility 0s linear 0.2s;
   z-index: 1000;
 }
 
@@ -12187,9 +12281,15 @@ textarea.form-control {
 }
 
 #ftco-loader.show {
-  -webkit-transition: opacity 0.4s ease-out, visibility 0s linear 0s;
-  -o-transition: opacity 0.4s ease-out, visibility 0s linear 0s;
-  transition: opacity 0.4s ease-out, visibility 0s linear 0s;
+  -webkit-transition:
+    opacity 0.4s ease-out,
+    visibility 0s linear 0s;
+  -o-transition:
+    opacity 0.4s ease-out,
+    visibility 0s linear 0s;
+  transition:
+    opacity 0.4s ease-out,
+    visibility 0s linear 0s;
   visibility: visible;
   opacity: 1;
 }

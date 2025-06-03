@@ -13,7 +13,7 @@ export const getStatus = async () => {
 };
 export const searchStudent = async (studentId, fullName, faculty) => {
   return get(
-    `/students/search?studentId=${studentId}&fullName=${fullName}&faculty=${faculty}`
+    `/students/search?studentId=${studentId}&fullName=${fullName}&faculty=${faculty}`,
   );
 };
 export const addStudent = async (data) => {

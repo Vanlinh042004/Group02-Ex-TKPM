@@ -32,35 +32,34 @@ export const exportStudentsToCSV = (students) => {
 };
 
 export const exportStudentsToJSON = (students) => {
-    if (!students || students.length === 0) {
-      alert("Không có dữ liệu để xuất!");
-      return;
-    }
-  
-    // Chỉ chọn dữ liệu cần thiết
-    const formattedData = students.map((student) => ({
-      studentId: student.studentId,
-      fullName: student.fullName,
-      dateOfBirth: student.dateOfBirth,
-      gender: student.gender,
-      faculty: student.faculty?.name || "N/A",
-      program: student.program?.name || "N/A",
-      course: student.course,
-      email: student.email,
-      phone: student.phone,
-      status: student.status,
-      identityDocument: {
-        number: student.identityDocument?.number || "N/A",
-        issuePlace: student.identityDocument?.issuePlace || "N/A",
-      },
-      permanentAddress: {
-        fullAddress: `${student.permanentAddress?.streetAddress || ""}, ${student.permanentAddress?.district || ""}, ${student.permanentAddress?.city || ""}`,
-      },
-    }));
-  
-    // Chuyển thành JSON
-    const json = JSON.stringify(formattedData, null, 2);
-    const blob = new Blob([json], { type: "application/json;charset=utf-8;" });
-    saveAs(blob, "students.json");
-  };
-  
+  if (!students || students.length === 0) {
+    alert("Không có dữ liệu để xuất!");
+    return;
+  }
+
+  // Chỉ chọn dữ liệu cần thiết
+  const formattedData = students.map((student) => ({
+    studentId: student.studentId,
+    fullName: student.fullName,
+    dateOfBirth: student.dateOfBirth,
+    gender: student.gender,
+    faculty: student.faculty?.name || "N/A",
+    program: student.program?.name || "N/A",
+    course: student.course,
+    email: student.email,
+    phone: student.phone,
+    status: student.status,
+    identityDocument: {
+      number: student.identityDocument?.number || "N/A",
+      issuePlace: student.identityDocument?.issuePlace || "N/A",
+    },
+    permanentAddress: {
+      fullAddress: `${student.permanentAddress?.streetAddress || ""}, ${student.permanentAddress?.district || ""}, ${student.permanentAddress?.city || ""}`,
+    },
+  }));
+
+  // Chuyển thành JSON
+  const json = JSON.stringify(formattedData, null, 2);
+  const blob = new Blob([json], { type: "application/json;charset=utf-8;" });
+  saveAs(blob, "students.json");
+};
