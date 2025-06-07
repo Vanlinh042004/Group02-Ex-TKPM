@@ -2,7 +2,6 @@
 import express, { Express, Request, Response, NextFunction } from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import morgan from "morgan";
 dotenv.config();
 
 // Import module
@@ -10,6 +9,14 @@ import route from "./routes";
 import { connect as dbConnect } from "./config/database";
 import { requestLogger } from "./middleware/requestLogger";
 import logger from "./utils/logger";
+
+// Import i18n
+import { 
+  i18nMiddleware, 
+  enhanceI18nMiddleware, 
+  languageSwitchMiddleware,
+  validateI18nMiddleware 
+} from './middleware/i18n';
 
 // Connect to DB
 dbConnect()
@@ -42,6 +49,12 @@ app.use(
 );
 
 app.use(express.json());
+
+// I18next middleware stack
+app.use(i18nMiddleware); // Core i18next middleware for language detection
+app.use(enhanceI18nMiddleware); // Add convenience methods
+app.use(languageSwitchMiddleware); // Handle ?lang= parameter
+app.use(validateI18nMiddleware); // Validate translations are working
 
 // Global error handler
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {

@@ -1,0 +1,60 @@
+{
+    "defaults": {
+        "nationality": "Vietnam",
+        "nationality_unknown": "Unknown",
+        "gender_unknown": "Unknown",
+        "no_name": "No Name",
+        "default_email": "noemail@example.com",
+        "default_phone": "0000000000",
+        "default_course": 2024,
+        "faculty_unknown": "Unknown Faculty",
+        "program_unknown": "Unknown Program",
+        "status_not_updated": "Not Updated",
+        "identity_type_unknown": "Unknown",
+        "identity_number_default": "000000000",
+        "identity_place_unknown": "Unknown",
+        "no_address": "No Address",
+        "no_ward": "No Ward",
+        "no_district": "No District",
+        "no_city": "No City",
+        "no_country": "No Country"
+    },
+    "logging": {
+        "error_adding_student": "Error adding student:",
+        "error_deleting_student": "Error deleting student:",
+        "error_updating_student": "Error updating student:",
+        "error_searching_students": "Error searching students:",
+        "error_retrieving_all_students": "Error retrieving all students:",
+        "error_retrieving_student": "Error retrieving student:",
+        "debug_adding_student": "Adding new student",
+        "debug_deleting_student": "Deleting student", 
+        "debug_updating_student": "Updating student",
+        "debug_searching_students": "Searching students",
+        "debug_retrieving_all_students": "Retrieving all students",
+        "debug_retrieving_student": "Retrieving student",
+        "debug_importing_data": "Importing student data",
+        "debug_exporting_data": "Exporting student data",
+        
+        "student_added_successfully": "Student added successfully",
+        "student_deleted_successfully": "Student deleted successfully", 
+        "student_updated_successfully": "Student updated successfully",
+        "students_found_successfully": "Students found successfully",
+        "successfully_retrieved_all_students": "Successfully retrieved all students",
+        "student_retrieved_successfully": "Student retrieved successfully",
+        "data_imported_successfully": "Data imported successfully",
+        "data_exported_successfully": "Data exported successfully",
+        
+        "failed_to_add_student": "Failed to add student",
+        "failed_to_delete_student": "Failed to delete student",
+        "failed_to_update_student": "Failed to update student", 
+        "failed_to_retrieve_all_students": "Failed to retrieve all students",
+        "failed_to_import_data": "Failed to import data",
+        "failed_to_export_data": "Failed to export data",
+        "search_no_parameters": "Search attempt with no parameters",
+        "no_students_found": "No students found with search parameters",
+        "student_not_found": "Student not found"
+    },
+    "system": {
+        "health_check_ok": "System is running normally"
+    }
+  }

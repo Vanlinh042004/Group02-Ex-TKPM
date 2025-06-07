@@ -1,0 +1,24 @@
+{
+    "missing_required_field": "Thiếu trường bắt buộc: {{field}}",
+    "missing_required_fields": "Thiếu các trường bắt buộc",
+    "student_id_exists": "Mã sinh viên đã tồn tại",
+    "faculty_not_found": "Không tìm thấy khoa",
+    "program_not_found": "Không tìm thấy chương trình",
+    "status_not_found": "Không tìm thấy trạng thái",
+    "phone_config_not_found": "Không tìm thấy cấu hình số điện thoại",
+    "phone_config_not_found_update": "Không tìm thấy cấu hình số điện thoại để cập nhật",
+    "student_not_found": "Không tìm thấy sinh viên",
+    "current_status_not_found": "Không tìm thấy trạng thái hiện tại",
+    "new_status_not_found": "Không tìm thấy trạng thái mới",
+    "invalid_status": "Trạng thái không hợp lệ: {{status}}",
+    "status_transition_not_allowed": "Không được phép chuyển đổi trạng thái từ {{currentStatus}} sang {{newStatus}}",
+    "unsupported_format": "Định dạng file không được hỗ trợ",
+    "unsupported_format_export": "Định dạng xuất file không được hỗ trợ",
+    "internal_server_error": "Lỗi hệ thống nội bộ",
+    "route_not_found": "Không tìm thấy đường dẫn",
+    "search_parameters_required": "Cần ít nhất một tham số tìm kiếm",
+    "no_students_found": "Không tìm thấy sinh viên nào", 
+    "invalid_data": "Dữ liệu không hợp lệ",
+    "data_must_be_array": "Dữ liệu phải là một mảng"
+  }
+  

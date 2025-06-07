@@ -1,0 +1,10 @@
+{
+    "student_added": "Student added successfully",
+    "student_updated": "Student updated successfully",
+    "student_deleted": "Student deleted successfully",
+    "student_retrieved": "Student retrieved successfully",
+    "students_retrieved": "Students retrieved successfully",
+    "students_searched": "Students search completed",
+    "data_imported": "Data imported successfully",
+    "data_exported": "Data exported successfully"
+  }

@@ -5,7 +5,6 @@ import StudentService, {
   IStudentSearchTermsDTO,
 } from "../services/studentService";
 import logger from "../../../utils/logger";
-import { da } from "@faker-js/faker/.";
 
 class StudentController {
   /**
@@ -17,34 +16,46 @@ class StudentController {
     try {
       const student = req.body as ICreateStudentDTO;
 
-      logger.debug("Adding new student", {
+      logger.debug(req.t('common:logging.debug_adding_student'), {
         module: "StudentController",
         operation: "ADD_STUDENT",
         details: { studentData: student },
+        
       });
 
       const result = await StudentService.addStudent(student);
 
-      logger.info("Student added successfully", {
+      logger.info(req.t('common:logging.student_added_successfully'), {
         module: "StudentController",
         operation: "ADD_STUDENT",
         details: { studentId: student.studentId },
+        
       });
 
       // Log audit trail for creation
       logger.audit("CREATE", "student", student.studentId, null, result);
 
-      res
-        .status(200)
-        .json({ message: "Student added successfully", data: result });
+      res.status(201).json({ 
+        success: true,
+        message: req.t('success:student_added'), 
+        data: result,
+        
+        timestamp: new Date().toISOString()
+      });
     } catch (error: any) {
-      logger.error("Failed to add student", {
+      logger.error(req.t('common:logging.failed_to_add_student'), {
         module: "StudentController",
         operation: "ADD_STUDENT",
         details: { error: error.message, stack: error.stack },
+        
       });
 
-      res.status(400).json({ message: error.message });
+      res.status(400).json({ 
+        error: true,
+        message: error.message, // Error already translated in service
+        
+        timestamp: new Date().toISOString()
+      });
     }
   }
 
@@ -57,10 +68,11 @@ class StudentController {
     try {
       const studentId = req.params.studentId;
 
-      logger.debug("Deleting student", {
+      logger.debug(req.t('common:logging.debug_deleting_student'), {
         module: "StudentController",
         operation: "DELETE_STUDENT",
         details: { studentId },
+        
       });
 
       // Get student before deletion for audit
@@ -68,18 +80,25 @@ class StudentController {
 
       await StudentService.deleteStudent(studentId);
 
-      logger.info("Student deleted successfully", {
+      logger.info(req.t('common:logging.student_deleted_successfully'), {
         module: "StudentController",
         operation: "DELETE_STUDENT",
         details: { studentId },
+        
       });
 
       // Log audit trail for deletion
       logger.audit("DELETE", "student", studentId, studentToDelete, null);
 
-      res.status(200).json({ message: "Student deleted successfully" });
+      res.status(200).json({ 
+        success: true,
+        message: req.t('success:student_deleted'),
+        studentId,
+        
+        timestamp: new Date().toISOString()
+      });
     } catch (error: any) {
-      logger.error("Failed to delete student", {
+      logger.error(req.t('common:logging.failed_to_delete_student'), {
         module: "StudentController",
         operation: "DELETE_STUDENT",
         details: {
@@ -87,9 +106,16 @@ class StudentController {
           error: error.message,
           stack: error.stack,
         },
+        
       });
 
-      res.status(400).json({ message: error.message });
+      res.status(400).json({ 
+        error: true,
+        message: error.message,
+        studentId: req.params.studentId,
+        
+        timestamp: new Date().toISOString()
+      });
     }
   }
 
@@ -103,13 +129,14 @@ class StudentController {
       const studentId = req.params.studentId;
       const updateData = req.body as IUpdateStudentDTO;
 
-      logger.debug("Updating student", {
+      logger.debug(req.t('common:logging.debug_updating_student'), {
         module: "StudentController",
         operation: "UPDATE_STUDENT",
         details: {
           studentId,
           updateData,
         },
+        
       });
 
       // Get student before update for audit
@@ -117,20 +144,26 @@ class StudentController {
 
       const result = await StudentService.updateStudent(studentId, updateData);
 
-      logger.info("Student updated successfully", {
+      logger.info(req.t('common:logging.student_updated_successfully'), {
         module: "StudentController",
         operation: "UPDATE_STUDENT",
         details: { studentId },
+        
       });
 
       // Log audit trail for update
       logger.audit("UPDATE", "student", studentId, beforeUpdate, result);
 
-      res
-        .status(200)
-        .json({ message: "Student updated successfully", data: result });
+      res.status(200).json({ 
+        success: true,
+        message: req.t('success:student_updated'), 
+        data: result,
+        studentId,
+        
+        timestamp: new Date().toISOString()
+      });
     } catch (error: any) {
-      logger.error("Failed to update student", {
+      logger.error(req.t('common:logging.failed_to_update_student'), {
         module: "StudentController",
         operation: "UPDATE_STUDENT",
         details: {
@@ -138,9 +171,16 @@ class StudentController {
           error: error.message,
           stack: error.stack,
         },
+        
       });
 
-      res.status(400).json({ message: error.message });
+      res.status(400).json({ 
+        error: true,
+        message: error.message,
+        studentId: req.params.studentId,
+        
+        timestamp: new Date().toISOString()
+      });
     }
   }
 
@@ -157,10 +197,11 @@ class StudentController {
         faculty: req.query.faculty as string,
       };
 
-      logger.debug("Searching students", {
+      logger.debug(req.t('common:logging.debug_searching_students'), {
         module: "StudentController",
         operation: "SEARCH_STUDENT",
         details: { searchParams },
+        
       });
 
       const hasSearchParams = Object.values(searchParams).some(
@@ -168,14 +209,19 @@ class StudentController {
       );
 
       if (!hasSearchParams) {
-        logger.warn("Search attempt with no parameters", {
+        logger.warn(req.t('common:logging.search_no_parameters'), {
           module: "StudentController",
           operation: "SEARCH_STUDENT",
+          
         });
 
-        res
-          .status(400)
-          .json({ message: "At least one search parameter is required" });
+        res.status(400).json({ 
+          error: true,
+          message: req.t('errors:search_parameters_required'),
+          required: ['studentId', 'fullName', 'faculty'],
+          
+          timestamp: new Date().toISOString()
+        });
         return;
       }
 
@@ -183,24 +229,41 @@ class StudentController {
 
       // Trả về kết quả, nếu không tìm thấy sinh viên nào
       if (result.length === 0) {
-        logger.info("No students found with search parameters", {
+        logger.info(req.t('common:logging.no_students_found'), {
           module: "StudentController",
           operation: "SEARCH_STUDENT",
           details: { searchParams },
+          
         });
 
-        res.status(404).json({ message: "No students found", data: [] });
+        res.status(404).json({ 
+          success: false,
+          message: req.t('errors:no_students_found'), 
+          data: [],
+          searchParams,
+          
+          timestamp: new Date().toISOString()
+        });
       } else {
-        logger.info("Students found successfully", {
+        logger.info(req.t('common:logging.students_found_successfully'), {
           module: "StudentController",
           operation: "SEARCH_STUDENT",
           details: { count: result.length, searchParams },
+          
         });
 
-        res.status(200).json(result);
+        res.status(200).json({
+          success: true,
+          message: req.t('success:students_searched'),
+          data: result,
+          count: result.length,
+          searchParams,
+          
+          timestamp: new Date().toISOString()
+        });
       }
     } catch (error: any) {
-      logger.error("Error searching students", {
+      logger.error(req.t('common:logging.error_searching_students'), {
         module: "StudentController",
         operation: "SEARCH_STUDENT",
         details: {
@@ -208,9 +271,16 @@ class StudentController {
           error: error.message,
           stack: error.stack,
         },
+        
       });
 
-      res.status(400).json({ message: error.message });
+      res.status(500).json({ 
+        error: true,
+        message: error.message,
+        searchParams: req.query,
+        
+        timestamp: new Date().toISOString()
+      });
     }
   }
 
@@ -221,28 +291,115 @@ class StudentController {
    */
   async getAllStudent(req: Request, res: Response): Promise<void> {
     try {
-      logger.debug("Retrieving all students", {
+      logger.debug(req.t('common:logging.debug_retrieving_all_students'), {
         module: "StudentController",
         operation: "GET_ALL_STUDENTS",
+        
       });
 
       const result = await StudentService.getAllStudent();
 
-      logger.info("Successfully retrieved all students", {
+      logger.info(req.t('common:logging.successfully_retrieved_all_students'), {
         module: "StudentController",
         operation: "GET_ALL_STUDENTS",
         details: { count: result.length },
+        
       });
 
-      res.status(200).json(result);
+      res.status(200).json({
+        success: true,
+        message: req.t('success:students_retrieved'),
+        data: result,
+        count: result.length,
+        
+        timestamp: new Date().toISOString()
+      });
     } catch (error: any) {
-      logger.error("Failed to retrieve all students", {
+      logger.error(req.t('common:logging.failed_to_retrieve_all_students'), {
         module: "StudentController",
         operation: "GET_ALL_STUDENTS",
         details: { error: error.message, stack: error.stack },
+        
       });
 
-      res.status(400).json({ message: error.message });
+      res.status(500).json({ 
+        error: true,
+        message: error.message,
+        
+        timestamp: new Date().toISOString()
+      });
+    }
+  }
+
+  /**
+   * Lấy sinh viên theo ID
+   * @param req Request
+   * @param res Response
+   */
+  async getStudentById(req: Request, res: Response): Promise<void> {
+    try {
+      const { studentId } = req.params;
+
+      logger.debug(req.t('common:logging.debug_retrieving_student'), {
+        module: "StudentController",
+        operation: "GET_STUDENT_BY_ID",
+        details: { studentId },
+        
+      });
+
+      const student = await StudentService.getStudentById(studentId);
+
+      if (!student) {
+        logger.info(req.t('common:logging.student_not_found'), {
+          module: "StudentController",
+          operation: "GET_STUDENT_BY_ID",
+          details: { studentId },
+          
+        });
+
+        res.status(404).json({
+          error: true,
+          message: req.t('errors:student_not_found'),
+          studentId,
+          
+          timestamp: new Date().toISOString()
+        });
+        return;
+      }
+
+      logger.info(req.t('common:logging.student_retrieved_successfully'), {
+        module: "StudentController",
+        operation: "GET_STUDENT_BY_ID",
+        details: { studentId },
+        
+      });
+
+      res.status(200).json({
+        success: true,
+        message: req.t('success:student_retrieved'),
+        data: student,
+        
+        timestamp: new Date().toISOString()
+      });
+    } catch (error: any) {
+      logger.error(req.t('common:logging.error_retrieving_student'), {
+        module: "StudentController",
+        operation: "GET_STUDENT_BY_ID",
+        details: {
+          studentId: req.params.studentId,
+          error: error.message,
+          stack: error.stack,
+        },
+        
+      });
+
+      res.status(500).json({
+        error: true,
+        message: error.message,
+        studentId: req.params.studentId,
+        
+        timestamp: new Date().toISOString()
+      });
     }
   }
 
@@ -253,30 +410,33 @@ class StudentController {
    */
   async importData(req: Request, res: Response): Promise<void> {
     try {
-      console.log("body", req.body);
       const { format, data } = req.body;
+      
       if (!data) {
-        throw new Error("Dữ liệu không hợp lệ");
+        throw new Error(req.t('errors:invalid_data'));
       }
+      
       if (!Array.isArray(data)) {
-        throw new Error(data.message);
+        throw new Error(data.message || req.t('errors:data_must_be_array'));
       }
 
-      logger.debug("Importing student data", {
+      logger.debug(req.t('common:logging.debug_importing_data'), {
         module: "StudentController",
         operation: "IMPORT_DATA",
         details: { format, recordCount: data.length },
+        
       });
 
       const importedData = await StudentService.importData(format, data);
 
-      logger.info("Data imported successfully", {
+      logger.info(req.t('common:logging.data_imported_successfully'), {
         module: "StudentController",
         operation: "IMPORT_DATA",
         details: {
           format,
           recordCount: importedData.length,
         },
+        
       });
 
       // Log audit trail for bulk import
@@ -284,11 +444,17 @@ class StudentController {
         recordCount: importedData.length,
       });
 
-      res
-        .status(200)
-        .json({ message: "Dữ liệu nhập thành công!", data: importedData });
+      res.status(200).json({ 
+        success: true,
+        message: req.t('success:data_imported'), 
+        data: importedData,
+        count: importedData.length,
+        format,
+        
+        timestamp: new Date().toISOString()
+      });
     } catch (error: any) {
-      logger.error("Failed to import data", {
+      logger.error(req.t('common:logging.failed_to_import_data'), {
         module: "StudentController",
         operation: "IMPORT_DATA",
         details: {
@@ -296,9 +462,16 @@ class StudentController {
           error: error.message,
           stack: error.stack,
         },
+        
       });
 
-      res.status(400).json({ message: error.message });
+      res.status(400).json({ 
+        error: true,
+        message: error.message,
+        format: req.body?.format,
+        
+        timestamp: new Date().toISOString()
+      });
     }
   }
 
@@ -309,36 +482,66 @@ class StudentController {
    */
   async exportData(req: Request, res: Response): Promise<void> {
     try {
-      const { format, filePath } = req.body;
+      const { format } = req.query;
+      
+      if (!format) {
+        res.status(400).json({
+          error: true,
+          message: req.t('errors:missing_required_field', { field: 'format' }),
+          supportedFormats: ['csv', 'json'],
+          example: '/api/students/export?format=csv',
+          
+          timestamp: new Date().toISOString()
+        });
+        return;
+      }
 
-      logger.debug("Exporting student data", {
+      const filePath = `exports/students_${Date.now()}.${format}`;
+
+      logger.debug(req.t('common:logging.debug_exporting_data'), {
         module: "StudentController",
         operation: "EXPORT_DATA",
         details: { format, filePath },
+        
       });
 
-      await StudentService.exportData(format, filePath);
+      await StudentService.exportData(format as string, filePath);
 
-      logger.info("Data exported successfully", {
+      logger.info(req.t('common:logging.data_exported_successfully'), {
         module: "StudentController",
         operation: "EXPORT_DATA",
         details: { format, filePath },
+        
       });
 
-      res.status(200).json({ message: "Data exported successfully" });
+      res.status(200).json({ 
+        success: true,
+        message: req.t('success:data_exported'),
+        filePath,
+        format,
+        downloadUrl: `/downloads/${filePath}`,
+        
+        timestamp: new Date().toISOString()
+      });
     } catch (error: any) {
-      logger.error("Failed to export data", {
+      logger.error(req.t('common:logging.failed_to_export_data'), {
         module: "StudentController",
         operation: "EXPORT_DATA",
         details: {
-          format: req.body?.format,
-          filePath: req.body?.filePath,
+          format: req.query?.format,
           error: error.message,
           stack: error.stack,
         },
+        
       });
 
-      res.status(400).json({ message: error.message });
+      res.status(400).json({ 
+        error: true,
+        message: error.message,
+        format: req.query?.format,
+        
+        timestamp: new Date().toISOString()
+      });
     }
   }
 }

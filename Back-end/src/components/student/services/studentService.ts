@@ -10,6 +10,7 @@ import {
   validStatuses,
   statusTransitionRules,
 } from "../../status/config/statusRules";
+import i18next from "../../../config/i18n";
 
 // Interface cho địa chỉ DTO
 export interface IAddressDTO {
@@ -108,40 +109,34 @@ class StudentService {
         status,
       } = student;
 
-      // Kiểm tra các trường bắt buộc
-      if (!studentId) throw new Error("Missing required field: studentId");
-      if (!fullName) throw new Error("Missing required field: fullName");
-      if (!dateOfBirth) throw new Error("Missing required field: dateOfBirth");
-      if (!gender) throw new Error("Missing required field: gender");
-      if (!faculty) throw new Error("Missing required field: faculty");
-      if (!course) throw new Error("Missing required field: course");
-      if (!program) throw new Error("Missing required field: program");
-      if (!mailingAddress)
-        throw new Error("Missing required field: mailingAddress");
-      //  if (!mailingAddress.country) throw new Error('Missing required field: mailingAddress.country');
-      if (!identityDocument)
-        throw new Error("Missing required field: identityDocument");
-      if (!identityDocument.number)
-        throw new Error("Missing required field: identityDocument.number");
-      if (!email) throw new Error("Missing required field: email");
-      if (!phone) throw new Error("Missing required field: phone");
-      if (!status) throw new Error("Missing required field: status");
+      // Kiểm tra các trường bắt buộc với i18next
+      if (!studentId) throw new Error(i18next.t('errors:missing_required_field', { field: 'studentId' }));
+      if (!fullName) throw new Error(i18next.t('errors:missing_required_field', { field: 'fullName' }));
+      if (!dateOfBirth) throw new Error(i18next.t('errors:missing_required_field', { field: 'dateOfBirth' }));
+      if (!gender) throw new Error(i18next.t('errors:missing_required_field', { field: 'gender' }));
+      if (!faculty) throw new Error(i18next.t('errors:missing_required_field', { field: 'faculty' }));
+      if (!course) throw new Error(i18next.t('errors:missing_required_field', { field: 'course' }));
+      if (!program) throw new Error(i18next.t('errors:missing_required_field', { field: 'program' }));
+      if (!mailingAddress) throw new Error(i18next.t('errors:missing_required_field', { field: 'mailingAddress' }));
+      if (!identityDocument) throw new Error(i18next.t('errors:missing_required_field', { field: 'identityDocument' }));
+      if (!identityDocument.number) throw new Error(i18next.t('errors:missing_required_field', { field: 'identityDocument.number' }));
+      if (!email) throw new Error(i18next.t('errors:missing_required_field', { field: 'email' }));
+      if (!phone) throw new Error(i18next.t('errors:missing_required_field', { field: 'phone' }));
+      if (!status) throw new Error(i18next.t('errors:missing_required_field', { field: 'status' }));
 
       // Kiểm tra sinh viên đã tồn tại
       const existingStudent = await Student.findOne({ studentId });
       if (existingStudent) {
-        throw new Error("StudentId already exists");
+        throw new Error(i18next.t('errors:student_id_exists'));
       }
 
       // Tìm faculty bằng tên hoặc facultyId
-      const allFaculties = await Faculty.find();
-      console.log("allFaculties", allFaculties);
       const facultyDoc = await Faculty.findOne({
         $or: [{ name: faculty }, { _id: faculty }],
       });
 
       if (!facultyDoc) {
-        throw new Error("Faculty not found");
+        throw new Error(i18next.t('errors:faculty_not_found'));
       }
 
       // Tìm program bằng tên hoặc programId
@@ -150,24 +145,23 @@ class StudentService {
       });
 
       if (!programDoc) {
-        throw new Error("Program not found");
+        throw new Error(i18next.t('errors:program_not_found'));
       }
 
       // Tìm status bằng tên
       const statusDoc = await Status.findOne({ _id: status });
 
       if (!statusDoc) {
-        throw new Error("Status not found");
+        throw new Error(i18next.t('errors:status_not_found'));
       }
 
-      console.log("phoneNumberConfig", phoneNumberConfig);
       // Tìm phoneNumberConfig bằng tên hoặc ID
       const phoneNumberConfigDoc = await PhoneNumberConfig.findOne({
         country: phoneNumberConfig,
       });
 
       if (!phoneNumberConfigDoc) {
-        throw new Error("PhoneNumberConfig not found");
+        throw new Error(i18next.t('errors:phone_config_not_found'));
       }
 
       // Tạo sinh viên mới
@@ -176,7 +170,7 @@ class StudentService {
         fullName,
         dateOfBirth,
         gender,
-        nationality: nationality || "Việt Nam",
+        nationality: nationality || i18next.t('common:defaults.nationality'),
         faculty: facultyDoc._id,
         course,
         program: programDoc._id,
@@ -192,7 +186,7 @@ class StudentService {
 
       return await newStudent.save();
     } catch (error) {
-      console.log("Error adding student: ", error);
+      console.log(i18next.t('common:logging.error_adding_student'), error);
       throw error;
     }
   }
@@ -206,10 +200,10 @@ class StudentService {
       const result = await Student.findOneAndDelete({ studentId });
 
       if (!result) {
-        throw new Error("Student not found");
+        throw new Error(i18next.t('errors:student_not_found'));
       }
     } catch (error) {
-      console.log("Error deleting student: ", error);
+      console.log(i18next.t('common:logging.error_deleting_student'), error);
       throw error;
     }
   }
@@ -226,8 +220,9 @@ class StudentService {
   ): Promise<IStudent> {
     try {
       if (!studentId || !updateData) {
-        throw new Error("Missing required fields");
+        throw new Error(i18next.t('errors:missing_required_fields'));
       }
+      
       if (updateData.phoneNumberConfig) {
         const phoneNumberConfigDoc = await PhoneNumberConfig.findOne({
           $or: [
@@ -237,10 +232,9 @@ class StudentService {
         });
 
         if (!phoneNumberConfigDoc) {
-          throw new Error("Phone number configuration not found");
+          throw new Error(i18next.t('errors:phone_config_not_found_update'));
         }
 
-        // Thay thế bằng ID của phoneNumberConfig
         updateData.phoneNumberConfig = phoneNumberConfigDoc._id.toString();
       }
 
@@ -249,43 +243,40 @@ class StudentService {
         const currentStudent = await Student.findOne({ studentId });
 
         if (!currentStudent) {
-          throw new Error("Student not found");
+          throw new Error(i18next.t('errors:student_not_found'));
         }
 
         const currentStatusId = currentStudent.status.toString();
         const newStatusId = updateData.status;
 
-        // Truy vấn trạng thái hiện tại từ database
         const currentStatusDoc = await Status.findById(currentStatusId);
         if (!currentStatusDoc) {
-          throw new Error("Current status not found");
+          throw new Error(i18next.t('errors:current_status_not_found'));
         }
 
         const currentStatusName = currentStatusDoc.name;
 
-        // Truy vấn trạng thái mới từ database
         const newStatusDoc = await Status.findById(newStatusId);
         if (!newStatusDoc) {
-          throw new Error("New status not found");
+          throw new Error(i18next.t('errors:new_status_not_found'));
         }
 
         const newStatusName = newStatusDoc.name;
 
-        // Kiểm tra trạng thái mới có hợp lệ không
         if (!validStatuses.includes(newStatusName)) {
-          throw new Error(`Invalid status: ${newStatusName}`);
+          throw new Error(i18next.t('errors:invalid_status', { status: newStatusName }));
         }
 
-        // Kiểm tra quy tắc chuyển đổi trạng thái
-        const allowedTransitions =
-          statusTransitionRules[currentStatusName] || [];
+        const allowedTransitions = statusTransitionRules[currentStatusName] || [];
         if (!allowedTransitions.includes(newStatusName)) {
           throw new Error(
-            `Không thể đổi trạng thái "${currentStatusName}" sang "${newStatusName}"`,
+            i18next.t('errors:status_transition_not_allowed', {
+              currentStatus: currentStatusName,
+              newStatus: newStatusName
+            })
           );
         }
 
-        // Thay thế bằng ObjectId của status
         updateData.status = newStatusDoc._id.toString();
       }
 
@@ -294,59 +285,43 @@ class StudentService {
       });
 
       if (!result) {
-        throw new Error("Student not found");
+        throw new Error(i18next.t('errors:student_not_found'));
       }
 
       return result;
     } catch (error: any) {
-      console.log("Error updating student: ", error);
+      console.log(i18next.t('common:logging.error_updating_student'), error);
       throw error;
     }
   }
 
   /**
    * Tìm kiếm sinh viên theo từ khóa
-   * @param searchParams Các tham số tìm kiếm
-   * @returns Promise<IStudent[]> Danh sách sinh viên phù hợp
    */
-  async searchStudent(
-    searchParams: IStudentSearchTermsDTO,
-  ): Promise<IStudent[]> {
+  async searchStudent(searchParams: IStudentSearchTermsDTO): Promise<IStudent[]> {
     try {
-      // Kiểm tra nếu không có bất kỳ tham số tìm kiếm nào
-      if (
-        !searchParams.studentId &&
-        !searchParams.fullName &&
-        !searchParams.faculty
-      ) {
+      if (!searchParams.studentId && !searchParams.fullName && !searchParams.faculty) {
         return [];
       }
 
-      // Xây dựng điều kiện tìm kiếm
       const searchConditions: any[] = [];
 
-      // Tìm kiếm theo mã sinh viên
       if (searchParams.studentId) {
         searchConditions.push({
           studentId: searchParams.studentId.toString(),
         });
       }
 
-      // Tìm kiếm theo tên
       if (searchParams.fullName) {
         searchConditions.push({
           fullName: { $regex: searchParams.fullName.toString(), $options: "i" },
         });
       }
 
-      // Tìm kiếm theo khoa
       if (searchParams.faculty) {
-        // Tìm ID của khoa
         const faculty = await Faculty.findOne({
           $or: [
-            {
-              name: { $regex: searchParams.faculty.toString(), $options: "i" },
-            },
+            { name: { $regex: searchParams.faculty.toString(), $options: "i" } },
             { facultyId: searchParams.faculty },
           ],
         });
@@ -354,15 +329,11 @@ class StudentService {
         if (faculty) {
           searchConditions.push({ faculty: faculty._id });
         } else {
-          // Nếu không tìm thấy khoa, trả về mảng rỗng
           return [];
         }
       }
 
-      // Thực hiện tìm kiếm
-      const result = await Student.find({
-        $and: searchConditions,
-      })
+      const result = await Student.find({ $and: searchConditions })
         .populate("faculty")
         .populate("program")
         .populate("status")
@@ -370,14 +341,13 @@ class StudentService {
 
       return result;
     } catch (error) {
-      console.log("Error searching students: ", error);
+      console.log(i18next.t('common:logging.error_searching_students'), error);
       throw error;
     }
   }
 
   /**
    * Lấy danh sách tất cả sinh viên
-   * @returns Promise<IStudent[]> Danh sách tất cả sinh viên
    */
   async getAllStudent(): Promise<IStudent[]> {
     try {
@@ -388,15 +358,13 @@ class StudentService {
         .populate("phoneNumberConfig");
       return result;
     } catch (error) {
-      console.log("Error retrieving all students: ", error);
+      console.log(i18next.t('common:logging.error_retrieving_all_students'), error);
       throw error;
     }
   }
 
   /**
    * Lấy sinh viên theo mã số
-   * @param studentId Mã số sinh viên
-   * @returns Promise<IStudent | null> Thông tin sinh viên
    */
   async getStudentById(studentId: string): Promise<IStudent | null> {
     try {
@@ -407,20 +375,17 @@ class StudentService {
         .populate("phoneNumberConfig");
       return student;
     } catch (error) {
-      console.log("Error retrieving student: ", error);
+      console.log(i18next.t('common:logging.error_retrieving_student'), error);
       throw error;
     }
   }
 
   /**
    * Import dữ liệu sinh viên từ file
-   * @param format Định dạng file (csv, json)
-   * @param filePath Đường dẫn tới file
-   * @return Promise<any[]> Dữ liệu sinh viên đã import
    */
   async importData(format: string, data: any[]): Promise<any[]> {
     let formattedData;
-    console.log("data", data);
+    
     switch (format) {
       case "csv":
         formattedData = await this.processCSVData(data);
@@ -429,21 +394,37 @@ class StudentService {
         formattedData = await this.processJSONData(data);
         break;
       default:
-        throw new Error("Định dạng không được hỗ trợ!");
+        throw new Error(i18next.t('errors:unsupported_format'));
     }
-    console.log("dt", formattedData);
-    // Lưu dữ liệu vào database
+    
     await Student.insertMany(formattedData);
-
     return formattedData;
   }
 
-  /// Xử lý dữ liệu CSV (chuyển đổi dữ liệu trước khi lưu)
-  async processCSVData(data: any[]): Promise<any[]> {
+  /**
+   * Export dữ liệu sinh viên ra file
+   */
+  async exportData(format: string, filePath: string): Promise<void> {
+    const data = await Student.find().lean();
+    
+    switch (format) {
+      case "csv":
+        await exportCSV(data, filePath);
+        break;
+      case "json":
+        await exportJSON(data, filePath);
+        break;
+      default:
+        throw new Error(i18next.t('errors:unsupported_format_export'));
+    }
+  }
+
+  // Helper methods để xử lý data import (giữ nguyên logic cũ với i18next)
+  private async processCSVData(data: any[]): Promise<any[]> {
     return data.map((item) => ({
       studentId: item.studentId || null,
       fullName: item.fullName || "",
-      gender: item.gender || "Không xác định",
+      gender: item.gender || i18next.t('common:defaults.gender_unknown'),
       dateOfBirth: item.dateOfBirth ? new Date(item.dateOfBirth) : null,
       email: item.email || "",
       phone: item.phone || "",
@@ -451,7 +432,7 @@ class StudentService {
       faculty: item.faculty || "",
       program: item.program || "",
       status: item.status || "",
-      nationality: item.nationality || "Không rõ",
+      nationality: item.nationality || i18next.t('common:defaults.nationality_unknown'),
       identityDocument: item.identityDocument || {
         type: "",
         number: "",
@@ -476,9 +457,7 @@ class StudentService {
     }));
   }
 
-  // Xử lý dữ liệu JSON (chuyển đổi dữ liệu trước khi lưu)
-
-  async processJSONData(data: any[]): Promise<any[]> {
+  private async processJSONData(data: any[]): Promise<any[]> {
     return data.map((item) => {
       const parseDate = (date: any) => {
         if (date && date.$date) {
@@ -496,63 +475,40 @@ class StudentService {
 
       return {
         studentId: item.studentId || "N/A",
-        fullName: item.fullName || "Không có tên",
-        gender: item.gender || "Không xác định",
-        dateOfBirth: parseDate(item.dateOfBirth) || new Date("2000-01-01"), // Ngày mặc định
-        email: item.email || "no-email@example.com",
-        phone: item.phone || "0000000000",
-        course: item.course ? parseInt(item.course, 10) || null : 2024, // Mặc định là 2024 nếu thiếu
-        faculty: parseObjectId(item.faculty) || "Không xác định",
-        program: parseObjectId(item.program) || "Không xác định",
-        status: parseObjectId(item.status) || "Chưa cập nhật",
-        nationality: item.nationality || "Không rõ",
+        fullName: item.fullName || i18next.t('common:defaults.no_name'),
+        gender: item.gender || i18next.t('common:defaults.gender_unknown'),
+        dateOfBirth: parseDate(item.dateOfBirth) || new Date("2000-01-01"),
+        email: item.email || i18next.t('common:defaults.default_email'),
+        phone: item.phone || i18next.t('common:defaults.default_phone'),
+        course: item.course ? parseInt(item.course, 10) || null : i18next.t('common:defaults.default_course'),
+        faculty: parseObjectId(item.faculty) || i18next.t('common:defaults.faculty_unknown'),
+        program: parseObjectId(item.program) || i18next.t('common:defaults.program_unknown'),
+        status: parseObjectId(item.status) || i18next.t('common:defaults.status_not_updated'),
+        nationality: item.nationality || i18next.t('common:defaults.nationality_unknown'),
         identityDocument: {
-          type: item.identityDocument?.type || "Không xác định",
-          number: item.identityDocument?.number || "000000000",
+          type: item.identityDocument?.type || i18next.t('common:defaults.identity_type_unknown'),
+          number: item.identityDocument?.number || i18next.t('common:defaults.identity_number_default'),
           issueDate: parseDate(item.identityDocument?.issueDate),
-          issuePlace: item.identityDocument?.issuePlace || "Không xác định",
+          issuePlace: item.identityDocument?.issuePlace || i18next.t('common:defaults.identity_place_unknown'),
           expiryDate: parseDate(item.identityDocument?.expiryDate),
           hasChip: item.identityDocument?.hasChip || false,
         },
         mailingAddress: {
-          streetAddress:
-            item.mailingAddress?.streetAddress || "Không có địa chỉ",
-          ward: item.mailingAddress?.ward || "Không có phường",
-          district: item.mailingAddress?.district || "Không có quận",
-          city: item.mailingAddress?.city || "Không có thành phố",
-          country: item.mailingAddress?.country || "Không có quốc gia",
+          streetAddress: item.mailingAddress?.streetAddress || i18next.t('common:defaults.no_address'),
+          ward: item.mailingAddress?.ward || i18next.t('common:defaults.no_ward'),
+          district: item.mailingAddress?.district || i18next.t('common:defaults.no_district'),
+          city: item.mailingAddress?.city || i18next.t('common:defaults.no_city'),
+          country: item.mailingAddress?.country || i18next.t('common:defaults.no_country'),
         },
         permanentAddress: {
-          streetAddress:
-            item.permanentAddress?.streetAddress || "Không có địa chỉ",
-          ward: item.permanentAddress?.ward || "Không có phường",
-          district: item.permanentAddress?.district || "Không có quận",
-          city: item.permanentAddress?.city || "Không có thành phố",
-          country: item.permanentAddress?.country || "Không có quốc gia",
+          streetAddress: item.permanentAddress?.streetAddress || i18next.t('common:defaults.no_address'),
+          ward: item.permanentAddress?.ward || i18next.t('common:defaults.no_ward'),
+          district: item.permanentAddress?.district || i18next.t('common:defaults.no_district'),
+          city: item.permanentAddress?.city || i18next.t('common:defaults.no_city'),
+          country: item.permanentAddress?.country || i18next.t('common:defaults.no_country'),
         },
       };
     });
-  }
-
-  /**
-   * Export dữ liệu sinh viên ra file
-   * @param format Định dạng file (csv, json, xml, excel)
-   * @param filePath Đường dẫn tới file
-   * @returns Promise<void>
-   */
-  async exportData(format: string, filePath: string): Promise<void> {
-    // Fetch data from database
-    const data = await Student.find().lean();
-    switch (format) {
-      case "csv":
-        await exportCSV(data, filePath);
-        break;
-      case "json":
-        await exportJSON(data, filePath);
-        break;
-      default:
-        throw new Error("Unsupported format");
-    }
   }
 }
 

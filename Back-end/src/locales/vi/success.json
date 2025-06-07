@@ -1,0 +1,10 @@
+{
+    "student_added": "Thêm sinh viên thành công",
+    "student_updated": "Cập nhật sinh viên thành công",
+    "student_deleted": "Xóa sinh viên thành công",
+    "student_retrieved": "Lấy thông tin sinh viên thành công",
+    "students_retrieved": "Lấy danh sách sinh viên thành công",
+    "students_searched": "Tìm kiếm sinh viên hoàn tất",
+    "data_imported": "Nhập dữ liệu thành công",
+    "data_exported": "Xuất dữ liệu thành công"
+  }

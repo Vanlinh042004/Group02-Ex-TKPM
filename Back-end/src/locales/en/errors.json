@@ -1,0 +1,23 @@
+{
+    "missing_required_field": "Missing required field: {{field}}",
+    "missing_required_fields": "Missing required fields",
+    "student_id_exists": "Student ID already exists",
+    "faculty_not_found": "Faculty not found",
+    "program_not_found": "Program not found",
+    "status_not_found": "Status not found",
+    "phone_config_not_found": "Phone number configuration not found",
+    "phone_config_not_found_update": "Phone number configuration not found for update",
+    "student_not_found": "Student not found",
+    "current_status_not_found": "Current status not found",
+    "new_status_not_found": "New status not found",
+    "invalid_status": "Invalid status: {{status}}",
+    "status_transition_not_allowed": "Status transition from {{currentStatus}} to {{newStatus}} is not allowed",
+    "unsupported_format": "Unsupported file format",
+    "unsupported_format_export": "Unsupported export format",
+    "internal_server_error": "Internal server error",
+    "route_not_found": "Route not found",
+    "search_parameters_required": "At least one search parameter is required",
+    "no_students_found": "No students found",
+    "invalid_data": "Invalid data",
+    "data_must_be_array": "Data must be an array"
+  }

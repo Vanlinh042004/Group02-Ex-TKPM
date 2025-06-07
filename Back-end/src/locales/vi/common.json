@@ -1,0 +1,60 @@
+{
+    "defaults": {
+        "nationality": "Việt Nam",
+        "nationality_unknown": "Không xác định",
+        "gender_unknown": "Không xác định",
+        "no_name": "Không có tên",
+        "default_email": "khongemail@example.com",
+        "default_phone": "0000000000",
+        "default_course": 2024,
+        "faculty_unknown": "Khoa không xác định",
+        "program_unknown": "Chương trình không xác định",
+        "status_not_updated": "Chưa cập nhật",
+        "identity_type_unknown": "Không xác định",
+        "identity_number_default": "000000000",
+        "identity_place_unknown": "Không xác định",
+        "no_address": "Không có địa chỉ",
+        "no_ward": "Không có phường/xã",
+        "no_district": "Không có quận/huyện",
+        "no_city": "Không có thành phố",
+        "no_country": "Không có quốc gia"
+    },
+    "logging": {
+        "error_adding_student": "Lỗi khi thêm sinh viên:",
+        "error_deleting_student": "Lỗi khi xóa sinh viên:",
+        "error_updating_student": "Lỗi khi cập nhật sinh viên:",
+        "error_searching_students": "Lỗi khi tìm kiếm sinh viên:",
+        "error_retrieving_all_students": "Lỗi khi lấy tất cả sinh viên:",
+        "error_retrieving_student": "Lỗi khi lấy thông tin sinh viên:",
+        "debug_adding_student": "Đang thêm sinh viên mới",
+        "debug_deleting_student": "Đang xóa sinh viên",
+        "debug_updating_student": "Đang cập nhật sinh viên", 
+        "debug_searching_students": "Đang tìm kiếm sinh viên",
+        "debug_retrieving_all_students": "Đang lấy tất cả sinh viên",
+        "debug_retrieving_student": "Đang lấy thông tin sinh viên",
+        "debug_importing_data": "Đang nhập dữ liệu sinh viên",
+        "debug_exporting_data": "Đang xuất dữ liệu sinh viên",
+        
+        "student_added_successfully": "Thêm sinh viên thành công",
+        "student_deleted_successfully": "Xóa sinh viên thành công",
+        "student_updated_successfully": "Cập nhật sinh viên thành công", 
+        "students_found_successfully": "Tìm kiếm sinh viên thành công",
+        "successfully_retrieved_all_students": "Lấy tất cả sinh viên thành công",
+        "student_retrieved_successfully": "Lấy thông tin sinh viên thành công",
+        "data_imported_successfully": "Nhập dữ liệu thành công",
+        "data_exported_successfully": "Xuất dữ liệu thành công",
+        
+        "failed_to_add_student": "Không thể thêm sinh viên",
+        "failed_to_delete_student": "Không thể xóa sinh viên",
+        "failed_to_update_student": "Không thể cập nhật sinh viên",
+        "failed_to_retrieve_all_students": "Không thể lấy tất cả sinh viên", 
+        "failed_to_import_data": "Không thể nhập dữ liệu",
+        "failed_to_export_data": "Không thể xuất dữ liệu",
+        "search_no_parameters": "Tìm kiếm không có tham số",
+        "no_students_found": "Không tìm thấy sinh viên với tham số tìm kiếm",
+        "student_not_found": "Không tìm thấy sinh viên"
+    },
+    "system": {
+        "health_check_ok": "Hệ thống đang hoạt động bình thường"
+    }
+  }
