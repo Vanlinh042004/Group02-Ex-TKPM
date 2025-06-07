@@ -1,15 +1,22 @@
-import mongoose, { Document, Schema } from "mongoose";
-import emailDomainService from "../../email-domain/services/emailDomainService";
+import mongoose, { Document, Schema } from 'mongoose';
+import emailDomainService from '../../email-domain/services/emailDomainService';
+
+// Extend Mongoose SchemaType để hỗ trợ discriminator
+declare module 'mongoose' {
+  interface SchemaType {
+    discriminator<T>(name: string, schema: Schema<T>): any;
+  }
+}
 
 export enum Gender {
-  MALE = "Nam",
-  FEMALE = "Nữ",
+  MALE = 'Nam',
+  FEMALE = 'Nữ',
 }
 
 export enum IdentityDocumentType {
-  CMND = "CMND",
-  CCCD = "CCCD",
-  PASSPORT = "Hộ chiếu",
+  CMND = 'CMND',
+  CCCD = 'CCCD',
+  PASSPORT = 'Hộ chiếu',
 }
 
 // Interface cho địa chỉ
@@ -97,8 +104,8 @@ const identityDocumentSchema = new Schema<IIdentityBase>(
     expiryDate: { type: Date, required: true },
   },
   {
-    discriminatorKey: "type",
-  },
+    discriminatorKey: 'type',
+  }
 );
 
 // Schema cho Student
@@ -125,11 +132,11 @@ const studentSchema = new Schema<IStudent>(
     nationality: {
       type: String,
       required: true,
-      default: "Việt Nam",
+      default: 'Việt Nam',
     },
     faculty: {
       type: Schema.Types.ObjectId,
-      ref: "Faculty",
+      ref: 'Faculty',
       required: true,
     },
     course: {
@@ -138,7 +145,7 @@ const studentSchema = new Schema<IStudent>(
     },
     program: {
       type: Schema.Types.ObjectId,
-      ref: "Program",
+      ref: 'Program',
       required: true,
     },
 
@@ -163,7 +170,7 @@ const studentSchema = new Schema<IStudent>(
         validator: async function (email: string) {
           return await emailDomainService.isValidEmailDomain(email);
         },
-        message: "Invalid email domain",
+        message: 'Invalid email domain',
       },
     },
     phone: {
@@ -172,44 +179,44 @@ const studentSchema = new Schema<IStudent>(
     },
     phoneNumberConfig: {
       type: Schema.Types.ObjectId,
-      ref: "PhoneNumberConfig",
+      ref: 'PhoneNumberConfig',
       required: true,
     },
     status: {
       type: Schema.Types.ObjectId,
-      ref: "Status",
+      ref: 'Status',
       required: true,
     },
   },
   {
     timestamps: true,
-  },
+  }
 );
 
 // Tạo index cho tìm kiếm nhanh hơn
-studentSchema.index({ fullName: "text", studentId: 1 });
+studentSchema.index({ fullName: 'text', studentId: 1 });
 
 // Tạo discriminator cho các loại giấy tờ tùy thân
 // @ts-ignore - Để tránh lỗi TypeScript với discriminator
 studentSchema
-  .path("identityDocument")
+  .path('identityDocument')
   .discriminator(IdentityDocumentType.CMND, new Schema({}));
 
 // @ts-ignore
-studentSchema.path("identityDocument").discriminator(
+studentSchema.path('identityDocument').discriminator(
   IdentityDocumentType.CCCD,
   new Schema({
     hasChip: { type: Boolean, required: true },
-  }),
+  })
 );
 
 // @ts-ignore
-studentSchema.path("identityDocument").discriminator(
+studentSchema.path('identityDocument').discriminator(
   IdentityDocumentType.PASSPORT,
   new Schema({
     issuingCountry: { type: String, required: true },
     notes: { type: String },
-  }),
+  })
 );
 
-export default mongoose.model<IStudent>("Student", studentSchema);
+export default mongoose.model<IStudent>('Student', studentSchema);
