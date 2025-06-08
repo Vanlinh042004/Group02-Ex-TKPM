@@ -6,5 +6,9 @@
     "students_retrieved": "Lấy danh sách sinh viên thành công",
     "students_searched": "Tìm kiếm sinh viên hoàn tất",
     "data_imported": "Nhập dữ liệu thành công",
-    "data_exported": "Xuất dữ liệu thành công"
+    "data_exported": "Xuất dữ liệu thành công",
+
+    "status_added": "Thêm trạng thái thành công",
+    "status_renamed": "Đổi tên trạng thái thành công", 
+    "statuses_retrieved": "Lấy danh sách trạng thái thành công"
   }

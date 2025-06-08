@@ -52,7 +52,11 @@
         "failed_to_export_data": "Không thể xuất dữ liệu",
         "search_no_parameters": "Tìm kiếm không có tham số",
         "no_students_found": "Không tìm thấy sinh viên với tham số tìm kiếm",
-        "student_not_found": "Không tìm thấy sinh viên"
+        "student_not_found": "Không tìm thấy sinh viên",
+
+        "error_adding_status": "Lỗi khi thêm trạng thái:",
+        "error_renaming_status": "Lỗi khi đổi tên trạng thái:",
+        "error_getting_all_statuses": "Lỗi khi lấy tất cả trạng thái:"
     },
     "system": {
         "health_check_ok": "Hệ thống đang hoạt động bình thường"

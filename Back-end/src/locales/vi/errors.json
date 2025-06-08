@@ -19,6 +19,9 @@
     "search_parameters_required": "Cần ít nhất một tham số tìm kiếm",
     "no_students_found": "Không tìm thấy sinh viên nào", 
     "invalid_data": "Dữ liệu không hợp lệ",
-    "data_must_be_array": "Dữ liệu phải là một mảng"
+    "data_must_be_array": "Dữ liệu phải là một mảng",
+
+    "status_already_exists": "Trạng thái đã tồn tại", 
+    "status_name_already_exists": "Trạng thái với tên này đã tồn tại"
   }
   

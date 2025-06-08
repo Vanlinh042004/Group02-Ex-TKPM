@@ -6,5 +6,9 @@
     "students_retrieved": "Students retrieved successfully",
     "students_searched": "Students search completed",
     "data_imported": "Data imported successfully",
-    "data_exported": "Data exported successfully"
+    "data_exported": "Data exported successfully",
+    
+    "status_added": "Status added successfully",
+    "status_renamed": "Status renamed successfully",
+    "statuses_retrieved": "Statuses retrieved successfully"
   }

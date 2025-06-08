@@ -52,7 +52,11 @@
         "failed_to_export_data": "Failed to export data",
         "search_no_parameters": "Search attempt with no parameters",
         "no_students_found": "No students found with search parameters",
-        "student_not_found": "Student not found"
+        "student_not_found": "Student not found",
+
+        "error_adding_status": "Error adding status:",
+        "error_renaming_status": "Error renaming status:",
+        "error_getting_all_statuses": "Error getting all statuses:"
     },
     "system": {
         "health_check_ok": "System is running normally"

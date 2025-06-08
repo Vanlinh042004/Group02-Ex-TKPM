@@ -19,5 +19,8 @@
     "search_parameters_required": "At least one search parameter is required",
     "no_students_found": "No students found",
     "invalid_data": "Invalid data",
-    "data_must_be_array": "Data must be an array"
+    "data_must_be_array": "Data must be an array",
+    
+    "status_already_exists": "Status already exists",
+    "status_name_already_exists": "Status with this name already exists"
   }
