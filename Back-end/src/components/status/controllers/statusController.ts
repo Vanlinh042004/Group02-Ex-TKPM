@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import StatusService, { ICreateStatusDTO } from "../services/statusService";
+import logger from "../../../utils/logger";
 
 class StatusController {
   async renameStatus(req: Request, res: Response): Promise<void> {

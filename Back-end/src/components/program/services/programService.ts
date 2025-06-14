@@ -2,6 +2,7 @@ import Program, { IProgram } from "../models/program";
 import generateId from "../../../utils/generateId";
 import { w } from "@faker-js/faker/dist/airline-CBNP41sR";
 import { da } from "@faker-js/faker/.";
+import i18next from "../../../config/i18n";
 
 export interface ICreateProgramDTO {
   programId: string;
@@ -15,13 +16,13 @@ export interface ICreateProgramDTO {
 class ProgramService {
   async renameProgram(programId: string, newName: string): Promise<IProgram> {
     if (!newName || !programId) {
-      throw new Error("Missing required fields");
+      throw new Error(i18next.t('errors:missing_required_fields'));
     }
 
     const program = await Program.findOne({ programId });
 
     if (!program) {
-      throw new Error("Program not found");
+      throw new Error(i18next.t('errors:program_not_found'));
     }
     program.name = newName;
 
@@ -42,11 +43,11 @@ class ProgramService {
 
   async addProgram(data: ICreateProgramDTO): Promise<IProgram> {
     if (!data.name || !data.duration) {
-      throw new Error("Missing required fields");
+      throw new Error(i18next.t('errors:missing_required_fields'));
     }
 
     if (data.duration <= 0) {
-      throw new Error("Duration must be greater than 0");
+      throw new Error(i18next.t('errors:duration_must_be_positive'));
     }
 
     // Generate programId
@@ -62,7 +63,7 @@ class ProgramService {
     // Kiểm tra trùng tên chương trình
     const existingProgram = await Program.findOne({ name: data.name });
     if (existingProgram) {
-      throw new Error("Program name already exists");
+      throw new Error(i18next.t('errors:program_name_exists'));
     }
 
     const newProgram = new Program({
@@ -82,7 +83,7 @@ class ProgramService {
     try {
       return await Program.find({});
     } catch (error) {
-      console.log("Error getting programs: ", error);
+      console.log(i18next.t('common:logging.error_getting_programs'), error);
       throw error;
     }
   }

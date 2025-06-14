@@ -3,19 +3,18 @@ import Class from "../../class/models/Class";
 import Registration from "../../registration/models/Registration";
 import logger from "../../../utils/logger";
 import { Types, Schema } from "mongoose";
+import i18next from "../../../config/i18n";
 
 // Các hằng số sử dụng trong service
 const THIRTY_MINUTES_IN_MS = 30 * 60 * 1000;
 const ERROR_MESSAGES = {
   PREREQUISITE_NOT_FOUND: (prereqId: string) =>
-    `Môn tiên quyết với ID ${prereqId} không tồn tại`,
-  COURSE_NOT_FOUND: "Khóa học không tồn tại",
-  CANNOT_CHANGE_COURSE_ID: "Không thể thay đổi mã khóa học",
-  CANNOT_CHANGE_CREDITS:
-    "Không thể thay đổi số tín chỉ vì đã có sinh viên đăng ký",
-  CANNOT_DELETE_AFTER_TIMEOUT:
-    "Không thể xóa khóa học sau 30 phút kể từ khi tạo",
-  CANNOT_DELETE_WITH_CLASSES: "Không thể xóa khóa học vì đã có lớp học được mở",
+    i18next.t('errors:prerequisite_not_found', { prereqId }),
+  COURSE_NOT_FOUND: i18next.t('errors:course_not_found'),
+  CANNOT_CHANGE_COURSE_ID: i18next.t('errors:cannot_change_course_id'),
+  CANNOT_CHANGE_CREDITS: i18next.t('errors:cannot_change_credits'),
+  CANNOT_DELETE_AFTER_TIMEOUT: i18next.t('errors:cannot_delete_after_timeout'),
+  CANNOT_DELETE_WITH_CLASSES: i18next.t('errors:cannot_delete_with_classes'),
 };
 
 class CourseService {
@@ -231,7 +230,7 @@ class CourseService {
   }
 
   private logError(operation: string, error: any, details?: any): void {
-    logger.error(`Error in ${operation}`, {
+    logger.error(i18next.t('common:logging.error_in_operation', { operation }), {
       module: "CourseService",
       operation,
       details: {

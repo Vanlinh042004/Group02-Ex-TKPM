@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import courseService from "../services/courseService";
 import logger from "../../../utils/logger";
+import i18next from "../../../config/i18n";
 
 class CourseController {
   /**
@@ -29,7 +30,9 @@ class CourseController {
 
       res.status(201).json({
         success: true,
+        message: req.t('success:course_created'),
         data: course,
+        timestamp: new Date().toISOString()
       });
     } catch (error: any) {
       logger.error("Error creating course", {
@@ -41,8 +44,9 @@ class CourseController {
         },
       });
       res.status(400).json({
-        success: false,
+        error: true,
         message: error.message,
+        timestamp: new Date().toISOString()
       });
     }
   }
@@ -72,7 +76,9 @@ class CourseController {
 
       res.status(200).json({
         success: true,
+        message: req.t('success:courses_retrieved'),
         data: courses,
+        timestamp: new Date().toISOString()
       });
     } catch (error: any) {
       logger.error("Error getting courses", {
@@ -83,9 +89,10 @@ class CourseController {
           stack: error.stack,
         },
       });
-      res.status(400).json({
-        success: false,
+      res.status(500).json({
+        error: true,
         message: error.message,
+        timestamp: new Date().toISOString()
       });
     }
   }
@@ -113,8 +120,9 @@ class CourseController {
         });
 
         res.status(404).json({
-          success: false,
-          message: "Khóa học không tồn tại",
+          error: true,
+          message: req.t('errors:course_not_found'),
+          timestamp: new Date().toISOString()
         });
         return;
       }
@@ -127,7 +135,9 @@ class CourseController {
 
       res.status(200).json({
         success: true,
+        message: req.t('success:course_retrieved'),
         data: course,
+        timestamp: new Date().toISOString()
       });
     } catch (error: any) {
       logger.error("Error getting course by ID", {
@@ -139,9 +149,10 @@ class CourseController {
           stack: error.stack,
         },
       });
-      res.status(400).json({
-        success: false,
+      res.status(500).json({
+        error: true,
         message: error.message,
+        timestamp: new Date().toISOString()
       });
     }
   }
@@ -175,7 +186,7 @@ class CourseController {
 
       res.status(200).json({
         success: true,
-        message: "Xóa khóa học thành công",
+        message: req.t('success:course_deleted'),
       });
     } catch (error: any) {
       logger.error("Error deleting course", {
@@ -188,8 +199,9 @@ class CourseController {
         },
       });
       res.status(400).json({
-        success: false,
+        error: true,
         message: error.message,
+        timestamp: new Date().toISOString()
       });
     }
   }
@@ -223,8 +235,9 @@ class CourseController {
         });
 
         res.status(404).json({
-          success: false,
-          message: "Khóa học không tồn tại",
+          error: true,
+          message: req.t('errors:course_not_found'),
+          timestamp: new Date().toISOString()
         });
         return;
       }
@@ -240,7 +253,9 @@ class CourseController {
 
       res.status(200).json({
         success: true,
+        message: req.t('success:course_updated'),
         data: course,
+        timestamp: new Date().toISOString()
       });
     } catch (error: any) {
       logger.error("Error updating course", {
@@ -253,8 +268,9 @@ class CourseController {
         },
       });
       res.status(400).json({
-        success: false,
+        error: true,
         message: error.message,
+        timestamp: new Date().toISOString()
       });
     }
   }
@@ -285,8 +301,9 @@ class CourseController {
         });
 
         res.status(404).json({
-          success: false,
-          message: "Khóa học không tồn tại",
+          error: true,
+          message: req.t('errors:course_not_found'),
+          timestamp: new Date().toISOString()
         });
         return;
       }
@@ -303,7 +320,6 @@ class CourseController {
       res.status(200).json({
         success: true,
         data: course,
-        message: "Khóa học đã bị deactivate",
       });
     } catch (error: any) {
       logger.error("Error deactivating course", {
@@ -316,8 +332,9 @@ class CourseController {
         },
       });
       res.status(400).json({
-        success: false,
+        error: true,
         message: error.message,
+        timestamp: new Date().toISOString()
       });
     }
   }

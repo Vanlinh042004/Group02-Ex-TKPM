@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import FacultyService, { ICreateFacultyDTO } from "../services/facultyService";
+import i18next from "../../../config/i18n";
 
 class FacultyController {
   async renameFaculty(req: Request, res: Response): Promise<void> {
@@ -10,9 +11,18 @@ class FacultyController {
 
       res
         .status(200)
-        .json({ message: "Faculty renamed successfully", data: result });
+        .json({
+          success: true,
+          message: req.t('success:faculty_renamed'),
+          data: result,
+          timestamp: new Date().toISOString()
+        });
     } catch (error: any) {
-      res.status(404).json({ data: "lồn" });
+      res.status(404).json({
+        error: true,
+        message: req.t('errors:faculty_not_found'),
+        timestamp: new Date().toISOString()
+      });
     }
   }
 
@@ -22,18 +32,38 @@ class FacultyController {
       const result = await FacultyService.addFaculty(data);
       res
         .status(200)
-        .json({ message: "Faculty added successfully", data: result });
+        .json({
+          success: true,
+          message: req.t('success:faculty_added'),
+          data: result,
+          timestamp: new Date().toISOString()
+        });
     } catch (error: any) {
-      res.status(400).json({ message: error.message });
+      res.status(400).json({
+        error: true,
+        message: error.message,
+        timestamp: new Date().toISOString()
+      });
     }
   }
 
   async getAllFaculties(req: Request, res: Response): Promise<void> {
     try {
       const result = await FacultyService.getAllFaculties();
-      res.status(200).json({ data: result });
+      res
+        .status(200)
+        .json({
+          success: true,
+          message: req.t('success:faculties_retrieved'),
+          data: result,
+          timestamp: new Date().toISOString()
+        });
     } catch (error: any) {
-      res.status(400).json({ message: error.message });
+      res.status(400).json({
+        error: true,
+        message: error.message,
+        timestamp: new Date().toISOString()
+      });
     }
   }
 }

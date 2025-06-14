@@ -2,6 +2,7 @@ import Class, { IClass } from "../models/Class";
 import Course from "../../course/models/Course";
 import Registration from "../../registration/models/Registration";
 import logger from "../../../utils/logger";
+import i18next from "../../../config/i18n";
 
 class ClassService {
   /**
@@ -14,17 +15,17 @@ class ClassService {
       // Kiểm tra khóa học có tồn tại và đang active không
       const course = await Course.findById(classData.course);
       if (!course) {
-        throw new Error("Khóa học không tồn tại");
+        throw new Error(i18next.t('errors:course_not_found'));
       }
 
       if (!course.isActive) {
-        throw new Error("Không thể tạo lớp học cho khóa học đã bị deactivate");
+        throw new Error(i18next.t('errors:cannot_create_class_for_inactive_course'));
       }
 
       const newClass = new Class(classData);
       return await newClass.save();
     } catch (error: any) {
-      logger.error("Error creating class", {
+      logger.error(i18next.t('common:logging.error_creating_class'), {
         module: "ClassService",
         operation: "createClass",
         details: {
@@ -51,7 +52,7 @@ class ClassService {
         },
       });
     } catch (error: any) {
-      logger.error("Error getting classes", {
+      logger.error(i18next.t('common:logging.error_getting_classes'), {
         module: "ClassService",
         operation: "getClasses",
         details: {
@@ -79,7 +80,7 @@ class ClassService {
         },
       });
     } catch (error: any) {
-      logger.error("Error getting class by ID", {
+      logger.error(i18next.t('common:logging.error_getting_class_by_id'), {
         module: "ClassService",
         operation: "getClassById",
         details: {
@@ -105,7 +106,7 @@ class ClassService {
     try {
       return await Class.findByIdAndUpdate(classId, classData, { new: true });
     } catch (error: any) {
-      logger.error("Error updating class", {
+      logger.error(i18next.t('common:logging.error_updating_class'), {
         module: "ClassService",
         operation: "updateClass",
         details: {
@@ -131,7 +132,7 @@ class ClassService {
         status: "active",
       });
     } catch (error: any) {
-      logger.error("Error getting enrollment count", {
+      logger.error(i18next.t('common:logging.error_getting_enrollment_count'), {
         module: "ClassService",
         operation: "getEnrollmentCount",
         details: {
@@ -153,13 +154,13 @@ class ClassService {
     try {
       const classInfo = await Class.findById(classId);
       if (!classInfo) {
-        throw new Error("Lớp học không tồn tại");
+        throw new Error(i18next.t('errors:class_not_found'));
       }
 
       const currentEnrollment = await this.getEnrollmentCount(classId);
       return currentEnrollment < classInfo.maxStudents;
     } catch (error: any) {
-      logger.error("Error checking available slots", {
+      logger.error(i18next.t('common:logging.error_checking_available_slots'), {
         module: "ClassService",
         operation: "hasAvailableSlots",
         details: {

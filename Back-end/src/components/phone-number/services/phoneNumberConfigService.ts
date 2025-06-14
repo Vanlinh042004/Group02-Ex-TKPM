@@ -1,6 +1,7 @@
 import PhoneNumberConfig, {
   IPhoneNumberConfig,
 } from "../models/PhoneNumberConfig";
+import i18next from "../../../config/i18n";
 
 // DTO interfaces kế thừa từ model interface
 export interface IPhoneNumberConfigDTO {
@@ -21,7 +22,7 @@ class PhoneNumberConfigService {
     try {
       return await PhoneNumberConfig.find({});
     } catch (error) {
-      console.error("Error getting all phone number configs:", error);
+      console.error(i18next.t('common:logging.error_getting_phone_configs'), error);
       throw error;
     }
   }
@@ -35,7 +36,7 @@ class PhoneNumberConfigService {
   async getPhoneNumberConfig(country: string): Promise<IPhoneNumberConfig> {
     try {
       if (!country) {
-        throw new Error("Country is required");
+        throw new Error(i18next.t('errors:country_required'));
       }
 
       const phoneConfig = await PhoneNumberConfig.findOne({
@@ -43,12 +44,12 @@ class PhoneNumberConfigService {
       });
 
       if (!phoneConfig) {
-        throw new Error(`No phone number configuration found for ${country}`);
+        throw new Error(i18next.t('errors:phone_config_not_found', { country }));
       }
 
       return phoneConfig;
     } catch (error) {
-      console.error(`Error getting phone number config for ${country}:`, error);
+      console.error(i18next.t('common:logging.error_getting_phone_config', { country }), error);
       throw error;
     }
   }
@@ -64,20 +65,20 @@ class PhoneNumberConfigService {
     try {
       // Kiểm tra đầy đủ thông tin
       if (!phoneNumberConfig.country) {
-        throw new Error("Country is required");
+        throw new Error(i18next.t('errors:country_required'));
       }
       if (!phoneNumberConfig.countryCode) {
-        throw new Error("Country code is required");
+        throw new Error(i18next.t('errors:country_code_required'));
       }
       if (!phoneNumberConfig.regex) {
-        throw new Error("Regex is required");
+        throw new Error(i18next.t('errors:regex_required'));
       }
 
       // Kiểm tra tính hợp lệ của regex
       try {
         new RegExp(phoneNumberConfig.regex);
       } catch (regexError) {
-        throw new Error("Invalid regex pattern");
+        throw new Error(i18next.t('errors:invalid_regex'));
       }
 
       // Kiểm tra trùng lặp
@@ -86,9 +87,7 @@ class PhoneNumberConfigService {
       });
 
       if (existingConfig) {
-        throw new Error(
-          `Phone number configuration for ${phoneNumberConfig.country} already exists`,
-        );
+        throw new Error(i18next.t('errors:phone_config_exists', { country: phoneNumberConfig.country }));
       }
 
       // Tạo cấu hình mới
@@ -96,7 +95,7 @@ class PhoneNumberConfigService {
       await newConfig.save();
       return newConfig;
     } catch (error) {
-      console.error("Error adding phone number config:", error);
+      console.error(i18next.t('common:logging.error_adding_phone_config'), error);
       throw error;
     }
   }
@@ -117,7 +116,7 @@ class PhoneNumberConfigService {
         try {
           new RegExp(updateData.regex);
         } catch (regexError) {
-          throw new Error("Invalid regex pattern");
+          throw new Error(i18next.t('errors:invalid_regex'));
         }
       }
 
@@ -129,15 +128,12 @@ class PhoneNumberConfigService {
       );
 
       if (!updatedConfig) {
-        throw new Error(`No phone number configuration found for ${country}`);
+        throw new Error(i18next.t('errors:phone_config_not_found', { country }));
       }
 
       return updatedConfig;
     } catch (error) {
-      console.error(
-        `Error updating phone number config for ${country}:`,
-        error,
-      );
+      console.error(i18next.t('common:logging.error_updating_phone_config', { country }), error);
       throw error;
     }
   }
@@ -152,15 +148,12 @@ class PhoneNumberConfigService {
       const result = await PhoneNumberConfig.findOneAndDelete({ country });
 
       if (!result) {
-        throw new Error(`No phone number configuration found for ${country}`);
+        throw new Error(i18next.t('errors:phone_config_not_found', { country }));
       }
 
       return result;
     } catch (error) {
-      console.error(
-        `Error deleting phone number config for ${country}:`,
-        error,
-      );
+      console.error(i18next.t('common:logging.error_deleting_phone_config', { country }), error);
       throw error;
     }
   }

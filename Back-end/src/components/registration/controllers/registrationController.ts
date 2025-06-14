@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import RegistrationService from "../services/registrationService";
+import i18next from "../../../config/i18n";
 
 class RegistrationController {
   async registerCourse(req: Request, res: Response): Promise<void> {
@@ -11,9 +12,18 @@ class RegistrationController {
         classId,
       );
 
-      res.status(200).json({ message: "Register successfully", data: result });
+      res.status(200).json({
+        success: true,
+        message: req.t('success:register_success'),
+        data: result,
+        timestamp: new Date().toISOString()
+      });
     } catch (error: any) {
-      res.status(400).json({ message: error.message });
+      res.status(400).json({
+        error: true,
+        message: error.message,
+        timestamp: new Date().toISOString()
+      });
     }
   }
 
@@ -21,14 +31,18 @@ class RegistrationController {
     try {
       const result = await RegistrationService.getAllRegistrations();
 
-      res
-        .status(200)
-        .json({
-          message: "Fetch all registrations successfully",
-          data: result,
-        });
+      res.status(200).json({
+        success: true,
+        message: req.t('success:registrations_retrieved'),
+        data: result,
+        timestamp: new Date().toISOString()
+      });
     } catch (error: any) {
-      res.status(400).json({ message: error.message });
+      res.status(500).json({
+        error: true,
+        message: error.message,
+        timestamp: new Date().toISOString()
+      });
     }
   }
 
@@ -43,7 +57,7 @@ class RegistrationController {
 
       res
         .status(200)
-        .json({ message: "Cancel registration successfully", data: result });
+        .json({ message: req.t('success:cancel_registration'), data: result });
     } catch (error: any) {
       res.status(400).json({ message: error.message });
     }
@@ -60,7 +74,7 @@ class RegistrationController {
 
       res
         .status(200)
-        .json({ message: "Update grade successfully", data: result });
+        .json({ message: req.t('success:update_grade'), data: result });
     } catch (error: any) {
       res.status(400).json({ message: error.message });
     }
@@ -71,27 +85,46 @@ class RegistrationController {
       const classId = req.params.classId;
       const result = await RegistrationService.getAllStudentsFromClass(classId);
 
-      res
-        .status(200)
-        .json({
-          message: "Fetch all students in class successfully",
-          data: result,
-        });
+      res.status(200).json({
+        success: true,
+        message: req.t('success:fetch_all_students_in_class'),
+        data: result,
+        timestamp: new Date().toISOString()
+      });
     } catch (error: any) {
-      res.status(400).json({ message: error.message });
+      res.status(500).json({
+        error: true,
+        message: error.message,
+        timestamp: new Date().toISOString()
+      });
     }
   }
+
   async generateTranscript(req: Request, res: Response): Promise<void> {
     try {
       const { studentId } = req.params;
+      const transcript = await RegistrationService.generateTranscript(studentId);
 
-      const transcript =
-        await RegistrationService.generateTranscript(studentId);
+      if (!transcript) {
+        res.status(404).json({
+          error: true,
+          message: req.t('errors:transcript_not_found'),
+          timestamp: new Date().toISOString()
+        });
+        return;
+      }
 
-      res.status(200).json(transcript);
+      res.status(200).json({
+        success: true,
+        message: req.t('success:transcript_generated'),
+        data: transcript,
+        timestamp: new Date().toISOString()
+      });
     } catch (error: any) {
       res.status(500).json({
+        error: true,
         message: error.message,
+        timestamp: new Date().toISOString()
       });
     }
   }
