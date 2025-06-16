@@ -1,16 +1,17 @@
 import Faculty, { IFaculty } from "../models/Faculty";
 import generateId from "../../../utils/generateId";
-import { fa } from "@faker-js/faker/.";
 import i18next from "../../../config/i18n";
 
 export interface ICreateFacultyDTO {
   facultyId: string;
-  name: string;
+  name: {
+    [key: string]: string;
+  };
 }
 
 class FacultyService {
-  async renameFaculty(facultyId: string, newName: string): Promise<IFaculty> {
-    if (!newName || !facultyId) {
+  async renameFaculty(facultyId: string, newNames: { [key: string]: string }): Promise<IFaculty> {
+    if (!newNames || !facultyId || Object.keys(newNames).length === 0) {
       throw new Error(i18next.t('errors:missing_required_fields'));
     }
 
@@ -18,12 +19,13 @@ class FacultyService {
     if (!faculty) {
       throw new Error(i18next.t('errors:faculty_not_found'));
     }
-    faculty.name = newName;
+    
+    faculty.name = newNames;
 
-    const generatedId = generateId(newName);
+    const firstLanguageName = newNames['vi'];
+    const generatedId = generateId(firstLanguageName);
     let facultyNewId = generatedId;
     let count = 0;
-    // Check if facultyId already exists
     while (await Faculty.exists({ facultyId: facultyNewId })) {
       count++;
       facultyNewId = generatedId + "-" + count;
@@ -32,25 +34,29 @@ class FacultyService {
     faculty.facultyId = facultyNewId;
 
     await faculty.save();
-
     return faculty;
   }
 
   async addFaculty(data: ICreateFacultyDTO): Promise<IFaculty> {
-    if (!data.name) {
+    if (!data.name || Object.keys(data.name).length === 0) {
       throw new Error(i18next.t('errors:missing_required_fields'));
     }
 
-    const generatedId = generateId(data.name);
+    const firstLanguageName = data.name['vi'];
+    const generatedId = generateId(firstLanguageName);
     let facultyNewId = generatedId;
     let count = 0;
-    // Check if facultyId already exists
+
     while (await Faculty.exists({ facultyId: facultyNewId })) {
       count++;
       facultyNewId = generatedId + "-" + count;
     }
 
-    const existingFaculty = await Faculty.findOne({ name: data.name });
+    const existingFaculty = await Faculty.findOne({
+      $or: Object.entries(data.name).map(([lang, name]) => ({
+        [`name.${lang}`]: name
+      }))
+    });
     if (existingFaculty) {
       throw new Error(i18next.t('errors:faculty_already_exists'));
     }

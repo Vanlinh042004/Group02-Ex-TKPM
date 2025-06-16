@@ -5,22 +5,22 @@ import i18next from "../../../config/i18n";
 class FacultyController {
   async renameFaculty(req: Request, res: Response): Promise<void> {
     try {
-      const facultyId = req.body.facultyId;
-      const newName = req.body.newName;
-      const result = await FacultyService.renameFaculty(facultyId, newName);
+      const facultyId = req.params.facultyId;
+      const newNames = req.body.newNames;
+      const result = await FacultyService.renameFaculty(facultyId, newNames);
 
       res
         .status(200)
         .json({
           success: true,
-          message: req.t('success:faculty_renamed'),
+          message: req.t('success:faculty_updated'),
           data: result,
           timestamp: new Date().toISOString()
         });
     } catch (error: any) {
       res.status(404).json({
         error: true,
-        message: req.t('errors:faculty_not_found'),
+        message: error.message || req.t('errors:faculty_not_found'),
         timestamp: new Date().toISOString()
       });
     }
@@ -34,7 +34,7 @@ class FacultyController {
         .status(200)
         .json({
           success: true,
-          message: req.t('success:faculty_added'),
+          message: req.t('success:faculty_created'),
           data: result,
           timestamp: new Date().toISOString()
         });
