@@ -33,17 +33,17 @@ const seedCourses = async () => {
 
     // Lựa chọn một số khoa phổ biến để gán cho các khóa học
     const csFaculty =
-      faculties.find((f) => f.name.includes("CNTT")) || faculties[0];
+      faculties.find((f) => f.name['vi']?.includes("CNTT")) || faculties[0];
     const mathFaculty =
-      faculties.find((f) => f.name.includes("Toán")) ||
+      faculties.find((f) => f.name['vi']?.includes("Toán")) ||
       faculties[1] ||
       faculties[0];
     const physicsFaculty =
-      faculties.find((f) => f.name.includes("Lý")) ||
+      faculties.find((f) => f.name['vi']?.includes("Lý")) ||
       faculties[2] ||
       faculties[0];
     const englishFaculty =
-      faculties.find((f) => f.name.includes("Anh")) ||
+      faculties.find((f) => f.name['vi']?.includes("Anh")) ||
       faculties[3] ||
       faculties[0];
 

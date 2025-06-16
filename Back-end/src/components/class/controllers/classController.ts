@@ -29,7 +29,9 @@ class ClassController {
 
       res.status(201).json({
         success: true,
+        message: req.t('success:class_created'),
         data: classData,
+        timestamp: new Date().toISOString()
       });
     } catch (error: any) {
       logger.error("Error creating class", {
@@ -41,8 +43,9 @@ class ClassController {
         },
       });
       res.status(400).json({
-        success: false,
+        error: true,
         message: error.message,
+        timestamp: new Date().toISOString()
       });
     }
   }
@@ -72,7 +75,9 @@ class ClassController {
 
       res.status(200).json({
         success: true,
+        message: req.t('success:classes_retrieved'),
         data: classes,
+        timestamp: new Date().toISOString()
       });
     } catch (error: any) {
       logger.error("Error getting classes", {
@@ -83,9 +88,10 @@ class ClassController {
           stack: error.stack,
         },
       });
-      res.status(400).json({
-        success: false,
+      res.status(500).json({
+        error: true,
         message: error.message,
+        timestamp: new Date().toISOString()
       });
     }
   }
@@ -113,8 +119,9 @@ class ClassController {
         });
 
         res.status(404).json({
-          success: false,
-          message: "Lớp học không tồn tại",
+          error: true,
+          message: req.t('errors:class_not_found'),
+          timestamp: new Date().toISOString()
         });
         return;
       }
@@ -127,7 +134,9 @@ class ClassController {
 
       res.status(200).json({
         success: true,
+        message: req.t('success:class_retrieved'),
         data: classData,
+        timestamp: new Date().toISOString()
       });
     } catch (error: any) {
       logger.error("Error getting class by ID", {
@@ -139,9 +148,10 @@ class ClassController {
           stack: error.stack,
         },
       });
-      res.status(400).json({
-        success: false,
+      res.status(500).json({
+        error: true,
         message: error.message,
+        timestamp: new Date().toISOString()
       });
     }
   }
@@ -175,8 +185,9 @@ class ClassController {
         });
 
         res.status(404).json({
-          success: false,
-          message: "Lớp học không tồn tại",
+          error: true,
+          message: req.t('errors:class_not_found'),
+          timestamp: new Date().toISOString()
         });
         return;
       }
@@ -192,7 +203,9 @@ class ClassController {
 
       res.status(200).json({
         success: true,
+        message: req.t('success:class_updated'),
         data: classData,
+        timestamp: new Date().toISOString()
       });
     } catch (error: any) {
       logger.error("Error updating class", {
@@ -205,8 +218,9 @@ class ClassController {
         },
       });
       res.status(400).json({
-        success: false,
+        error: true,
         message: error.message,
+        timestamp: new Date().toISOString()
       });
     }
   }
@@ -237,7 +251,9 @@ class ClassController {
 
       res.status(200).json({
         success: true,
+        message: req.t('success:enrollment_count_retrieved'),
         data: { count },
+        timestamp: new Date().toISOString()
       });
     } catch (error: any) {
       logger.error("Error getting enrollment count", {
@@ -249,9 +265,10 @@ class ClassController {
           stack: error.stack,
         },
       });
-      res.status(400).json({
-        success: false,
+      res.status(500).json({
+        error: true,
         message: error.message,
+        timestamp: new Date().toISOString()
       });
     }
   }

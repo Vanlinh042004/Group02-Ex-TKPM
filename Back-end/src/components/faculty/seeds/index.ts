@@ -18,19 +18,31 @@ const seedFaculties = async () => {
       const defaultFaculties = [
         {
           facultyId: "KL",
-          name: "Khoa Luật",
+          name: {
+            vi: "Khoa Luật",
+            en: "Faculty of Law"
+          }
         },
         {
           facultyId: "KTATM",
-          name: "Khoa Tiếng Anh Thương Mại",
+          name: {
+            vi: "Khoa Tiếng Anh Thương Mại",
+            en: "Faculty of Business English"
+          }
         },
         {
           facultyId: "KTN",
-          name: "Khoa Tiếng Nhật",
+          name: {
+            vi: "Khoa Tiếng Nhật",
+            en: "Faculty of Japanese"
+          }
         },
         {
           facultyId: "KTP",
-          name: "Khoa Tiếng Pháp",
+          name: {
+            vi: "Khoa Tiếng Pháp",
+            en: "Faculty of French"
+          }
         },
       ];
 

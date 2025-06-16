@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import EmailDomainService from "../services/emailDomainService";
 import { IEmailDomain } from "../models/EmailDomain";
+import i18next from "../../../config/i18n";
 
 class EmailDomainController {
   /**
@@ -16,7 +17,7 @@ class EmailDomainController {
 
       res
         .status(200)
-        .json({ message: "Domain added successfully", data: result });
+        .json({ message: req.t('success:domain_added'), data: result });
     } catch (error: any) {
       res.status(400).json({ message: error.message });
     }
@@ -35,7 +36,7 @@ class EmailDomainController {
 
       res
         .status(200)
-        .json({ message: "Domain deleted successfully", data: result });
+        .json({ message: req.t('success:domain_deleted'), data: result });
     } catch (error: any) {
       res.status(400).json({ message: error.message });
     }
@@ -53,7 +54,7 @@ class EmailDomainController {
 
       res
         .status(200)
-        .json({ message: "Domain updated successfully", data: result });
+        .json({ message: req.t('success:domain_updated'), data: result });
     } catch (error: any) {
       res.status(400).json({ message: error.message });
     }
@@ -63,9 +64,18 @@ class EmailDomainController {
     try {
       const result = await EmailDomainService.getAllAllowedEmailDomains();
 
-      res.status(200).json({ data: result });
+      res.status(200).json({
+        success: true,
+        message: req.t('success:email_domains_retrieved'),
+        data: result,
+        timestamp: new Date().toISOString()
+      });
     } catch (error: any) {
-      res.status(400).json({ message: error.message });
+      res.status(500).json({
+        error: true,
+        message: error.message,
+        timestamp: new Date().toISOString()
+      });
     }
   }
 }

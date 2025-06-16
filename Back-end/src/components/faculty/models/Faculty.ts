@@ -2,7 +2,9 @@ import mongoose, { Document, Schema } from "mongoose";
 
 export interface IFaculty extends Document {
   facultyId: string;
-  name: string;
+  name: {
+    [key: string]: string; // key is language code (e.g., 'en', 'vi')
+  };
   createdAt: Date;
   updatedAt: Date;
 }
@@ -15,9 +17,15 @@ const facultySchema = new Schema<IFaculty>(
       unique: true,
     },
     name: {
-      type: String,
+      type: Map,
+      of: String,
       required: true,
-      unique: true,
+      validate: {
+        validator: function(value: Map<string, string>) {
+          return value.size > 0; 
+        },
+        message: 'At least one language name must be provided'
+      }
     },
   },
   {

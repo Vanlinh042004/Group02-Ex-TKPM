@@ -1,4 +1,5 @@
 import EmailDomain, { IEmailDomain } from "../models/EmailDomain";
+import i18next from "../../../config/i18n";
 
 class EmailDomainService {
   /**
@@ -18,7 +19,7 @@ class EmailDomainService {
   async deleteAllowedEmailDomain(domain: string): Promise<IEmailDomain> {
     const result = await EmailDomain.findOneAndDelete({ domain });
     if (!result) {
-      throw new Error("Domain not found");
+      throw new Error(i18next.t('errors:domain_not_found'));
     }
     return result;
   }
@@ -38,7 +39,7 @@ class EmailDomainService {
       { new: true },
     );
     if (!updatedDomain) {
-      throw new Error("Domain not found");
+      throw new Error(i18next.t('errors:domain_not_found'));
     }
     return updatedDomain;
   }
@@ -72,7 +73,7 @@ class EmailDomainService {
 
     const match = email.match(emailRegex);
     if (!match) {
-      throw new Error("Invalid email format");
+      throw new Error(i18next.t('errors:invalid_email_format'));
     }
 
     return match[1];

@@ -8,6 +8,7 @@ import Course from "../../course/models/Course";
 import mongoose from "mongoose";
 import logger from "../../../utils/logger";
 import { ICreateStudentDTO } from "../../student/services/studentService";
+import i18next from "../../../config/i18n";
 
 export interface IStudentInfo extends Partial<ICreateStudentDTO> {}
 
@@ -42,7 +43,7 @@ class RegistrationService {
       // Kiểm tra sinh viên có tồn tại không
       const student = await Student.findOne({ studentId }).exec();
       if (!student) {
-        throw new Error("Sinh viên không tồn tại");
+        throw new Error(i18next.t('errors:student_not_found'));
       }
 
       // Kiểm tra lớp học có tồn tại không
@@ -50,13 +51,13 @@ class RegistrationService {
         .populate("course")
         .exec();
       if (!classInfo) {
-        throw new Error("Lớp học không tồn tại");
+        throw new Error(i18next.t('errors:class_not_found'));
       }
 
       // Kiểm tra khóa học
       const course = await Course.findById(classInfo.course).exec();
       if (!course || !course.isActive) {
-        throw new Error("Khóa học không tồn tại hoặc đã bị deactivate");
+        throw new Error(i18next.t('errors:course_not_found_or_inactive'));
       }
 
       // Kiểm tra môn tiên quyết
@@ -79,7 +80,7 @@ class RegistrationService {
 
         for (const prereqId of course.prerequisites) {
           if (!completedCourseIds.includes(prereqId.toString())) {
-            throw new Error("Sinh viên chưa hoàn thành môn tiên quyết");
+            throw new Error(i18next.t('errors:prerequisites_not_completed'));
           }
         }
       }
@@ -91,7 +92,7 @@ class RegistrationService {
       });
 
       if (currentRegistrationsCount >= classInfo.maxStudents) {
-        throw new Error("Lớp học đã đủ số lượng sinh viên tối đa");
+        throw new Error(i18next.t('errors:class_full'));
       }
 
       // Kiểm tra sinh viên đã đăng ký lớp này chưa
@@ -102,7 +103,7 @@ class RegistrationService {
       });
 
       if (existingRegistration) {
-        throw new Error("Sinh viên đã đăng ký lớp học này");
+        throw new Error(i18next.t('errors:already_registered'));
       }
 
       // Tạo và lưu đăng ký mới
@@ -117,7 +118,7 @@ class RegistrationService {
 
       return savedRegistration;
     } catch (error: any) {
-      logger.error("Lỗi đăng ký khóa học", {
+      logger.error(i18next.t('common:logging.error_registering_course'), {
         module: "RegistrationService",
         operation: "registerCourse",
         details: {
@@ -145,12 +146,12 @@ class RegistrationService {
         await Registration.findById(registrationId).populate("class");
 
       if (!registration) {
-        throw new Error("Đăng ký không tồn tại");
+        throw new Error(i18next.t('errors:registration_not_found'));
       }
 
       // Kiểm tra trạng thái hiện tại
       if (registration.status !== "active") {
-        throw new Error("Chỉ được hủy đăng ký cho các đăng ký đang hoạt động");
+        throw new Error(i18next.t('errors:can_only_cancel_active_registration'));
       }
 
       return await Registration.findByIdAndUpdate(
@@ -163,7 +164,7 @@ class RegistrationService {
         { new: true },
       );
     } catch (error: any) {
-      logger.error("Lỗi hủy đăng ký", {
+      logger.error(i18next.t('common:logging.error_cancelling_registration'), {
         module: "RegistrationService",
         operation: "cancelRegistration",
         details: {
@@ -189,20 +190,18 @@ class RegistrationService {
     try {
       // Kiểm tra điểm hợp lệ
       if (grade < 0 || grade > 10) {
-        throw new Error("Điểm số không hợp lệ (0-10)");
+        throw new Error(i18next.t('errors:invalid_grade'));
       }
 
       // Kiểm tra xem registration có tồn tại không
       const registration = await Registration.findById(registrationId);
       if (!registration) {
-        throw new Error("Đăng ký không tồn tại");
+        throw new Error(i18next.t('errors:registration_not_found'));
       }
 
       // Kiểm tra trạng thái của registration
       if (registration.status !== "active") {
-        throw new Error(
-          "Chỉ được cập nhật điểm cho các đăng ký đang hoạt động",
-        );
+        throw new Error(i18next.t('errors:can_only_update_active_registration'));
       }
 
       // Cập nhật điểm
@@ -218,7 +217,7 @@ class RegistrationService {
         { new: true },
       );
     } catch (error: any) {
-      logger.error("Lỗi cập nhật điểm", {
+      logger.error(i18next.t('common:logging.error_updating_grade'), {
         module: "RegistrationService",
         operation: "updateGrade",
         details: {
