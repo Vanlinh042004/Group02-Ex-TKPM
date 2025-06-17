@@ -2,25 +2,37 @@ import Status, { IStatus } from "../models/Status";
 import i18next from "../../../config/i18n";
 
 export interface ICreateStatusDTO {
-  name: string;
-  description?: string;
+  name: {
+    [key: string]: string;
+  };
+  description?: {
+    [key: string]: string;
+  };
 }
 
 export interface IUpdateStatusDTO {
-  name?: string;
-  description?: string;
+  name?: {
+    [key: string]: string;
+  };
+  description?: {
+    [key: string]: string;
+  };
 }
 
 class StatusService {
   async addStatus(data: ICreateStatusDTO): Promise<IStatus> {
     try {
-      if (!data.name) {
+      if (!data.name || Object.keys(data.name).length === 0) {
         throw new Error(
           i18next.t("errors:missing_required_field", { field: "name" })
         );
       }
 
-      const existingStatus = await Status.findOne({ name: data.name });
+      const existingStatus = await Status.findOne({
+        $or: Object.entries(data.name).map(([lang, name]) => ({
+          [`name.${lang}`]: name
+        }))
+      });
       if (existingStatus) {
         throw new Error(i18next.t("errors:status_already_exists"));
       }
@@ -38,15 +50,19 @@ class StatusService {
     }
   }
 
-  async renameStatus(statusId: string, newName: string): Promise<IStatus> {
+  async renameStatus(statusId: string, newNames: { [key: string]: string }): Promise<IStatus> {
     try {
-      if (!newName) {
+      if (!newNames || Object.keys(newNames).length === 0) {
         throw new Error(
-          i18next.t("errors:missing_required_field", { field: "newName" })
+          i18next.t("errors:missing_required_field", { field: "newNames" })
         );
       }
 
-      const existingStatus = await Status.findOne({ name: newName });
+      const existingStatus = await Status.findOne({
+        $or: Object.entries(newNames).map(([lang, name]) => ({
+          [`name.${lang}`]: name
+        }))
+      });
       if (existingStatus) {
         throw new Error(i18next.t("errors:status_name_already_exists"));
       }
@@ -56,7 +72,7 @@ class StatusService {
         throw new Error(i18next.t("errors:status_not_found"));
       }
 
-      status.name = newName;
+      status.name = newNames;
       return await status.save();
     } catch (error) {
       console.log(i18next.t("common:logging.error_renaming_status"), error);

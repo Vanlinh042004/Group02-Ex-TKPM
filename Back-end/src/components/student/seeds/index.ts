@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import Student, { IdentityDocumentType, Gender } from "../models/Student";
 import Faculty from "../../faculty/models/Faculty";
-import Program from "../../program/models/program";
+import Program from "../../program/models/Program";
 import Status from "../../status/models/Status";
 import PhoneNumberConfig from "../../phone-number/models/PhoneNumberConfig";
 import dotenv from "dotenv";
@@ -105,7 +105,7 @@ const seedStudents = async () => {
       const permanentAddress = generateRandomAddress();
       const temporaryAddress = faker.helpers.maybe(
         () => generateRandomAddress(),
-        { probability: 0.7 },
+        { probability: 0.7 }
       );
       const mailingAddress =
         faker.helpers.maybe(() => generateRandomAddress(), {

@@ -6,7 +6,7 @@ export const validStatuses = [
   "Đình chỉ",
 ];
 
-export const statusTransitionRules: Record<string, string[]> = {
+export const statusTransitionRules: { [key: string]: string[] } = {
   "Đang học": [
     "Bảo lưu",
     "Đã tốt nghiệp",

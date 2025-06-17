@@ -2,10 +2,14 @@ import mongoose, { Schema, Document } from "mongoose";
 
 export interface ICourse extends Document {
   courseId: string;
-  name: string;
+  name: {
+    [key: string]: string; // key is language code (e.g., 'en', 'vi')
+  };
   credits: number;
   faculty: Schema.Types.ObjectId;
-  description?: string;
+  description?: {
+    [key: string]: string;
+  };
   prerequisites?: Schema.Types.ObjectId[];
   isActive: boolean;
   createdAt: Date;
@@ -20,9 +24,15 @@ const CourseSchema = new Schema(
       trim: true,
     },
     name: {
-      type: String,
+      type: Map,
+      of: String,
       required: true,
-      trim: true,
+      validate: {
+        validator: function (value: Map<string, string>) {
+          return value.size > 0;
+        },
+        message: "At least one language name must be provided",
+      },
     },
     credits: {
       type: Number,
@@ -35,7 +45,8 @@ const CourseSchema = new Schema(
       required: true,
     },
     description: {
-      type: String,
+      type: Map,
+      of: String,
       trim: true,
     },
     prerequisites: [
@@ -55,7 +66,7 @@ const CourseSchema = new Schema(
   },
   {
     timestamps: true, // Tự động tạo và cập nhật createdAt, updatedAt
-  },
+  }
 );
 
 // Tạo indexes để tối ưu hóa các truy vấn phổ biến

@@ -9,12 +9,12 @@ import i18next from "../../../config/i18n";
 const THIRTY_MINUTES_IN_MS = 30 * 60 * 1000;
 const ERROR_MESSAGES = {
   PREREQUISITE_NOT_FOUND: (prereqId: string) =>
-    i18next.t('errors:prerequisite_not_found', { prereqId }),
-  COURSE_NOT_FOUND: i18next.t('errors:course_not_found'),
-  CANNOT_CHANGE_COURSE_ID: i18next.t('errors:cannot_change_course_id'),
-  CANNOT_CHANGE_CREDITS: i18next.t('errors:cannot_change_credits'),
-  CANNOT_DELETE_AFTER_TIMEOUT: i18next.t('errors:cannot_delete_after_timeout'),
-  CANNOT_DELETE_WITH_CLASSES: i18next.t('errors:cannot_delete_with_classes'),
+    i18next.t("errors:prerequisite_not_found", { prereqId }),
+  COURSE_NOT_FOUND: i18next.t("errors:course_not_found"),
+  CANNOT_CHANGE_COURSE_ID: i18next.t("errors:cannot_change_course_id"),
+  CANNOT_CHANGE_CREDITS: i18next.t("errors:cannot_change_credits"),
+  CANNOT_DELETE_AFTER_TIMEOUT: i18next.t("errors:cannot_delete_after_timeout"),
+  CANNOT_DELETE_WITH_CLASSES: i18next.t("errors:cannot_delete_with_classes"),
 };
 
 class CourseService {
@@ -26,6 +26,10 @@ class CourseService {
   async createCourse(courseData: Partial<ICourse>): Promise<ICourse> {
     try {
       await this.validatePrerequisites(courseData.prerequisites);
+
+      if (Object.keys(courseData.name).length === 0) {
+        throw new Error(i18next.t("errors:missing_required_fields"));
+      }
 
       const course = new Course({
         ...courseData,
@@ -104,12 +108,16 @@ class CourseService {
    */
   async updateCourse(
     courseId: string,
-    courseData: Partial<ICourse>,
+    courseData: Partial<ICourse>
   ): Promise<ICourse | null> {
     try {
       const course = await Course.findById(courseId);
       if (!course) {
         throw new Error(ERROR_MESSAGES.COURSE_NOT_FOUND);
+      }
+
+      if (Object.keys(courseData.name).length === 0) {
+        throw new Error(i18next.t("errors:missing_required_fields"));
       }
 
       this.validateCourseIdUnchanged(course.courseId, courseData.courseId);
@@ -137,7 +145,7 @@ class CourseService {
       const result = await Course.findByIdAndUpdate(
         courseId,
         { isActive: false },
-        { new: true },
+        { new: true }
       );
 
       if (!result) {
@@ -171,7 +179,7 @@ class CourseService {
   // Private helper methods
 
   private async validatePrerequisites(
-    prerequisites?: Schema.Types.ObjectId[],
+    prerequisites?: Schema.Types.ObjectId[]
   ): Promise<void> {
     if (!prerequisites || prerequisites.length === 0) {
       return;
@@ -181,7 +189,7 @@ class CourseService {
       const prereq = await Course.findById(prereqId);
       if (!prereq) {
         throw new Error(
-          ERROR_MESSAGES.PREREQUISITE_NOT_FOUND(prereqId.toString()),
+          ERROR_MESSAGES.PREREQUISITE_NOT_FOUND(prereqId.toString())
         );
       }
     }
@@ -209,7 +217,7 @@ class CourseService {
 
   private isCreditsChanged(
     originalCredits: number,
-    newCredits?: number,
+    newCredits?: number
   ): boolean {
     return newCredits !== undefined && newCredits !== originalCredits;
   }
@@ -230,15 +238,18 @@ class CourseService {
   }
 
   private logError(operation: string, error: any, details?: any): void {
-    logger.error(i18next.t('common:logging.error_in_operation', { operation }), {
-      module: "CourseService",
-      operation,
-      details: {
-        ...details,
-        error: error.message,
-        stack: error.stack,
-      },
-    });
+    logger.error(
+      i18next.t("common:logging.error_in_operation", { operation }),
+      {
+        module: "CourseService",
+        operation,
+        details: {
+          ...details,
+          error: error.message,
+          stack: error.stack,
+        },
+      }
+    );
   }
 }
 
