@@ -1,6 +1,6 @@
 import Student, { IStudent } from "../models/Student";
 import Faculty from "../../faculty/models/Faculty";
-import Program from "../../program/models/program";
+import Program from "../../program/models/Program";
 import Status from "../../status/models/Status";
 import PhoneNumberConfig from "../../phone-number/models/PhoneNumberConfig";
 import { importCSV, exportCSV } from "../../../utils/csvHandler";
@@ -110,24 +110,69 @@ class StudentService {
       } = student;
 
       // Kiểm tra các trường bắt buộc với i18next
-      if (!studentId) throw new Error(i18next.t('errors:missing_required_field', { field: 'studentId' }));
-      if (!fullName) throw new Error(i18next.t('errors:missing_required_field', { field: 'fullName' }));
-      if (!dateOfBirth) throw new Error(i18next.t('errors:missing_required_field', { field: 'dateOfBirth' }));
-      if (!gender) throw new Error(i18next.t('errors:missing_required_field', { field: 'gender' }));
-      if (!faculty) throw new Error(i18next.t('errors:missing_required_field', { field: 'faculty' }));
-      if (!course) throw new Error(i18next.t('errors:missing_required_field', { field: 'course' }));
-      if (!program) throw new Error(i18next.t('errors:missing_required_field', { field: 'program' }));
-      if (!mailingAddress) throw new Error(i18next.t('errors:missing_required_field', { field: 'mailingAddress' }));
-      if (!identityDocument) throw new Error(i18next.t('errors:missing_required_field', { field: 'identityDocument' }));
-      if (!identityDocument.number) throw new Error(i18next.t('errors:missing_required_field', { field: 'identityDocument.number' }));
-      if (!email) throw new Error(i18next.t('errors:missing_required_field', { field: 'email' }));
-      if (!phone) throw new Error(i18next.t('errors:missing_required_field', { field: 'phone' }));
-      if (!status) throw new Error(i18next.t('errors:missing_required_field', { field: 'status' }));
+      if (!studentId)
+        throw new Error(
+          i18next.t("errors:missing_required_field", { field: "studentId" })
+        );
+      if (!fullName)
+        throw new Error(
+          i18next.t("errors:missing_required_field", { field: "fullName" })
+        );
+      if (!dateOfBirth)
+        throw new Error(
+          i18next.t("errors:missing_required_field", { field: "dateOfBirth" })
+        );
+      if (!gender)
+        throw new Error(
+          i18next.t("errors:missing_required_field", { field: "gender" })
+        );
+      if (!faculty)
+        throw new Error(
+          i18next.t("errors:missing_required_field", { field: "faculty" })
+        );
+      if (!course)
+        throw new Error(
+          i18next.t("errors:missing_required_field", { field: "course" })
+        );
+      if (!program)
+        throw new Error(
+          i18next.t("errors:missing_required_field", { field: "program" })
+        );
+      if (!mailingAddress)
+        throw new Error(
+          i18next.t("errors:missing_required_field", {
+            field: "mailingAddress",
+          })
+        );
+      if (!identityDocument)
+        throw new Error(
+          i18next.t("errors:missing_required_field", {
+            field: "identityDocument",
+          })
+        );
+      if (!identityDocument.number)
+        throw new Error(
+          i18next.t("errors:missing_required_field", {
+            field: "identityDocument.number",
+          })
+        );
+      if (!email)
+        throw new Error(
+          i18next.t("errors:missing_required_field", { field: "email" })
+        );
+      if (!phone)
+        throw new Error(
+          i18next.t("errors:missing_required_field", { field: "phone" })
+        );
+      if (!status)
+        throw new Error(
+          i18next.t("errors:missing_required_field", { field: "status" })
+        );
 
       // Kiểm tra sinh viên đã tồn tại
       const existingStudent = await Student.findOne({ studentId });
       if (existingStudent) {
-        throw new Error(i18next.t('errors:student_id_exists'));
+        throw new Error(i18next.t("errors:student_id_exists"));
       }
 
       // Tìm faculty bằng tên hoặc facultyId
@@ -136,7 +181,7 @@ class StudentService {
       });
 
       if (!facultyDoc) {
-        throw new Error(i18next.t('errors:faculty_not_found'));
+        throw new Error(i18next.t("errors:faculty_not_found"));
       }
 
       // Tìm program bằng tên hoặc programId
@@ -145,14 +190,14 @@ class StudentService {
       });
 
       if (!programDoc) {
-        throw new Error(i18next.t('errors:program_not_found'));
+        throw new Error(i18next.t("errors:program_not_found"));
       }
 
       // Tìm status bằng tên
       const statusDoc = await Status.findOne({ _id: status });
 
       if (!statusDoc) {
-        throw new Error(i18next.t('errors:status_not_found'));
+        throw new Error(i18next.t("errors:status_not_found"));
       }
 
       // Tìm phoneNumberConfig bằng tên hoặc ID
@@ -161,7 +206,7 @@ class StudentService {
       });
 
       if (!phoneNumberConfigDoc) {
-        throw new Error(i18next.t('errors:phone_config_not_found'));
+        throw new Error(i18next.t("errors:phone_config_not_found"));
       }
 
       // Tạo sinh viên mới
@@ -170,7 +215,7 @@ class StudentService {
         fullName,
         dateOfBirth,
         gender,
-        nationality: nationality || i18next.t('common:defaults.nationality'),
+        nationality: nationality || i18next.t("common:defaults.nationality"),
         faculty: facultyDoc._id,
         course,
         program: programDoc._id,
@@ -186,7 +231,7 @@ class StudentService {
 
       return await newStudent.save();
     } catch (error) {
-      console.log(i18next.t('common:logging.error_adding_student'), error);
+      console.log(i18next.t("common:logging.error_adding_student"), error);
       throw error;
     }
   }
@@ -200,10 +245,10 @@ class StudentService {
       const result = await Student.findOneAndDelete({ studentId });
 
       if (!result) {
-        throw new Error(i18next.t('errors:student_not_found'));
+        throw new Error(i18next.t("errors:student_not_found"));
       }
     } catch (error) {
-      console.log(i18next.t('common:logging.error_deleting_student'), error);
+      console.log(i18next.t("common:logging.error_deleting_student"), error);
       throw error;
     }
   }
@@ -216,13 +261,13 @@ class StudentService {
    */
   async updateStudent(
     studentId: string,
-    updateData: IUpdateStudentDTO,
+    updateData: IUpdateStudentDTO
   ): Promise<IStudent> {
     try {
       if (!studentId || !updateData) {
-        throw new Error(i18next.t('errors:missing_required_fields'));
+        throw new Error(i18next.t("errors:missing_required_fields"));
       }
-      
+
       if (updateData.phoneNumberConfig) {
         const phoneNumberConfigDoc = await PhoneNumberConfig.findOne({
           $or: [
@@ -232,7 +277,7 @@ class StudentService {
         });
 
         if (!phoneNumberConfigDoc) {
-          throw new Error(i18next.t('errors:phone_config_not_found_update'));
+          throw new Error(i18next.t("errors:phone_config_not_found_update"));
         }
 
         updateData.phoneNumberConfig = phoneNumberConfigDoc._id.toString();
@@ -243,7 +288,7 @@ class StudentService {
         const currentStudent = await Student.findOne({ studentId });
 
         if (!currentStudent) {
-          throw new Error(i18next.t('errors:student_not_found'));
+          throw new Error(i18next.t("errors:student_not_found"));
         }
 
         const currentStatusId = currentStudent.status.toString();
@@ -251,28 +296,31 @@ class StudentService {
 
         const currentStatusDoc = await Status.findById(currentStatusId);
         if (!currentStatusDoc) {
-          throw new Error(i18next.t('errors:current_status_not_found'));
+          throw new Error(i18next.t("errors:current_status_not_found"));
         }
 
-        const currentStatusName = currentStatusDoc.name;
+        const currentStatusName = currentStatusDoc.name['vi'];
 
         const newStatusDoc = await Status.findById(newStatusId);
         if (!newStatusDoc) {
-          throw new Error(i18next.t('errors:new_status_not_found'));
+          throw new Error(i18next.t("errors:new_status_not_found"));
         }
 
-        const newStatusName = newStatusDoc.name;
+        const newStatusName = newStatusDoc.name['vi'];
 
         if (!validStatuses.includes(newStatusName)) {
-          throw new Error(i18next.t('errors:invalid_status', { status: newStatusName }));
+          throw new Error(
+            i18next.t("errors:invalid_status", { status: newStatusName })
+          );
         }
 
-        const allowedTransitions = statusTransitionRules[currentStatusName] || [];
+        const allowedTransitions =
+          statusTransitionRules[currentStatusName] || [];
         if (!allowedTransitions.includes(newStatusName)) {
           throw new Error(
-            i18next.t('errors:status_transition_not_allowed', {
+            i18next.t("errors:status_transition_not_allowed", {
               currentStatus: currentStatusName,
-              newStatus: newStatusName
+              newStatus: newStatusName,
             })
           );
         }
@@ -285,12 +333,12 @@ class StudentService {
       });
 
       if (!result) {
-        throw new Error(i18next.t('errors:student_not_found'));
+        throw new Error(i18next.t("errors:student_not_found"));
       }
 
       return result;
     } catch (error: any) {
-      console.log(i18next.t('common:logging.error_updating_student'), error);
+      console.log(i18next.t("common:logging.error_updating_student"), error);
       throw error;
     }
   }
@@ -298,9 +346,15 @@ class StudentService {
   /**
    * Tìm kiếm sinh viên theo từ khóa
    */
-  async searchStudent(searchParams: IStudentSearchTermsDTO): Promise<IStudent[]> {
+  async searchStudent(
+    searchParams: IStudentSearchTermsDTO
+  ): Promise<IStudent[]> {
     try {
-      if (!searchParams.studentId && !searchParams.fullName && !searchParams.faculty) {
+      if (
+        !searchParams.studentId &&
+        !searchParams.fullName &&
+        !searchParams.faculty
+      ) {
         return [];
       }
 
@@ -321,7 +375,9 @@ class StudentService {
       if (searchParams.faculty) {
         const faculty = await Faculty.findOne({
           $or: [
-            { name: { $regex: searchParams.faculty.toString(), $options: "i" } },
+            {
+              name: { $regex: searchParams.faculty.toString(), $options: "i" },
+            },
             { facultyId: searchParams.faculty },
           ],
         });
@@ -341,7 +397,7 @@ class StudentService {
 
       return result;
     } catch (error) {
-      console.log(i18next.t('common:logging.error_searching_students'), error);
+      console.log(i18next.t("common:logging.error_searching_students"), error);
       throw error;
     }
   }
@@ -358,7 +414,10 @@ class StudentService {
         .populate("phoneNumberConfig");
       return result;
     } catch (error) {
-      console.log(i18next.t('common:logging.error_retrieving_all_students'), error);
+      console.log(
+        i18next.t("common:logging.error_retrieving_all_students"),
+        error
+      );
       throw error;
     }
   }
@@ -375,7 +434,7 @@ class StudentService {
         .populate("phoneNumberConfig");
       return student;
     } catch (error) {
-      console.log(i18next.t('common:logging.error_retrieving_student'), error);
+      console.log(i18next.t("common:logging.error_retrieving_student"), error);
       throw error;
     }
   }
@@ -385,7 +444,7 @@ class StudentService {
    */
   async importData(format: string, data: any[]): Promise<any[]> {
     let formattedData;
-    
+
     switch (format) {
       case "csv":
         formattedData = await this.processCSVData(data);
@@ -394,9 +453,9 @@ class StudentService {
         formattedData = await this.processJSONData(data);
         break;
       default:
-        throw new Error(i18next.t('errors:unsupported_format'));
+        throw new Error(i18next.t("errors:unsupported_format"));
     }
-    
+
     await Student.insertMany(formattedData);
     return formattedData;
   }
@@ -406,7 +465,7 @@ class StudentService {
    */
   async exportData(format: string, filePath: string): Promise<void> {
     const data = await Student.find().lean();
-    
+
     switch (format) {
       case "csv":
         await exportCSV(data, filePath);
@@ -415,7 +474,7 @@ class StudentService {
         await exportJSON(data, filePath);
         break;
       default:
-        throw new Error(i18next.t('errors:unsupported_format_export'));
+        throw new Error(i18next.t("errors:unsupported_format_export"));
     }
   }
 
@@ -424,7 +483,7 @@ class StudentService {
     return data.map((item) => ({
       studentId: item.studentId || null,
       fullName: item.fullName || "",
-      gender: item.gender || i18next.t('common:defaults.gender_unknown'),
+      gender: item.gender || i18next.t("common:defaults.gender_unknown"),
       dateOfBirth: item.dateOfBirth ? new Date(item.dateOfBirth) : null,
       email: item.email || "",
       phone: item.phone || "",
@@ -432,7 +491,8 @@ class StudentService {
       faculty: item.faculty || "",
       program: item.program || "",
       status: item.status || "",
-      nationality: item.nationality || i18next.t('common:defaults.nationality_unknown'),
+      nationality:
+        item.nationality || i18next.t("common:defaults.nationality_unknown"),
       identityDocument: item.identityDocument || {
         type: "",
         number: "",
@@ -475,37 +535,68 @@ class StudentService {
 
       return {
         studentId: item.studentId || "N/A",
-        fullName: item.fullName || i18next.t('common:defaults.no_name'),
-        gender: item.gender || i18next.t('common:defaults.gender_unknown'),
+        fullName: item.fullName || i18next.t("common:defaults.no_name"),
+        gender: item.gender || i18next.t("common:defaults.gender_unknown"),
         dateOfBirth: parseDate(item.dateOfBirth) || new Date("2000-01-01"),
-        email: item.email || i18next.t('common:defaults.default_email'),
-        phone: item.phone || i18next.t('common:defaults.default_phone'),
-        course: item.course ? parseInt(item.course, 10) || null : i18next.t('common:defaults.default_course'),
-        faculty: parseObjectId(item.faculty) || i18next.t('common:defaults.faculty_unknown'),
-        program: parseObjectId(item.program) || i18next.t('common:defaults.program_unknown'),
-        status: parseObjectId(item.status) || i18next.t('common:defaults.status_not_updated'),
-        nationality: item.nationality || i18next.t('common:defaults.nationality_unknown'),
+        email: item.email || i18next.t("common:defaults.default_email"),
+        phone: item.phone || i18next.t("common:defaults.default_phone"),
+        course: item.course
+          ? parseInt(item.course, 10) || null
+          : i18next.t("common:defaults.default_course"),
+        faculty:
+          parseObjectId(item.faculty) ||
+          i18next.t("common:defaults.faculty_unknown"),
+        program:
+          parseObjectId(item.program) ||
+          i18next.t("common:defaults.program_unknown"),
+        status:
+          parseObjectId(item.status) ||
+          i18next.t("common:defaults.status_not_updated"),
+        nationality:
+          item.nationality || i18next.t("common:defaults.nationality_unknown"),
         identityDocument: {
-          type: item.identityDocument?.type || i18next.t('common:defaults.identity_type_unknown'),
-          number: item.identityDocument?.number || i18next.t('common:defaults.identity_number_default'),
+          type:
+            item.identityDocument?.type ||
+            i18next.t("common:defaults.identity_type_unknown"),
+          number:
+            item.identityDocument?.number ||
+            i18next.t("common:defaults.identity_number_default"),
           issueDate: parseDate(item.identityDocument?.issueDate),
-          issuePlace: item.identityDocument?.issuePlace || i18next.t('common:defaults.identity_place_unknown'),
+          issuePlace:
+            item.identityDocument?.issuePlace ||
+            i18next.t("common:defaults.identity_place_unknown"),
           expiryDate: parseDate(item.identityDocument?.expiryDate),
           hasChip: item.identityDocument?.hasChip || false,
         },
         mailingAddress: {
-          streetAddress: item.mailingAddress?.streetAddress || i18next.t('common:defaults.no_address'),
-          ward: item.mailingAddress?.ward || i18next.t('common:defaults.no_ward'),
-          district: item.mailingAddress?.district || i18next.t('common:defaults.no_district'),
-          city: item.mailingAddress?.city || i18next.t('common:defaults.no_city'),
-          country: item.mailingAddress?.country || i18next.t('common:defaults.no_country'),
+          streetAddress:
+            item.mailingAddress?.streetAddress ||
+            i18next.t("common:defaults.no_address"),
+          ward:
+            item.mailingAddress?.ward || i18next.t("common:defaults.no_ward"),
+          district:
+            item.mailingAddress?.district ||
+            i18next.t("common:defaults.no_district"),
+          city:
+            item.mailingAddress?.city || i18next.t("common:defaults.no_city"),
+          country:
+            item.mailingAddress?.country ||
+            i18next.t("common:defaults.no_country"),
         },
         permanentAddress: {
-          streetAddress: item.permanentAddress?.streetAddress || i18next.t('common:defaults.no_address'),
-          ward: item.permanentAddress?.ward || i18next.t('common:defaults.no_ward'),
-          district: item.permanentAddress?.district || i18next.t('common:defaults.no_district'),
-          city: item.permanentAddress?.city || i18next.t('common:defaults.no_city'),
-          country: item.permanentAddress?.country || i18next.t('common:defaults.no_country'),
+          streetAddress:
+            item.permanentAddress?.streetAddress ||
+            i18next.t("common:defaults.no_address"),
+          ward:
+            item.permanentAddress?.ward || i18next.t("common:defaults.no_ward"),
+          district:
+            item.permanentAddress?.district ||
+            i18next.t("common:defaults.no_district"),
+          city:
+            item.permanentAddress?.city || i18next.t("common:defaults.no_city"),
+          country:
+            item.permanentAddress?.country ||
+            i18next.t("common:defaults.no_country"),
         },
       };
     });

@@ -2,7 +2,9 @@ import mongoose, { Document, Schema } from "mongoose";
 
 export interface IProgram extends Document {
   programId: string;
-  name: string;
+  name: {
+    [key: string]: string; // key is language code (e.g., 'en', 'vi')
+  };
   duration: number;
   isActive: boolean;
   createdAt: Date;
@@ -16,8 +18,15 @@ const ProgramSchema = new Schema<IProgram>(
       required: true,
     },
     name: {
-      type: String,
+      type: Map,
+      of: String,
       required: true,
+      validate: {
+        validator: function (value: Map<string, string>) {
+          return value.size > 0;
+        },
+        message: "At least one language name must be provided",
+      },
       unique: true,
       trim: true,
     },
@@ -32,7 +41,7 @@ const ProgramSchema = new Schema<IProgram>(
   },
   {
     timestamps: true,
-  },
+  }
 );
 
 export default mongoose.model<IProgram>("Program", ProgramSchema);

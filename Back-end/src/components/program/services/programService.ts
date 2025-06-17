@@ -1,12 +1,12 @@
-import Program, { IProgram } from "../models/program";
+import Program, { IProgram } from "../models/Program";
 import generateId from "../../../utils/generateId";
-import { w } from "@faker-js/faker/dist/airline-CBNP41sR";
-import { da } from "@faker-js/faker/.";
 import i18next from "../../../config/i18n";
 
 export interface ICreateProgramDTO {
   programId: string;
-  name: string;
+  name: {
+    [key: string]: string;
+  };
   duration: number;
   isActive: boolean;
   createdAt: Date;
@@ -14,19 +14,20 @@ export interface ICreateProgramDTO {
 }
 
 class ProgramService {
-  async renameProgram(programId: string, newName: string): Promise<IProgram> {
-    if (!newName || !programId) {
-      throw new Error(i18next.t('errors:missing_required_fields'));
+  async renameProgram(programId: string, newNames: { [key: string]: string }): Promise<IProgram> {
+    if (!newNames || !programId || Object.keys(newNames).length === 0) {
+      throw new Error(i18next.t("errors:missing_required_fields"));
     }
 
     const program = await Program.findOne({ programId });
 
     if (!program) {
-      throw new Error(i18next.t('errors:program_not_found'));
+      throw new Error(i18next.t("errors:program_not_found"));
     }
-    program.name = newName;
+    program.name = newNames;
 
-    const generatedId = generateId(newName);
+    const firstLanguageName = newNames['vi'];
+    const generatedId = generateId(firstLanguageName);
     let programNewId = generatedId;
     let count = 0;
     // Check if facultyId already exists
@@ -42,16 +43,16 @@ class ProgramService {
   }
 
   async addProgram(data: ICreateProgramDTO): Promise<IProgram> {
-    if (!data.name || !data.duration) {
-      throw new Error(i18next.t('errors:missing_required_fields'));
+    if (!data.name || Object.keys(data.name).length === 0 || !data.duration) {
+      throw new Error(i18next.t("errors:missing_required_fields"));
     }
 
     if (data.duration <= 0) {
-      throw new Error(i18next.t('errors:duration_must_be_positive'));
+      throw new Error(i18next.t("errors:duration_must_be_positive"));
     }
 
-    // Generate programId
-    const generatedId = generateId(data.name);
+    const firstLanguageName = data.name['vi'];
+    const generatedId = generateId(firstLanguageName);
     let programNewId = generatedId;
     let count = 0;
     // Check if facultyId already exists
@@ -60,10 +61,13 @@ class ProgramService {
       programNewId = generatedId + "-" + count;
     }
 
-    // Kiểm tra trùng tên chương trình
-    const existingProgram = await Program.findOne({ name: data.name });
+    const existingProgram = await Program.findOne({
+      $or: Object.entries(data.name).map(([lang, name]) => ({
+        [`name.${lang}`]: name
+      }))
+    });
     if (existingProgram) {
-      throw new Error(i18next.t('errors:program_name_exists'));
+      throw new Error(i18next.t("errors:program_name_exists"));
     }
 
     const newProgram = new Program({
@@ -83,7 +87,7 @@ class ProgramService {
     try {
       return await Program.find({});
     } catch (error) {
-      console.log(i18next.t('common:logging.error_getting_programs'), error);
+      console.log(i18next.t("common:logging.error_getting_programs"), error);
       throw error;
     }
   }

@@ -33,17 +33,17 @@ const seedCourses = async () => {
 
     // Lựa chọn một số khoa phổ biến để gán cho các khóa học
     const csFaculty =
-      faculties.find((f) => f.name['vi']?.includes("CNTT")) || faculties[0];
+      faculties.find((f) => f.name["vi"]?.includes("CNTT")) || faculties[0];
     const mathFaculty =
-      faculties.find((f) => f.name['vi']?.includes("Toán")) ||
+      faculties.find((f) => f.name["vi"]?.includes("Toán")) ||
       faculties[1] ||
       faculties[0];
     const physicsFaculty =
-      faculties.find((f) => f.name['vi']?.includes("Lý")) ||
+      faculties.find((f) => f.name["vi"]?.includes("Lý")) ||
       faculties[2] ||
       faculties[0];
     const englishFaculty =
-      faculties.find((f) => f.name['vi']?.includes("Anh")) ||
+      faculties.find((f) => f.name["vi"]?.includes("Anh")) ||
       faculties[3] ||
       faculties[0];
 
@@ -51,37 +51,61 @@ const seedCourses = async () => {
     const baseCourses = [
       {
         courseId: "CSC10001",
-        name: "Nhập môn lập trình",
+        name: {
+          vi: "Nhập môn lập trình",
+          en: "Introduction to Programming",
+        },
         credits: 4,
         faculty: csFaculty._id,
-        description: "Giới thiệu về lập trình cơ bản và ngôn ngữ C++.",
+        description: {
+          vi: "Giới thiệu về lập trình cơ bản và ngôn ngữ C++.",
+          en: "Introduce the basic of programming and C++ language.",
+        },
         isActive: true,
         createdAt: new Date(Date.now() - 100 * 24 * 60 * 60 * 1000), // 100 ngày trước
       },
       {
         courseId: "MTH10001",
-        name: "Giải tích 1",
+        name: {
+          vi: "Giải tích 1",
+          en: "Calculus 1",
+        },
         credits: 4,
         faculty: mathFaculty._id,
-        description: "Nhập môn giải tích toán học.",
+        description: {
+          vi: "Nhập môn giải tích toán học.",
+          en: "Introduction to basic calculus.",
+        },
         isActive: true,
         createdAt: new Date(Date.now() - 95 * 24 * 60 * 60 * 1000), // 95 ngày trước
       },
       {
         courseId: "PHY10001",
-        name: "Vật lý đại cương 1",
+        name: {
+          vi: "Vật lý đại cương 1",
+          en: "General Physics 1",
+        },
         credits: 3,
         faculty: physicsFaculty._id,
-        description: "Cơ sở vật lý cơ học và nhiệt học.",
+        description: {
+          vi: "Cơ sở vật lý cơ học và nhiệt học.",
+          en: "Physics foundation in mechanics and thermodynamics",
+        },
         isActive: true,
         createdAt: new Date(Date.now() - 90 * 24 * 60 * 60 * 1000), // 90 ngày trước
       },
       {
         courseId: "ENG10001",
-        name: "Tiếng Anh học thuật",
+        name: {
+          vi: "Tiếng Anh học thuật",
+          en: "Academic English",
+        },
         credits: 3,
         faculty: englishFaculty._id,
-        description: "Tiếng Anh cho sinh viên đại học.",
+        description: {
+          vi: "Tiếng Anh cho sinh viên đại học.",
+          en: "English for undergraduates."
+        },
         isActive: true,
         createdAt: new Date(Date.now() - 85 * 24 * 60 * 60 * 1000), // 85 ngày trước
       },
@@ -93,56 +117,80 @@ const seedCourses = async () => {
 
     // Lấy ID của các khóa học cơ bản để làm điều kiện tiên quyết
     const csIntroId = savedBaseCourses.find(
-      (c) => c.courseId === "CSC10001",
+      (c) => c.courseId === "CSC10001"
     )?._id;
     const calculus1Id = savedBaseCourses.find(
-      (c) => c.courseId === "MTH10001",
+      (c) => c.courseId === "MTH10001"
     )?._id;
     const physics1Id = savedBaseCourses.find(
-      (c) => c.courseId === "PHY10001",
+      (c) => c.courseId === "PHY10001"
     )?._id;
 
     // Tạo các khóa học nâng cao có môn tiên quyết
     const advancedCourses = [
       {
         courseId: "CSC10002",
-        name: "Cấu trúc dữ liệu và giải thuật",
+        name: {
+          vi: "Cấu trúc dữ liệu và giải thuật",
+          en: "Data Structures and Algorithms"
+        },
         credits: 4,
         faculty: csFaculty._id,
-        description: "Học về các cấu trúc dữ liệu và thiết kế giải thuật.",
-        prerequisites: [csIntroId], // Nhập môn lập trình là môn tiên quyết
+        description: {
+          vi: "Học về các cấu trúc dữ liệu và thiết kế giải thuật.",
+          en: "Study of data structures and algorithm design."
+        },
+        prerequisites: [csIntroId],
         isActive: true,
-        createdAt: new Date(Date.now() - 80 * 24 * 60 * 60 * 1000), // 80 ngày trước
+        createdAt: new Date(Date.now() - 80 * 24 * 60 * 60 * 1000),
       },
       {
         courseId: "MTH10002",
-        name: "Giải tích 2",
+        name: {
+          vi: "Giải tích 2",
+          en: "Calculus 2"
+        },
         credits: 4,
         faculty: mathFaculty._id,
-        description: "Phần nâng cao của giải tích toán học.",
-        prerequisites: [calculus1Id], // Giải tích 1 là môn tiên quyết
+        description: {
+          vi: "Phần nâng cao của giải tích toán học.",
+          en: "Advanced topics in calculus."
+        },
+        prerequisites: [calculus1Id],
         isActive: true,
-        createdAt: new Date(Date.now() - 75 * 24 * 60 * 60 * 1000), // 75 ngày trước
+        createdAt: new Date(Date.now() - 75 * 24 * 60 * 60 * 1000),
       },
       {
         courseId: "PHY10002",
-        name: "Vật lý đại cương 2",
+        name: {
+          vi: "Vật lý đại cương 2",
+          en: "General Physics 2"
+        },
         credits: 3,
         faculty: physicsFaculty._id,
-        description: "Cơ sở điện từ học và quang học.",
-        prerequisites: [physics1Id], // Vật lý 1 là môn tiên quyết
+        description: {
+          vi: "Cơ sở điện từ học và quang học.",
+          en: "Foundations of electromagnetism and optics."
+        },
+        prerequisites: [physics1Id],
         isActive: true,
-        createdAt: new Date(Date.now() - 70 * 24 * 60 * 60 * 1000), // 70 ngày trước
+        createdAt: new Date(Date.now() - 70 * 24 * 60 * 60 * 1000),
       },
       {
         courseId: "CSC20001",
-        name: "Lập trình hướng đối tượng",
+        name: {
+          vi: "Lập trình hướng đối tượng",
+          en: "Object-Oriented Programming"
+        },
         credits: 4,
         faculty: csFaculty._id,
-        description: "Nguyên lý và kỹ thuật lập trình hướng đối tượng.",
-        prerequisites: [csIntroId], // Nhập môn lập trình là môn tiên quyết
+        description: {
+          vi: "Nguyên lý và kỹ thuật lập trình hướng đối tượng.",
+          en: "Principles and techniques of object-oriented programming."
+        },
+        prerequisites: [csIntroId],
         isActive: true,
-        createdAt: new Date(Date.now() - 65 * 24 * 60 * 60 * 1000), // 65 ngày trước
+        createdAt: new Date(Date.now() - 65 * 24 * 60 * 60 * 1000),
       },
     ];
 
@@ -151,43 +199,61 @@ const seedCourses = async () => {
 
     // Lấy ID cho môn học nâng cao để làm điều kiện tiên quyết cho các môn cấp cao hơn
     const dataStructureId = savedAdvancedCourses.find(
-      (c) => c.courseId === "CSC10002",
+      (c) => c.courseId === "CSC10002"
     )?._id;
     const oopId = savedAdvancedCourses.find(
-      (c) => c.courseId === "CSC20001",
+      (c) => c.courseId === "CSC20001"
     )?._id;
 
     // Tạo các khóa học cấp cao hơn có nhiều môn tiên quyết
     const highLevelCourses = [
       {
         courseId: "CSC30001",
-        name: "Phát triển ứng dụng web",
+        name: {
+          vi: "Phát triển ứng dụng web",
+          en: "Web Application Development"
+        },
         credits: 3,
         faculty: csFaculty._id,
-        description: "Học phát triển ứng dụng web sử dụng công nghệ hiện đại.",
-        prerequisites: [dataStructureId, oopId], // Cần cả CTDL và OOP
+        description: {
+          vi: "Học phát triển ứng dụng web sử dụng công nghệ hiện đại.",
+          en: "Learn web application development using modern technologies."
+        },
+        prerequisites: [dataStructureId, oopId],
         isActive: true,
-        createdAt: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000), // 60 ngày trước
+        createdAt: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000),
       },
       {
         courseId: "CSC30002",
-        name: "Trí tuệ nhân tạo",
+        name: {
+          vi: "Trí tuệ nhân tạo",
+          en: "Artificial Intelligence"
+        },
         credits: 3,
         faculty: csFaculty._id,
-        description: "Giới thiệu các kỹ thuật và thuật toán trí tuệ nhân tạo.",
-        prerequisites: [dataStructureId, calculus1Id], // Cần CTDL và Giải tích 1
+        description: {
+          vi: "Giới thiệu các kỹ thuật và thuật toán trí tuệ nhân tạo.",
+          en: "Introduction to artificial intelligence techniques and algorithms."
+        },
+        prerequisites: [dataStructureId, calculus1Id],
         isActive: true,
-        createdAt: new Date(Date.now() - 55 * 24 * 60 * 60 * 1000), // 55 ngày trước
+        createdAt: new Date(Date.now() - 55 * 24 * 60 * 60 * 1000),
       },
       {
         courseId: "CSC30003",
-        name: "Học máy",
+        name: {
+          vi: "Học máy",
+          en: "Machine Learning"
+        },
         credits: 3,
         faculty: csFaculty._id,
-        description: "Giới thiệu về các kỹ thuật học máy.",
-        prerequisites: [dataStructureId, calculus1Id], // Cần CTDL và Giải tích 1
+        description: {
+          vi: "Giới thiệu về các kỹ thuật học máy.",
+          en: "Introduction to machine learning techniques."
+        },
+        prerequisites: [dataStructureId, calculus1Id],
         isActive: true,
-        createdAt: new Date(Date.now() - 50 * 24 * 60 * 60 * 1000), // 50 ngày trước
+        createdAt: new Date(Date.now() - 50 * 24 * 60 * 60 * 1000),
       },
     ];
 
@@ -197,12 +263,18 @@ const seedCourses = async () => {
     // Tạo một khóa học đã bị deactivate
     const deactivatedCourse = {
       courseId: "CSC10005",
-      name: "Lập trình Pascal (Cũ)",
+      name: {
+        vi: "Lập trình Pascal (Cũ)",
+        en: "Pascal Programming (Old)"
+      },
       credits: 3,
       faculty: csFaculty._id,
-      description: "Môn học đã không còn được giảng dạy.",
+      description: {
+        vi: "Môn học đã không còn được giảng dạy.",
+        en: "This course is no longer taught."
+      },
       isActive: false,
-      createdAt: new Date(Date.now() - 200 * 24 * 60 * 60 * 1000), // 200 ngày trước
+      createdAt: new Date(Date.now() - 200 * 24 * 60 * 60 * 1000),
     };
 
     console.log("Creating deactivated course...");
@@ -211,12 +283,18 @@ const seedCourses = async () => {
     // Tạo một khóa học mới (dưới 30 phút)
     const newCourse = {
       courseId: "CSC40001",
-      name: "Blockchain và ứng dụng",
+      name: {
+        vi: "Blockchain và ứng dụng",
+        en: "Blockchain and Applications"
+      },
       credits: 3,
       faculty: csFaculty._id,
-      description: "Giới thiệu về công nghệ blockchain và các ứng dụng.",
+      description: {
+        vi: "Giới thiệu về công nghệ blockchain và các ứng dụng.",
+        en: "Introduction to blockchain technology and its applications."
+      },
       isActive: true,
-      createdAt: new Date(), // Thời gian hiện tại
+      createdAt: new Date(),
     };
 
     console.log("Creating new course (for deletion test)...");
