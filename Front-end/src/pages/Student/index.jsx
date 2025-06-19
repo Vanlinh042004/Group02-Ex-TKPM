@@ -7,6 +7,7 @@ import {
   UploadOutlined,
   DownloadOutlined,
   SearchOutlined,
+  SketchSquareFilled,
 } from "@ant-design/icons";
 import { Button, Upload, message } from "antd";
 import { useState, useEffect } from "react";
@@ -33,13 +34,15 @@ function Student() {
   const [searchName, setSearchName] = useState("");
   const [searchFaculty, setSearchFaculty] = useState("");
   const { t } = useTranslation("student");
+  const { i18n } = useTranslation();
+  const currentLang = i18n.language;
   const { exportStudentsToCSV, exportStudentsToJSON } = ExportStudent();
 
   useEffect(() => {
     const fetchStudents = async () => {
       try {
         const data = await getStudent();
-        setStudents(data);
+        setStudents(data.data);
       } catch (error) {
         console.error("Lỗi khi lấy danh sách sinh viên:", error);
       }
@@ -51,7 +54,7 @@ function Student() {
     e.preventDefault();
     try {
       const data = await searchStudent(searchId, searchName, searchFaculty);
-      setStudents(data);
+      setStudents(data.data);
     } catch (error) {
       swal(t("swalNotFoundTitle"), t("swalNotFoundText"), "error");
     }
@@ -264,18 +267,22 @@ function Student() {
                     {new Date(student.dateOfBirth).toLocaleDateString()}
                   </p>
                   <p>
-                    <b>{t("gender")}:</b> {student.gender}
+                    <b>{t("gender")}: </b>
+                    {student.gender === "Nam"
+                      ? "Male"
+                      : "Female" || t("notAvailable")}
                   </p>
                   <p>
                     <b>{t("faculty")}:</b>{" "}
-                    {student.faculty?.name || t("notAvailable")}
+                    {student.faculty.name[currentLang] || t("notAvailable")}
                   </p>
                   <p>
                     <b>{t("course")}:</b> {student.course}
                   </p>
                   <p>
-                    <b>{t("program")}:</b> {student.program?.name} (
-                    {student.program?.programId})
+                    <b>{t("program")}:</b>{" "}
+                    {student.program?.name[currentLang] ||
+                      t("notAvailable")}{" "}
                   </p>
                   <p>
                     <b>{t("email")}:</b> {student.email}
@@ -285,7 +292,7 @@ function Student() {
                   </p>
                   <p>
                     <b>{t("status")}:</b>{" "}
-                    {student.status?.name || t("notAvailable")}
+                    {student.status.name[currentLang] || t("notAvailable")}
                   </p>
                   {/* Địa chỉ thường trú */}
                   <p>

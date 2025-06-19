@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
@@ -36,6 +36,8 @@ import {
 
 const CourseRegistration = () => {
   const { t } = useTranslation("registration");
+  const { i18n } = useTranslation();
+  const currentLang = i18n.language;
   const [studentId, setStudentId] = useState("");
   const [classList, setClassList] = useState([]);
   const [selectedClass, setSelectedClass] = useState("");
@@ -157,7 +159,7 @@ const CourseRegistration = () => {
       const tableData = courses.map((course, index) => [
         index + 1,
         course.courseId,
-        course.name,
+        course.name[currentLang],
         course.classId,
         course.credits,
         course.grade,
@@ -285,7 +287,7 @@ const CourseRegistration = () => {
                           </option>
                           {classList.map((cls) => (
                             <option key={cls._id} value={cls._id}>
-                              {cls.classId} - {cls.course?.name} (
+                              {cls.classId} - {cls.course?.name[currentLang]} (
                               {cls.instructor})
                             </option>
                           ))}
@@ -330,7 +332,7 @@ const CourseRegistration = () => {
                               {reg.student ? reg.student.studentId : "N/A"}
                             </td>
                             <td>
-                              {reg.class?.course?.name ||
+                              {reg.class?.course?.name[currentLang] ||
                                 t("common.notAvailable")}
                             </td>
                             <td>

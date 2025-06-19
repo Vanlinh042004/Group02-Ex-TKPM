@@ -26,6 +26,8 @@ function Course() {
   const [classForm] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const { t } = useTranslation("course");
+  const { i18n } = useTranslation();
+  const currentLang = i18n.language;
 
   useEffect(() => {
     const fetchFaculties = async () => {
@@ -242,7 +244,7 @@ function Course() {
                         </span>
                       )}
                     </div>
-                    <h4 className="mb-3">{course.name}</h4>
+                    <h4 className="mb-3">{course.name[currentLang]}</h4>
                     <p>
                       <b>{t("courseId")}:</b> {course.courseId}
                     </p>
@@ -251,10 +253,11 @@ function Course() {
                     </p>
                     <p>
                       <b>{t("faculty")}:</b>{" "}
-                      {course.faculty?.name || t("notAvailable")}
+                      {course.faculty?.name[currentLang] || t("notAvailable")}
                     </p>
                     <p>
-                      <b>{t("description")}:</b> {course.description}
+                      <b>{t("description")}:</b>{" "}
+                      {course.description[currentLang] || t("noDescription")}
                     </p>
                     <p>
                       <b>{t("prerequisites")}:</b>{" "}
@@ -346,7 +349,7 @@ function Course() {
             <Select placeholder={t("faculty")}>
               {faculties.map((faculty) => (
                 <Select.Option value={faculty._id} key={faculty._id}>
-                  {faculty.name}
+                  {faculty.name[currentLang]}
                 </Select.Option>
               ))}
             </Select>
@@ -360,7 +363,7 @@ function Course() {
             <Select mode="multiple" placeholder={t("prerequisites")} allowClear>
               {courses.map((course) => (
                 <Select.Option key={course._id} value={course._id}>
-                  {course.name} ({course.courseId})
+                  {course.name[currentLang]} ({course.courseId})
                 </Select.Option>
               ))}
             </Select>
@@ -426,7 +429,7 @@ function Course() {
             <Select placeholder={t("faculty")}>
               {faculties.map((faculty) => (
                 <Select.Option value={faculty._id} key={faculty._id}>
-                  {faculty.name}
+                  {faculty.name[currentLang]}
                 </Select.Option>
               ))}
             </Select>
@@ -479,7 +482,7 @@ function Course() {
                 (course) =>
                   course.isActive && (
                     <Select.Option key={course._id} value={course._id}>
-                      {course.name} ({course.courseId})
+                      {course.name[currentLang]} ({course.courseId})
                     </Select.Option>
                   ),
               )}
