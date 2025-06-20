@@ -1,0 +1,466 @@
+paths:
+  # Legacy Class API
+  /api/classes:
+    get:
+      tags:
+        - Classes
+      summary: Get all classes
+      description: Retrieve a list of all classes
+      parameters:
+        - name: courseId
+          in: query
+          description: Filter classes by course ID
+          schema:
+            type: string
+            example: '507f1f77bcf86cd799439011'
+        - name: semester
+          in: query
+          description: Filter classes by semester
+          schema:
+            type: string
+            example: '2023-2024-1'
+        - name: isActive
+          in: query
+          description: Filter by active status
+          schema:
+            type: boolean
+            example: true
+      responses:
+        200:
+          description: List of classes retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Class'
+        500:
+          $ref: '#/components/responses/InternalError'
+
+    post:
+      tags:
+        - Classes
+      summary: Create a new class
+      description: Add a new class to the system
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateClassRequest'
+      responses:
+        201:
+          description: Class created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Class'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        409:
+          description: Class already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        500:
+          $ref: '#/components/responses/InternalError'
+
+  /api/classes/{id}:
+    get:
+      tags:
+        - Classes
+      summary: Get class by ID
+      description: Retrieve a specific class by its ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Class ID
+          schema:
+            type: string
+            example: '507f1f77bcf86cd799439011'
+      responses:
+        200:
+          description: Class retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Class'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalError'
+
+    put:
+      tags:
+        - Classes
+      summary: Update class
+      description: Update an existing class
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Class ID
+          schema:
+            type: string
+            example: '507f1f77bcf86cd799439011'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateClassRequest'
+      responses:
+        200:
+          description: Class updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Class'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        404:
+          $ref: '#/components/responses/NotFound'
+        409:
+          description: Class conflict (scheduling or capacity issues)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        500:
+          $ref: '#/components/responses/InternalError'
+
+    delete:
+      tags:
+        - Classes
+      summary: Delete class
+      description: Remove a class from the system
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Class ID
+          schema:
+            type: string
+            example: '507f1f77bcf86cd799439011'
+      responses:
+        200:
+          description: Class deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Class deleted successfully'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalError'
+
+  /api/classes/{id}/students:
+    get:
+      tags:
+        - Classes
+      summary: Get students in class
+      description: Retrieve all students enrolled in a specific class
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Class ID
+          schema:
+            type: string
+            example: '507f1f77bcf86cd799439011'
+      responses:
+        200:
+          description: Students retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        student:
+                          $ref: '#/components/schemas/Student'
+                        enrollmentDate:
+                          type: string
+                          format: date-time
+                          example: '2023-09-01T10:00:00Z'
+                        status:
+                          type: string
+                          enum: [enrolled, dropped, completed]
+                          example: 'enrolled'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalError'
+
+  # Clean Architecture Class API v2
+  /api/v2/classes:
+    get:
+      tags:
+        - Classes
+      summary: Get all classes (v2)
+      description: Retrieve a list of all classes using Clean Architecture
+      parameters:
+        - name: courseId
+          in: query
+          description: Filter classes by course ID
+          schema:
+            type: string
+            example: '507f1f77bcf86cd799439011'
+        - name: semester
+          in: query
+          description: Filter classes by semester
+          schema:
+            type: string
+            example: '2023-2024-1'
+        - name: isActive
+          in: query
+          description: Filter by active status
+          schema:
+            type: boolean
+            example: true
+      responses:
+        200:
+          description: List of classes retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Class'
+        500:
+          $ref: '#/components/responses/InternalError'
+
+    post:
+      tags:
+        - Classes
+      summary: Create a new class (v2)
+      description: Add a new class using Clean Architecture
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateClassRequest'
+      responses:
+        201:
+          description: Class created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Class'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        409:
+          description: Class already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        500:
+          $ref: '#/components/responses/InternalError'
+
+  /api/v2/classes/{id}:
+    get:
+      tags:
+        - Classes
+      summary: Get class by ID (v2)
+      description: Retrieve a specific class by its ID using Clean Architecture
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Class ID
+          schema:
+            type: string
+            example: '507f1f77bcf86cd799439011'
+      responses:
+        200:
+          description: Class retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Class'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalError'
+
+    put:
+      tags:
+        - Classes
+      summary: Update class (v2)
+      description: Update an existing class using Clean Architecture
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Class ID
+          schema:
+            type: string
+            example: '507f1f77bcf86cd799439011'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateClassRequest'
+      responses:
+        200:
+          description: Class updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Class'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        404:
+          $ref: '#/components/responses/NotFound'
+        409:
+          description: Class conflict (scheduling or capacity issues)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        500:
+          $ref: '#/components/responses/InternalError'
+
+    delete:
+      tags:
+        - Classes
+      summary: Delete class (v2)
+      description: Remove a class from the system using Clean Architecture
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Class ID
+          schema:
+            type: string
+            example: '507f1f77bcf86cd799439011'
+      responses:
+        200:
+          description: Class deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Class deleted successfully'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalError'
+
+  /api/v2/classes/{id}/students:
+    get:
+      tags:
+        - Classes
+      summary: Get students in class (v2)
+      description: Retrieve all students enrolled in a specific class using Clean Architecture
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Class ID
+          schema:
+            type: string
+            example: '507f1f77bcf86cd799439011'
+      responses:
+        200:
+          description: Students retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        student:
+                          $ref: '#/components/schemas/Student'
+                        enrollmentDate:
+                          type: string
+                          format: date-time
+                          example: '2023-09-01T10:00:00Z'
+                        status:
+                          type: string
+                          enum: [enrolled, dropped, completed]
+                          example: 'enrolled'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalError'

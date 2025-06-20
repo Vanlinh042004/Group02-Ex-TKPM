@@ -1,0 +1,276 @@
+paths:
+  # Legacy Program API
+  /api/programs:
+    get:
+      tags:
+        - Programs
+      summary: Get all programs
+      description: Retrieve a list of all academic programs
+      responses:
+        200:
+          description: List of programs retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Program'
+        500:
+          $ref: '#/components/responses/InternalError'
+
+    post:
+      tags:
+        - Programs
+      summary: Create a new program
+      description: Add a new academic program to the system
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProgramRequest'
+      responses:
+        201:
+          description: Program created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Program'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        409:
+          description: Program already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        500:
+          $ref: '#/components/responses/InternalError'
+
+  /api/programs/{id}:
+    put:
+      tags:
+        - Programs
+      summary: Rename a program
+      description: Update the name of an existing program
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Program ID
+          schema:
+            type: string
+            example: '507f1f77bcf86cd799439011'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RenameProgramRequest'
+      responses:
+        200:
+          description: Program renamed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Program'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        404:
+          $ref: '#/components/responses/NotFound'
+        409:
+          description: Program name already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        500:
+          $ref: '#/components/responses/InternalError'
+
+    delete:
+      tags:
+        - Programs
+      summary: Delete a program
+      description: Remove a program from the system
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Program ID
+          schema:
+            type: string
+            example: '507f1f77bcf86cd799439011'
+      responses:
+        200:
+          description: Program deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Program deleted successfully'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalError'
+
+  # Clean Architecture Program API v2
+  /api/v2/programs:
+    get:
+      tags:
+        - Programs
+      summary: Get all programs (v2)
+      description: Retrieve a list of all academic programs using Clean Architecture
+      responses:
+        200:
+          description: List of programs retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Program'
+        500:
+          $ref: '#/components/responses/InternalError'
+
+    post:
+      tags:
+        - Programs
+      summary: Create a new program (v2)
+      description: Add a new academic program using Clean Architecture
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProgramRequest'
+      responses:
+        201:
+          description: Program created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Program'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        409:
+          description: Program already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        500:
+          $ref: '#/components/responses/InternalError'
+
+  /api/v2/programs/{id}:
+    put:
+      tags:
+        - Programs
+      summary: Rename a program (v2)
+      description: Update the name of an existing program using Clean Architecture
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Program ID
+          schema:
+            type: string
+            example: '507f1f77bcf86cd799439011'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RenameProgramRequest'
+      responses:
+        200:
+          description: Program renamed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Program'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        404:
+          $ref: '#/components/responses/NotFound'
+        409:
+          description: Program name already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        500:
+          $ref: '#/components/responses/InternalError'
+
+    delete:
+      tags:
+        - Programs
+      summary: Delete a program (v2)
+      description: Remove a program from the system using Clean Architecture
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Program ID
+          schema:
+            type: string
+            example: '507f1f77bcf86cd799439011'
+      responses:
+        200:
+          description: Program deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Program deleted successfully'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalError'

@@ -1,0 +1,491 @@
+components:
+  schemas:
+    # Faculty Schemas
+    Faculty:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/ObjectId'
+        facultyId:
+          type: string
+          example: 'FAC001'
+          description: 'Unique faculty identifier'
+        name:
+          type: string
+          example: 'Faculty of Computer Science'
+        createdAt:
+          $ref: '#/components/schemas/Date'
+        updatedAt:
+          $ref: '#/components/schemas/Date'
+
+    CreateFacultyRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          example: 'Faculty of Computer Science'
+          minLength: 2
+          maxLength: 200
+      required:
+        - name
+
+    RenameFacultyRequest:
+      type: object
+      properties:
+        facultyId:
+          type: string
+          example: 'FAC001'
+        newName:
+          type: string
+          example: 'Faculty of Information Technology'
+      required:
+        - facultyId
+        - newName
+
+    # Program Schemas
+    Program:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/ObjectId'
+        programId:
+          type: string
+          example: 'PRG001'
+          description: 'Unique program identifier'
+        name:
+          type: string
+          example: 'Bachelor of Computer Science'
+        duration:
+          type: integer
+          example: 4
+          description: 'Duration in years'
+        isActive:
+          type: boolean
+          example: true
+        createdAt:
+          $ref: '#/components/schemas/Date'
+        updatedAt:
+          $ref: '#/components/schemas/Date'
+
+    CreateProgramRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          example: 'Bachelor of Computer Science'
+          minLength: 2
+          maxLength: 200
+        duration:
+          type: integer
+          minimum: 1
+          maximum: 10
+          example: 4
+        isActive:
+          type: boolean
+          default: true
+      required:
+        - name
+        - duration
+
+    RenameProgramRequest:
+      type: object
+      properties:
+        programId:
+          type: string
+          example: 'PRG001'
+        newName:
+          type: string
+          example: 'Bachelor of Information Technology'
+      required:
+        - programId
+        - newName
+
+    # Status Schemas
+    Status:
+      type: object
+      properties:
+        statusId:
+          type: string
+          example: 'STA001'
+          description: 'Unique status identifier'
+        name:
+          type: string
+          example: 'Active'
+        description:
+          type: string
+          example: 'Student is currently enrolled'
+        createdAt:
+          $ref: '#/components/schemas/Date'
+        updatedAt:
+          $ref: '#/components/schemas/Date'
+
+    CreateStatusRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          example: 'Active'
+          minLength: 2
+          maxLength: 100
+        description:
+          type: string
+          example: 'Student is currently enrolled'
+      required:
+        - name
+
+    RenameStatusRequest:
+      type: object
+      properties:
+        newName:
+          type: string
+          example: 'Enrolled'
+      required:
+        - newName
+
+    # Course Schemas
+    Course:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/ObjectId'
+        courseId:
+          type: string
+          example: 'CS101'
+          description: 'Unique course identifier'
+        name:
+          type: string
+          example: 'Introduction to Computer Science'
+        credits:
+          type: integer
+          minimum: 1
+          maximum: 6
+          example: 3
+        faculty:
+          type: string
+          example: 'Computer Science'
+          description: 'Faculty reference'
+        description:
+          type: string
+          example: 'Basic concepts of computer science'
+        prerequisites:
+          type: array
+          items:
+            type: string
+          example: ['MATH101', 'PHYS101']
+        isActive:
+          type: boolean
+          example: true
+        createdAt:
+          $ref: '#/components/schemas/Date'
+        updatedAt:
+          $ref: '#/components/schemas/Date'
+
+    CreateCourseRequest:
+      type: object
+      properties:
+        courseId:
+          type: string
+          example: 'CS101'
+        name:
+          type: string
+          example: 'Introduction to Computer Science'
+          minLength: 2
+          maxLength: 200
+        credits:
+          type: integer
+          minimum: 1
+          maximum: 6
+          example: 3
+        faculty:
+          type: string
+          example: 'Computer Science'
+        description:
+          type: string
+          example: 'Basic concepts of computer science'
+        prerequisites:
+          type: array
+          items:
+            type: string
+          example: ['MATH101']
+      required:
+        - courseId
+        - name
+        - credits
+        - faculty
+
+    UpdateCourseRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          example: 'Advanced Computer Science'
+        credits:
+          type: integer
+          minimum: 1
+          maximum: 6
+          example: 4
+        faculty:
+          type: string
+          example: 'Computer Science'
+        description:
+          type: string
+          example: 'Advanced concepts of computer science'
+        prerequisites:
+          type: array
+          items:
+            type: string
+          example: ['CS101']
+        isActive:
+          type: boolean
+          example: true
+
+    # Class Schemas
+    Class:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/ObjectId'
+        classId:
+          type: string
+          example: 'CS101-2024-1'
+          description: 'Unique class identifier'
+        courseId:
+          type: string
+          example: 'CS101'
+        academicYear:
+          type: string
+          example: '2024-2025'
+          pattern: '^\d{4}-\d{4}$'
+        semester:
+          type: string
+          enum: ['1', '2', '3', 'summer']
+          example: '1'
+        instructor:
+          type: string
+          example: 'Dr. Nguyen Van A'
+        maxStudents:
+          type: integer
+          minimum: 1
+          maximum: 200
+          example: 50
+        schedule:
+          type: string
+          example: 'Monday 08:00-10:00, Wednesday 14:00-16:00'
+        classroom:
+          type: string
+          example: 'Room A101'
+        createdAt:
+          $ref: '#/components/schemas/Date'
+        updatedAt:
+          $ref: '#/components/schemas/Date'
+
+    CreateClassRequest:
+      type: object
+      properties:
+        classId:
+          type: string
+          example: 'CS101-2024-1'
+        courseId:
+          type: string
+          example: 'CS101'
+        academicYear:
+          type: string
+          example: '2024-2025'
+          pattern: '^\d{4}-\d{4}$'
+        semester:
+          type: string
+          enum: ['1', '2', '3', 'summer']
+          example: '1'
+        instructor:
+          type: string
+          example: 'Dr. Nguyen Van A'
+        maxStudents:
+          type: integer
+          minimum: 1
+          maximum: 200
+          example: 50
+        schedule:
+          type: string
+          example: 'Monday 08:00-10:00'
+        classroom:
+          type: string
+          example: 'Room A101'
+      required:
+        - classId
+        - courseId
+        - academicYear
+        - semester
+        - instructor
+        - maxStudents
+        - schedule
+        - classroom
+
+    UpdateClassRequest:
+      type: object
+      properties:
+        instructor:
+          type: string
+          example: 'Dr. Tran Van B'
+        maxStudents:
+          type: integer
+          minimum: 1
+          maximum: 200
+          example: 60
+        schedule:
+          type: string
+          example: 'Tuesday 08:00-10:00'
+        classroom:
+          type: string
+          example: 'Room B101'
+
+    # Registration Schemas
+    Registration:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/ObjectId'
+        studentId:
+          type: string
+          example: 'ST2024001'
+        classId:
+          type: string
+          example: 'CS101-2024-1'
+        registrationDate:
+          $ref: '#/components/schemas/Date'
+        grade:
+          type: number
+          minimum: 0
+          maximum: 10
+          example: 8.5
+        status:
+          type: string
+          enum: ['active', 'cancelled']
+          example: 'active'
+        cancellationDate:
+          $ref: '#/components/schemas/Date'
+        cancellationReason:
+          type: string
+          example: 'Personal reasons'
+        gradeStatus:
+          type: string
+          enum: ['pending', 'passed', 'failed']
+          example: 'passed'
+        isPassing:
+          type: boolean
+          example: true
+        canBeModified:
+          type: boolean
+          example: true
+        createdAt:
+          $ref: '#/components/schemas/Date'
+        updatedAt:
+          $ref: '#/components/schemas/Date'
+
+    CreateRegistrationRequest:
+      type: object
+      properties:
+        studentId:
+          type: string
+          example: 'ST2024001'
+        classId:
+          type: string
+          example: 'CS101-2024-1'
+      required:
+        - studentId
+        - classId
+
+    UpdateRegistrationRequest:
+      type: object
+      properties:
+        grade:
+          type: number
+          minimum: 0
+          maximum: 10
+          example: 8.5
+        status:
+          type: string
+          enum: ['active', 'cancelled']
+          example: 'active'
+        cancellationReason:
+          type: string
+          example: 'Personal reasons'
+
+    AssignGradeRequest:
+      type: object
+      properties:
+        grade:
+          type: number
+          minimum: 0
+          maximum: 10
+          example: 8.5
+      required:
+        - grade
+
+    CancelRegistrationRequest:
+      type: object
+      properties:
+        reason:
+          type: string
+          example: 'Personal reasons'
+          minLength: 1
+      required:
+        - reason
+
+    # Email Domain Schemas
+    EmailDomain:
+      type: object
+      properties:
+        _id:
+          $ref: '#/components/schemas/ObjectId'
+        domain:
+          type: string
+          format: domain
+          example: 'student.hcmus.edu.vn'
+          description: Email domain name
+        isActive:
+          type: boolean
+          example: true
+          description: Whether the domain is active
+        description:
+          type: string
+          example: 'HCMUS student email domain'
+          description: Optional description for the domain
+        createdAt:
+          $ref: '#/components/schemas/Date'
+        updatedAt:
+          $ref: '#/components/schemas/Date'
+
+    # Phone Number Config Schemas
+    PhoneNumberConfig:
+      type: object
+      properties:
+        _id:
+          $ref: '#/components/schemas/ObjectId'
+        countryCode:
+          type: string
+          example: '+84'
+          description: Country code for the phone number
+        countryName:
+          type: string
+          example: 'Vietnam'
+          description: Name of the country
+        pattern:
+          type: string
+          example: "^\\+84[0-9]{9,10}$"
+          description: Regular expression pattern for validation
+        format:
+          type: string
+          example: '+84XXXXXXXXX'
+          description: Display format example
+        isActive:
+          type: boolean
+          example: true
+          description: Whether this configuration is active
+        description:
+          type: string
+          example: 'Vietnamese phone number format'
+          description: Optional description
+        createdAt:
+          $ref: '#/components/schemas/Date'
+        updatedAt:
+          $ref: '#/components/schemas/Date'

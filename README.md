@@ -5,77 +5,129 @@
 - Chia Project thành hai phần: Back-end và Front-end
   - Back-end
     ```
-    |   index.js
-    |
-    +---components
-    |   \---student
-    |       +---controllers
-    |       |       StudentController.js
-    |       |
-    |       +---middlewares
-    |       |       validateStudent.js
-    |       |
-    |       +---models
-    |       |       Student.js
-    |       |
-    |       +---routes
-    |       |       StudentRoute.js
-    |       |
-    |       +---seeds
-    |       |       studentSeed.js
-    |       |
-    |       \---services
-    |               StudentService.js
-    |
-    +---config
-    |       database.js
-    |
-    +---routes
-    |       index.js
-    |
-    \---utils
-        mongoose.js
+    Back-end/
+    ├── .env
+    ├── .gitignore
+    ├── jest.config.js
+    ├── nodemon.json
+    ├── package.json
+    ├── README-CLEAN-ARCHITECTURE.md
+    ├── tsconfig.json
+    └── src/
+        ├── index.ts
+        ├── application/
+        │   ├── dtos/
+        │   ├── exceptions/
+        │   ├── repositories/
+        │   ├── services/
+        │   └── README.md
+        ├── components/
+        │   ├── class/
+        │   │   ├── controllers/
+        │   │   ├── models/
+        │   │   ├── services/
+        │   │   └── seeds/
+        │   ├── course/
+        │   │   ├── controllers/
+        │   │   ├── models/
+        │   │   ├── routes/
+        │   │   ├── services/
+        │   │   └── seeds/
+        │   ├── email-domain/
+        │   │   ├── controllers/
+        │   │   ├── services/
+        │   │   └── __test__/
+        │   ├── faculty/
+        │   │   ├── models/
+        │   │   └── seeds/
+        │   ├── phone-number/
+        │   │   ├── models/
+        │   │   └── seeds/
+        │   ├── program/
+        │   │   ├── models/
+        │   │   └── seeds/
+        │   ├── registration/
+        │   │   ├── routes/
+        │   │   └── services/
+        │   ├── status/
+        │   │   ├── models/
+        │   │   └── seeds/
+        │   └── student/
+        │       ├── controllers/
+        │       ├── models/
+        │       ├── services/
+        │       └── seeds/
+        ├── config/
+        │   └── database.ts
+        ├── debug/
+        │   └── checkFacultyData.ts
+        ├── demo/
+        │   └── facultyDemo.ts
+        ├── domain/
+        │   ├── entities/
+        │   ├── repositories/
+        │   ├── value-objects/
+        │   └── index.ts
+        ├── infrastructure/
+        │   ├── adapters/
+        │   ├── controllers/
+        │   ├── database/
+        │   │   └── mongo/
+        │   ├── di/
+        │   │   └── serviceRegistry.ts
+        │   ├── logging/
+        │   ├── mappers/
+        │   ├── repositories/
+        │   ├── webserver/
+        │   ├── bootstrap.ts
+        │   └── index.ts
+        ├── middleware/
+        │   └── requestLogger.ts
+        ├── routes/
+        │   └── index.ts
+        ├── seeds/
+        │   └── index.ts
+        └── utils/
+            ├── csvHandler.ts
+            ├── jsonHandler.ts
+            └── logger.ts
     ```
   - Front-end
     ```
-    |   App.css
-    |   App.js
-    |   App.test.js
-    |   index.css
-    |   index.js
-    |   logo.svg
-    |   reportWebVitals.js
-    |   setupTests.js
-    |
-    +---LayoutDefaut
-    |   |   Layout.js
-    |   |
-    |   +---Footer
-    |   |       indexFooter.js
-    |   |
-    |   \---Header
-    |           indexHeader.js
-    |
-    +---Pages
-    |   \---Home
-    |           AddStudentModal.js
-    |           EditStudentModal.js
-    |           indexHome.js
-    |
-    +---Routes
-    |       indexRoutes.js
-    |       Routes.js
-    |
-    +---Services
-    |       studentService.js
-    |
-    +---Style
-    |       Header.scss
-    |       Home.scss
-    |       style.css
-    |
-    \---Utils
-            request.js
+    Front-end/
+    ├── package.json
+    ├── public/
+    └── src/
+        ├── App.css
+        ├── App.js
+        ├── App.test.js
+        ├── index.css
+        ├── index.js
+        ├── logo.svg
+        ├── reportWebVitals.js
+        ├── setupTests.js
+        ├── LayoutDefaut/
+        │   ├── Layout.js
+        │   ├── Footer/
+        │   │   └── indexFooter.js
+        │   └── Header/
+        │       └── indexHeader.js
+        ├── Pages/
+        │   └── Home/
+        │       ├── AddStudentModal.js
+        │       ├── EditStudentModal.js
+        │       └── indexHome.js
+        ├── Routes/
+        │   ├── indexRoutes.js
+        │   └── Routes.js
+        ├── Services/
+        │   └── studentService.js
+        ├── Style/
+        │   ├── Header.scss
+        │   ├── Home.scss
+        │   └── style.css
+        └── Utils/
+            └── request.js
     ```
 
 ## Hướng dẫn cài đặt & chạy chương trình

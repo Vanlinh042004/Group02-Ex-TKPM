@@ -1,0 +1,400 @@
+paths:
+  # Legacy Email Domain API
+  /api/email-domains:
+    get:
+      tags:
+        - Email Domains
+      summary: Get all email domains
+      description: Retrieve a list of all approved email domains for student registration
+      responses:
+        200:
+          description: List of email domains retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/EmailDomain'
+        500:
+          $ref: '#/components/responses/InternalError'
+
+    post:
+      tags:
+        - Email Domains
+      summary: Create a new email domain
+      description: Add a new approved email domain to the system
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - domain
+                - isActive
+              properties:
+                domain:
+                  type: string
+                  format: domain
+                  example: 'student.hcmus.edu.vn'
+                  description: Email domain name
+                isActive:
+                  type: boolean
+                  example: true
+                  description: Whether the domain is active
+                description:
+                  type: string
+                  example: 'HCMUS student email domain'
+                  description: Optional description for the domain
+      responses:
+        201:
+          description: Email domain created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/EmailDomain'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        409:
+          description: Email domain already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        500:
+          $ref: '#/components/responses/InternalError'
+
+  /api/email-domains/{id}:
+    get:
+      tags:
+        - Email Domains
+      summary: Get email domain by ID
+      description: Retrieve a specific email domain by its ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Email domain ID
+          schema:
+            type: string
+            example: '507f1f77bcf86cd799439011'
+      responses:
+        200:
+          description: Email domain retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/EmailDomain'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalError'
+
+    put:
+      tags:
+        - Email Domains
+      summary: Update email domain
+      description: Update an existing email domain
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Email domain ID
+          schema:
+            type: string
+            example: '507f1f77bcf86cd799439011'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                domain:
+                  type: string
+                  format: domain
+                  example: 'student.hcmus.edu.vn'
+                  description: Email domain name
+                isActive:
+                  type: boolean
+                  example: true
+                  description: Whether the domain is active
+                description:
+                  type: string
+                  example: 'HCMUS student email domain'
+                  description: Optional description for the domain
+      responses:
+        200:
+          description: Email domain updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/EmailDomain'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        404:
+          $ref: '#/components/responses/NotFound'
+        409:
+          description: Email domain already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        500:
+          $ref: '#/components/responses/InternalError'
+
+    delete:
+      tags:
+        - Email Domains
+      summary: Delete email domain
+      description: Remove an email domain from the system
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Email domain ID
+          schema:
+            type: string
+            example: '507f1f77bcf86cd799439011'
+      responses:
+        200:
+          description: Email domain deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Email domain deleted successfully'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalError'
+
+  # Clean Architecture Email Domain API v2
+  /api/v2/email-domains:
+    get:
+      tags:
+        - Email Domains
+      summary: Get all email domains (v2)
+      description: Retrieve a list of all approved email domains using Clean Architecture
+      responses:
+        200:
+          description: List of email domains retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/EmailDomain'
+        500:
+          $ref: '#/components/responses/InternalError'
+
+    post:
+      tags:
+        - Email Domains
+      summary: Create a new email domain (v2)
+      description: Add a new approved email domain using Clean Architecture
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - domain
+                - isActive
+              properties:
+                domain:
+                  type: string
+                  format: domain
+                  example: 'student.hcmus.edu.vn'
+                  description: Email domain name
+                isActive:
+                  type: boolean
+                  example: true
+                  description: Whether the domain is active
+                description:
+                  type: string
+                  example: 'HCMUS student email domain'
+                  description: Optional description for the domain
+      responses:
+        201:
+          description: Email domain created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/EmailDomain'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        409:
+          description: Email domain already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        500:
+          $ref: '#/components/responses/InternalError'
+
+  /api/v2/email-domains/{id}:
+    get:
+      tags:
+        - Email Domains
+      summary: Get email domain by ID (v2)
+      description: Retrieve a specific email domain by its ID using Clean Architecture
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Email domain ID
+          schema:
+            type: string
+            example: '507f1f77bcf86cd799439011'
+      responses:
+        200:
+          description: Email domain retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/EmailDomain'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalError'
+
+    put:
+      tags:
+        - Email Domains
+      summary: Update email domain (v2)
+      description: Update an existing email domain using Clean Architecture
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Email domain ID
+          schema:
+            type: string
+            example: '507f1f77bcf86cd799439011'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                domain:
+                  type: string
+                  format: domain
+                  example: 'student.hcmus.edu.vn'
+                  description: Email domain name
+                isActive:
+                  type: boolean
+                  example: true
+                  description: Whether the domain is active
+                description:
+                  type: string
+                  example: 'HCMUS student email domain'
+                  description: Optional description for the domain
+      responses:
+        200:
+          description: Email domain updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/EmailDomain'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        404:
+          $ref: '#/components/responses/NotFound'
+        409:
+          description: Email domain already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        500:
+          $ref: '#/components/responses/InternalError'
+
+    delete:
+      tags:
+        - Email Domains
+      summary: Delete email domain (v2)
+      description: Remove an email domain from the system using Clean Architecture
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Email domain ID
+          schema:
+            type: string
+            example: '507f1f77bcf86cd799439011'
+      responses:
+        200:
+          description: Email domain deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Email domain deleted successfully'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalError'

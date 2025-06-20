@@ -1,0 +1,276 @@
+paths:
+  # Legacy Status API
+  /api/statuses:
+    get:
+      tags:
+        - Statuses
+      summary: Get all statuses
+      description: Retrieve a list of all student statuses
+      responses:
+        200:
+          description: List of statuses retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Status'
+        500:
+          $ref: '#/components/responses/InternalError'
+
+    post:
+      tags:
+        - Statuses
+      summary: Create a new status
+      description: Add a new student status to the system
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateStatusRequest'
+      responses:
+        201:
+          description: Status created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Status'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        409:
+          description: Status already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        500:
+          $ref: '#/components/responses/InternalError'
+
+  /api/statuses/{id}:
+    put:
+      tags:
+        - Statuses
+      summary: Rename a status
+      description: Update the name of an existing status
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Status ID
+          schema:
+            type: string
+            example: '507f1f77bcf86cd799439011'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RenameStatusRequest'
+      responses:
+        200:
+          description: Status renamed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Status'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        404:
+          $ref: '#/components/responses/NotFound'
+        409:
+          description: Status name already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        500:
+          $ref: '#/components/responses/InternalError'
+
+    delete:
+      tags:
+        - Statuses
+      summary: Delete a status
+      description: Remove a status from the system
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Status ID
+          schema:
+            type: string
+            example: '507f1f77bcf86cd799439011'
+      responses:
+        200:
+          description: Status deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Status deleted successfully'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalError'
+
+  # Clean Architecture Status API v2
+  /api/v2/statuses:
+    get:
+      tags:
+        - Statuses
+      summary: Get all statuses (v2)
+      description: Retrieve a list of all student statuses using Clean Architecture
+      responses:
+        200:
+          description: List of statuses retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Status'
+        500:
+          $ref: '#/components/responses/InternalError'
+
+    post:
+      tags:
+        - Statuses
+      summary: Create a new status (v2)
+      description: Add a new student status using Clean Architecture
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateStatusRequest'
+      responses:
+        201:
+          description: Status created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Status'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        409:
+          description: Status already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        500:
+          $ref: '#/components/responses/InternalError'
+
+  /api/v2/statuses/{id}:
+    put:
+      tags:
+        - Statuses
+      summary: Rename a status (v2)
+      description: Update the name of an existing status using Clean Architecture
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Status ID
+          schema:
+            type: string
+            example: '507f1f77bcf86cd799439011'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RenameStatusRequest'
+      responses:
+        200:
+          description: Status renamed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Status'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        404:
+          $ref: '#/components/responses/NotFound'
+        409:
+          description: Status name already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        500:
+          $ref: '#/components/responses/InternalError'
+
+    delete:
+      tags:
+        - Statuses
+      summary: Delete a status (v2)
+      description: Remove a status from the system using Clean Architecture
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Status ID
+          schema:
+            type: string
+            example: '507f1f77bcf86cd799439011'
+      responses:
+        200:
+          description: Status deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Status deleted successfully'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalError'

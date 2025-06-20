@@ -1,0 +1,648 @@
+paths:
+  # Legacy Registration API
+  /api/registrations:
+    get:
+      tags:
+        - Registrations
+      summary: Get all registrations
+      description: Retrieve a list of all course registrations
+      parameters:
+        - name: studentId
+          in: query
+          description: Filter registrations by student ID
+          schema:
+            type: string
+            example: 'ST2024001'
+        - name: classId
+          in: query
+          description: Filter registrations by class ID
+          schema:
+            type: string
+            example: 'CS101-2024-1'
+        - name: status
+          in: query
+          description: Filter registrations by status
+          schema:
+            type: string
+            enum: [active, cancelled]
+            example: 'active'
+      responses:
+        200:
+          description: List of registrations retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Registration'
+        500:
+          $ref: '#/components/responses/InternalError'
+
+    post:
+      tags:
+        - Registrations
+      summary: Create a new registration
+      description: Register a student for a class
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateRegistrationRequest'
+      responses:
+        201:
+          description: Registration created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Registration'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        409:
+          description: Registration conflict (already registered or class full)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        500:
+          $ref: '#/components/responses/InternalError'
+
+  /api/registrations/{id}:
+    get:
+      tags:
+        - Registrations
+      summary: Get registration by ID
+      description: Retrieve a specific registration by its ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Registration ID
+          schema:
+            type: string
+            example: '507f1f77bcf86cd799439011'
+      responses:
+        200:
+          description: Registration retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Registration'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalError'
+
+    put:
+      tags:
+        - Registrations
+      summary: Update registration
+      description: Update an existing registration
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Registration ID
+          schema:
+            type: string
+            example: '507f1f77bcf86cd799439011'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateRegistrationRequest'
+      responses:
+        200:
+          description: Registration updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Registration'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalError'
+
+    delete:
+      tags:
+        - Registrations
+      summary: Delete registration
+      description: Remove a registration from the system
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Registration ID
+          schema:
+            type: string
+            example: '507f1f77bcf86cd799439011'
+      responses:
+        200:
+          description: Registration deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Registration deleted successfully'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalError'
+
+  /api/registrations/{id}/grade:
+    put:
+      tags:
+        - Registrations
+      summary: Assign grade to registration
+      description: Assign or update grade for a specific registration
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Registration ID
+          schema:
+            type: string
+            example: '507f1f77bcf86cd799439011'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssignGradeRequest'
+      responses:
+        200:
+          description: Grade assigned successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Registration'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalError'
+
+  /api/registrations/{id}/cancel:
+    put:
+      tags:
+        - Registrations
+      summary: Cancel registration
+      description: Cancel a student registration for a class
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Registration ID
+          schema:
+            type: string
+            example: '507f1f77bcf86cd799439011'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CancelRegistrationRequest'
+      responses:
+        200:
+          description: Registration cancelled successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Registration'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalError'
+
+  /api/registrations/student/{studentId}/transcript:
+    get:
+      tags:
+        - Registrations
+      summary: Get student transcript
+      description: Retrieve academic transcript for a specific student
+      parameters:
+        - name: studentId
+          in: path
+          required: true
+          description: Student ID
+          schema:
+            type: string
+            example: 'ST2024001'
+        - name: academicYear
+          in: query
+          description: Filter by academic year
+          schema:
+            type: string
+            example: '2024-2025'
+        - name: semester
+          in: query
+          description: Filter by semester
+          schema:
+            type: string
+            enum: ['1', '2', '3', 'summer']
+            example: '1'
+      responses:
+        200:
+          description: Transcript retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      student:
+                        $ref: '#/components/schemas/Student'
+                      registrations:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Registration'
+                      gpa:
+                        type: number
+                        format: float
+                        example: 8.25
+                        description: Grade Point Average
+                      totalCredits:
+                        type: integer
+                        example: 120
+                        description: Total credits earned
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalError'
+
+  # Clean Architecture Registration API v2
+  /api/v2/registrations:
+    get:
+      tags:
+        - Registrations
+      summary: Get all registrations (v2)
+      description: Retrieve a list of all course registrations using Clean Architecture
+      parameters:
+        - name: studentId
+          in: query
+          description: Filter registrations by student ID
+          schema:
+            type: string
+            example: 'ST2024001'
+        - name: classId
+          in: query
+          description: Filter registrations by class ID
+          schema:
+            type: string
+            example: 'CS101-2024-1'
+        - name: status
+          in: query
+          description: Filter registrations by status
+          schema:
+            type: string
+            enum: [active, cancelled]
+            example: 'active'
+      responses:
+        200:
+          description: List of registrations retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Registration'
+        500:
+          $ref: '#/components/responses/InternalError'
+
+    post:
+      tags:
+        - Registrations
+      summary: Create a new registration (v2)
+      description: Register a student for a class using Clean Architecture
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateRegistrationRequest'
+      responses:
+        201:
+          description: Registration created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Registration'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        409:
+          description: Registration conflict (already registered or class full)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        500:
+          $ref: '#/components/responses/InternalError'
+
+  /api/v2/registrations/{id}:
+    get:
+      tags:
+        - Registrations
+      summary: Get registration by ID (v2)
+      description: Retrieve a specific registration by its ID using Clean Architecture
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Registration ID
+          schema:
+            type: string
+            example: '507f1f77bcf86cd799439011'
+      responses:
+        200:
+          description: Registration retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Registration'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalError'
+
+    put:
+      tags:
+        - Registrations
+      summary: Update registration (v2)
+      description: Update an existing registration using Clean Architecture
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Registration ID
+          schema:
+            type: string
+            example: '507f1f77bcf86cd799439011'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateRegistrationRequest'
+      responses:
+        200:
+          description: Registration updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Registration'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalError'
+
+    delete:
+      tags:
+        - Registrations
+      summary: Delete registration (v2)
+      description: Remove a registration from the system using Clean Architecture
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Registration ID
+          schema:
+            type: string
+            example: '507f1f77bcf86cd799439011'
+      responses:
+        200:
+          description: Registration deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Registration deleted successfully'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalError'
+
+  /api/v2/registrations/{id}/grade:
+    put:
+      tags:
+        - Registrations
+      summary: Assign grade to registration (v2)
+      description: Assign or update grade for a specific registration using Clean Architecture
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Registration ID
+          schema:
+            type: string
+            example: '507f1f77bcf86cd799439011'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssignGradeRequest'
+      responses:
+        200:
+          description: Grade assigned successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Registration'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalError'
+
+  /api/v2/registrations/{id}/cancel:
+    put:
+      tags:
+        - Registrations
+      summary: Cancel registration (v2)
+      description: Cancel a student registration for a class using Clean Architecture
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Registration ID
+          schema:
+            type: string
+            example: '507f1f77bcf86cd799439011'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CancelRegistrationRequest'
+      responses:
+        200:
+          description: Registration cancelled successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Registration'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalError'
+
+  /api/v2/registrations/student/{studentId}/transcript:
+    get:
+      tags:
+        - Registrations
+      summary: Get student transcript (v2)
+      description: Retrieve academic transcript for a specific student using Clean Architecture
+      parameters:
+        - name: studentId
+          in: path
+          required: true
+          description: Student ID
+          schema:
+            type: string
+            example: 'ST2024001'
+        - name: academicYear
+          in: query
+          description: Filter by academic year
+          schema:
+            type: string
+            example: '2024-2025'
+        - name: semester
+          in: query
+          description: Filter by semester
+          schema:
+            type: string
+            enum: ['1', '2', '3', 'summer']
+            example: '1'
+      responses:
+        200:
+          description: Transcript retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      student:
+                        $ref: '#/components/schemas/Student'
+                      registrations:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Registration'
+                      gpa:
+                        type: number
+                        format: float
+                        example: 8.25
+                        description: Grade Point Average
+                      totalCredits:
+                        type: integer
+                        example: 120
+                        description: Total credits earned
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalError'

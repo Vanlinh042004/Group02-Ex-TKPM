@@ -14,6 +14,9 @@ import logger from './utils/logger';
 // Import Clean Architecture setup
 import { setupServices } from './infrastructure/di/serviceRegistry';
 
+// Import Swagger setup
+import { setupSwagger } from './docs/swagger.config';
+
 // Connect to DB and setup Clean Architecture
 async function initializeApp() {
   try {
@@ -54,6 +57,9 @@ app.use(
 );
 
 app.use(express.json());
+
+// Setup Swagger documentation
+setupSwagger(app);
 
 // Global error handler
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {

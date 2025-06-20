@@ -1,0 +1,538 @@
+paths:
+  # Legacy Phone Number Config API
+  /api/phone-numbers:
+    get:
+      tags:
+        - Phone Number Configs
+      summary: Get all phone number configurations
+      description: Retrieve a list of all phone number format configurations
+      responses:
+        200:
+          description: List of phone number configurations retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PhoneNumberConfig'
+        500:
+          $ref: '#/components/responses/InternalError'
+
+    post:
+      tags:
+        - Phone Number Configs
+      summary: Create a new phone number configuration
+      description: Add a new phone number format configuration to the system
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - countryCode
+                - pattern
+                - isActive
+              properties:
+                countryCode:
+                  type: string
+                  example: '+84'
+                  description: Country code for the phone number
+                countryName:
+                  type: string
+                  example: 'Vietnam'
+                  description: Name of the country
+                pattern:
+                  type: string
+                  example: "^\\+84[0-9]{9,10}$"
+                  description: Regular expression pattern for validation
+                format:
+                  type: string
+                  example: '+84XXXXXXXXX'
+                  description: Display format example
+                isActive:
+                  type: boolean
+                  example: true
+                  description: Whether this configuration is active
+                description:
+                  type: string
+                  example: 'Vietnamese phone number format'
+                  description: Optional description
+      responses:
+        201:
+          description: Phone number configuration created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/PhoneNumberConfig'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        409:
+          description: Phone number configuration already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        500:
+          $ref: '#/components/responses/InternalError'
+
+  /api/phone-numbers/{id}:
+    get:
+      tags:
+        - Phone Number Configs
+      summary: Get phone number configuration by ID
+      description: Retrieve a specific phone number configuration by its ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Phone number configuration ID
+          schema:
+            type: string
+            example: '507f1f77bcf86cd799439011'
+      responses:
+        200:
+          description: Phone number configuration retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/PhoneNumberConfig'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalError'
+
+    put:
+      tags:
+        - Phone Number Configs
+      summary: Update phone number configuration
+      description: Update an existing phone number configuration
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Phone number configuration ID
+          schema:
+            type: string
+            example: '507f1f77bcf86cd799439011'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                countryCode:
+                  type: string
+                  example: '+84'
+                  description: Country code for the phone number
+                countryName:
+                  type: string
+                  example: 'Vietnam'
+                  description: Name of the country
+                pattern:
+                  type: string
+                  example: "^\\+84[0-9]{9,10}$"
+                  description: Regular expression pattern for validation
+                format:
+                  type: string
+                  example: '+84XXXXXXXXX'
+                  description: Display format example
+                isActive:
+                  type: boolean
+                  example: true
+                  description: Whether this configuration is active
+                description:
+                  type: string
+                  example: 'Vietnamese phone number format'
+                  description: Optional description
+      responses:
+        200:
+          description: Phone number configuration updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/PhoneNumberConfig'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        404:
+          $ref: '#/components/responses/NotFound'
+        409:
+          description: Phone number configuration already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        500:
+          $ref: '#/components/responses/InternalError'
+
+    delete:
+      tags:
+        - Phone Number Configs
+      summary: Delete phone number configuration
+      description: Remove a phone number configuration from the system
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Phone number configuration ID
+          schema:
+            type: string
+            example: '507f1f77bcf86cd799439011'
+      responses:
+        200:
+          description: Phone number configuration deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Phone number configuration deleted successfully'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalError'
+
+  /api/phone-numbers/validate:
+    post:
+      tags:
+        - Phone Number Configs
+      summary: Validate phone number
+      description: Validate a phone number against configured patterns
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - phoneNumber
+              properties:
+                phoneNumber:
+                  type: string
+                  example: '+84901234567'
+                  description: Phone number to validate
+      responses:
+        200:
+          description: Phone number validation result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      isValid:
+                        type: boolean
+                        example: true
+                      matchedConfig:
+                        $ref: '#/components/schemas/PhoneNumberConfig'
+                      message:
+                        type: string
+                        example: 'Phone number is valid'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        500:
+          $ref: '#/components/responses/InternalError'
+
+  # Clean Architecture Phone Number Config API v2
+  /api/v2/phone-numbers:
+    get:
+      tags:
+        - Phone Number Configs
+      summary: Get all phone number configurations (v2)
+      description: Retrieve a list of all phone number format configurations using Clean Architecture
+      responses:
+        200:
+          description: List of phone number configurations retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PhoneNumberConfig'
+        500:
+          $ref: '#/components/responses/InternalError'
+
+    post:
+      tags:
+        - Phone Number Configs
+      summary: Create a new phone number configuration (v2)
+      description: Add a new phone number format configuration using Clean Architecture
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - countryCode
+                - pattern
+                - isActive
+              properties:
+                countryCode:
+                  type: string
+                  example: '+84'
+                  description: Country code for the phone number
+                countryName:
+                  type: string
+                  example: 'Vietnam'
+                  description: Name of the country
+                pattern:
+                  type: string
+                  example: "^\\+84[0-9]{9,10}$"
+                  description: Regular expression pattern for validation
+                format:
+                  type: string
+                  example: '+84XXXXXXXXX'
+                  description: Display format example
+                isActive:
+                  type: boolean
+                  example: true
+                  description: Whether this configuration is active
+                description:
+                  type: string
+                  example: 'Vietnamese phone number format'
+                  description: Optional description
+      responses:
+        201:
+          description: Phone number configuration created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/PhoneNumberConfig'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        409:
+          description: Phone number configuration already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        500:
+          $ref: '#/components/responses/InternalError'
+
+  /api/v2/phone-numbers/{id}:
+    get:
+      tags:
+        - Phone Number Configs
+      summary: Get phone number configuration by ID (v2)
+      description: Retrieve a specific phone number configuration by its ID using Clean Architecture
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Phone number configuration ID
+          schema:
+            type: string
+            example: '507f1f77bcf86cd799439011'
+      responses:
+        200:
+          description: Phone number configuration retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/PhoneNumberConfig'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalError'
+
+    put:
+      tags:
+        - Phone Number Configs
+      summary: Update phone number configuration (v2)
+      description: Update an existing phone number configuration using Clean Architecture
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Phone number configuration ID
+          schema:
+            type: string
+            example: '507f1f77bcf86cd799439011'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                countryCode:
+                  type: string
+                  example: '+84'
+                  description: Country code for the phone number
+                countryName:
+                  type: string
+                  example: 'Vietnam'
+                  description: Name of the country
+                pattern:
+                  type: string
+                  example: "^\\+84[0-9]{9,10}$"
+                  description: Regular expression pattern for validation
+                format:
+                  type: string
+                  example: '+84XXXXXXXXX'
+                  description: Display format example
+                isActive:
+                  type: boolean
+                  example: true
+                  description: Whether this configuration is active
+                description:
+                  type: string
+                  example: 'Vietnamese phone number format'
+                  description: Optional description
+      responses:
+        200:
+          description: Phone number configuration updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/PhoneNumberConfig'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        404:
+          $ref: '#/components/responses/NotFound'
+        409:
+          description: Phone number configuration already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        500:
+          $ref: '#/components/responses/InternalError'
+
+    delete:
+      tags:
+        - Phone Number Configs
+      summary: Delete phone number configuration (v2)
+      description: Remove a phone number configuration from the system using Clean Architecture
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Phone number configuration ID
+          schema:
+            type: string
+            example: '507f1f77bcf86cd799439011'
+      responses:
+        200:
+          description: Phone number configuration deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Phone number configuration deleted successfully'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalError'
+
+  /api/v2/phone-numbers/validate:
+    post:
+      tags:
+        - Phone Number Configs
+      summary: Validate phone number (v2)
+      description: Validate a phone number against configured patterns using Clean Architecture
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - phoneNumber
+              properties:
+                phoneNumber:
+                  type: string
+                  example: '+84901234567'
+                  description: Phone number to validate
+      responses:
+        200:
+          description: Phone number validation result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      isValid:
+                        type: boolean
+                        example: true
+                      matchedConfig:
+                        $ref: '#/components/schemas/PhoneNumberConfig'
+                      message:
+                        type: string
+                        example: 'Phone number is valid'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        500:
+          $ref: '#/components/responses/InternalError'

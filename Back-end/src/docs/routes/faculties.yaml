@@ -1,0 +1,280 @@
+paths:
+  # Legacy Faculty Routes
+  /api/faculties:
+    get:
+      tags:
+        - Faculties
+      summary: Get all faculties (Legacy)
+      description: Retrieve a list of all faculties using the legacy API
+      responses:
+        '200':
+          description: Faculties retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Faculty'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+    post:
+      tags:
+        - Faculties
+      summary: Create faculty (Legacy)
+      description: Add a new faculty using the legacy API
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateFacultyRequest'
+      responses:
+        '201':
+          description: Faculty created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Faculty'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /api/faculties/{facultyId}/rename:
+    put:
+      tags:
+        - Faculties
+      summary: Rename faculty (Legacy)
+      description: Rename an existing faculty using the legacy API
+      parameters:
+        - in: path
+          name: facultyId
+          required: true
+          schema:
+            type: string
+          description: Faculty ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                newName:
+                  type: string
+                  example: 'Faculty of Information Technology'
+              required:
+                - newName
+      responses:
+        '200':
+          description: Faculty renamed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Faculty'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  # Clean Architecture Faculty Routes (v2)
+  /api/v2/faculties:
+    get:
+      tags:
+        - Faculties
+      summary: Get all faculties (Clean Architecture)
+      description: Retrieve a list of all faculties using the clean architecture API
+      responses:
+        '200':
+          description: Faculties retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Faculty'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+    post:
+      tags:
+        - Faculties
+      summary: Create faculty (Clean Architecture)
+      description: Add a new faculty using the clean architecture API
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateFacultyRequest'
+      responses:
+        '201':
+          description: Faculty created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Faculty'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '409':
+          description: Faculty already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /api/v2/faculties/{facultyId}:
+    get:
+      tags:
+        - Faculties
+      summary: Get faculty by ID (Clean Architecture)
+      description: Retrieve a specific faculty by its ID
+      parameters:
+        - in: path
+          name: facultyId
+          required: true
+          schema:
+            type: string
+          description: Faculty ID
+      responses:
+        '200':
+          description: Faculty found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Faculty'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+    delete:
+      tags:
+        - Faculties
+      summary: Delete faculty (Clean Architecture)
+      description: Remove a faculty from the system
+      parameters:
+        - in: path
+          name: facultyId
+          required: true
+          schema:
+            type: string
+          description: Faculty ID
+      responses:
+        '200':
+          description: Faculty deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Faculty deleted successfully'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          description: Cannot delete faculty with existing students
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /api/v2/faculties/{facultyId}/rename:
+    put:
+      tags:
+        - Faculties
+      summary: Rename faculty (Clean Architecture)
+      description: Rename an existing faculty
+      parameters:
+        - in: path
+          name: facultyId
+          required: true
+          schema:
+            type: string
+          description: Faculty ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                newName:
+                  type: string
+                  example: 'Faculty of Information Technology'
+                  minLength: 2
+                  maxLength: 200
+              required:
+                - newName
+      responses:
+        '200':
+          description: Faculty renamed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Faculty'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          description: Faculty name already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          $ref: '#/components/responses/InternalError'
