@@ -28,7 +28,6 @@ function Course() {
   const { t } = useTranslation("course");
   const { i18n } = useTranslation();
   const currentLang = i18n.language;
-  console.log("Current Language:", currentLang);
   useEffect(() => {
     const fetchFaculties = async () => {
       const res = await getFaculty();
