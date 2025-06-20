@@ -97,7 +97,13 @@ MONGODB_URI=mongodb+srv://donalmun:eqia8yO1F0G3oBVx@tkpm.vufuh.mongodb.net/ex01?
 npm install
 ```
 
-3. Chạy chương trình:
+3. Run seed dữ liệu:
+
+```bash
+npm run seed
+```
+
+4. Chạy chương trình:
 
 ```bash
 npm run dev
@@ -127,13 +133,26 @@ _The front-end will be available at http://localhost:3000._
 
 **_Back - end_**
 
-1. Cài đặt các package cần thiêt:
+1. Sử dụng file cấu hình .env để thiết lập các biến môi trường.
+
+```properties
+PORT=5000
+MONGODB_URI=mongodb+srv://donalmun:eqia8yO1F0G3oBVx@tkpm.vufuh.mongodb.net/ex01?retryWrites=true&w=majority&appName=ex01
+```
+
+2. Cài đặt các package cần thiêt:
 
 ```bash
 npm install
 ```
 
-2. Chạy chương trình:
+3. Run seed dữ liệu:
+
+```bash
+npm run seed
+```
+
+4. Chạy chương trình:
 
 ```bash
 npm run dev
@@ -190,13 +209,26 @@ _The front-end will be available at http://localhost:3000._
 
 **_Back - end_**
 
-1. Cài đặt các package cần thiêt:
+1. Sử dụng file cấu hình .env để thiết lập các biến môi trường.
+
+```properties
+PORT=5000
+MONGODB_URI=mongodb+srv://donalmun:eqia8yO1F0G3oBVx@tkpm.vufuh.mongodb.net/ex01?retryWrites=true&w=majority&appName=ex01
+```
+
+2. Cài đặt các package cần thiêt:
 
 ```bash
 npm install
 ```
 
-2. Chạy chương trình:
+3. Run seed dữ liệu:
+
+```bash
+npm run seed
+```
+
+4. Chạy chương trình:
 
 ```bash
 npm run dev
@@ -262,7 +294,13 @@ MONGODB_URI=mongodb+srv://donalmun:eqia8yO1F0G3oBVx@tkpm.vufuh.mongodb.net/ex01?
 npm install
 ```
 
-3. Chạy chương trình:
+3. Run seed dữ liệu:
+
+```bash
+npm run seed
+```
+
+4. Chạy chương trình:
 
 ```bash
 npm run dev
@@ -362,7 +400,13 @@ MONGODB_URI=mongodb+srv://donalmun:eqia8yO1F0G3oBVx@tkpm.vufuh.mongodb.net/ex01?
 npm install
 ```
 
-3. Chạy chương trình:
+3. Run seed dữ liệu:
+
+```bash
+npm run seed
+```
+
+4. Chạy chương trình:
 
 ```bash
 npm run dev
@@ -413,7 +457,13 @@ MONGODB_URI=mongodb+srv://donalmun:eqia8yO1F0G3oBVx@tkpm.vufuh.mongodb.net/ex01?
 npm install
 ```
 
-3. Chạy chương trình:
+3. Run seed dữ liệu:
+
+```bash
+npm run seed
+```
+
+4. Chạy chương trình:
 
 ```bash
 npm run dev
