@@ -149,11 +149,19 @@ MONGODB_URI=mongodb+srv://donalmun:eqia8yO1F0G3oBVx@tkpm.vufuh.mongodb.net/ex01?
 npm install
 ```
 
-3. Chạy chương trình:
+3. Run seed dữ liệu:
 
 ```bash
-npm start
+npm run seed
 ```
+
+4. Chạy chương trình:
+
+```bash
+npm run dev
+```
+
+_The back-end will be available at http://localhost:5000._
 
 **_Front - end_**
 
@@ -168,6 +176,8 @@ npm install
 ```bash
 npm start
 ```
+
+_The front-end will be available at http://localhost:3000._
 
 ---
 
@@ -175,17 +185,32 @@ npm start
 
 **_Back - end_**
 
-1. Cài đặt các package cần thiêt:
+1. Sử dụng file cấu hình .env để thiết lập các biến môi trường.
+
+```properties
+PORT=5000
+MONGODB_URI=mongodb+srv://donalmun:eqia8yO1F0G3oBVx@tkpm.vufuh.mongodb.net/ex01?retryWrites=true&w=majority&appName=ex01
+```
+
+2. Cài đặt các package cần thiêt:
 
 ```bash
 npm install
 ```
 
-2. Chạy chương trình:
+3. Run seed dữ liệu:
+
+```bash
+npm run seed
+```
+
+4. Chạy chương trình:
 
 ```bash
 npm run dev
 ```
+
+_The back-end will be available at http://localhost:5000._
 
 **_Front - end_**
 
@@ -200,6 +225,8 @@ npm install
 ```bash
 npm start
 ```
+
+_The front-end will be available at http://localhost:3000._
 
 ## Hình ảnh minh họa
 
@@ -234,17 +261,32 @@ npm start
 
 **_Back - end_**
 
-1. Cài đặt các package cần thiêt:
+1. Sử dụng file cấu hình .env để thiết lập các biến môi trường.
+
+```properties
+PORT=5000
+MONGODB_URI=mongodb+srv://donalmun:eqia8yO1F0G3oBVx@tkpm.vufuh.mongodb.net/ex01?retryWrites=true&w=majority&appName=ex01
+```
+
+2. Cài đặt các package cần thiêt:
 
 ```bash
 npm install
 ```
 
-2. Chạy chương trình:
+3. Run seed dữ liệu:
+
+```bash
+npm run seed
+```
+
+4. Chạy chương trình:
 
 ```bash
 npm run dev
 ```
+
+_The back-end will be available at http://localhost:5000._
 
 **_Front - end_**
 
@@ -259,6 +301,8 @@ npm install
 ```bash
 npm start
 ```
+
+_The front-end will be available at http://localhost:3000._
 
 ## Hình ảnh minh họa
 
@@ -302,11 +346,19 @@ MONGODB_URI=mongodb+srv://donalmun:eqia8yO1F0G3oBVx@tkpm.vufuh.mongodb.net/ex01?
 npm install
 ```
 
-3. Chạy chương trình:
+3. Run seed dữ liệu:
 
 ```bash
-npm start
+npm run seed
 ```
+
+4. Chạy chương trình:
+
+```bash
+npm run dev
+```
+
+_The back-end will be available at http://localhost:5000._
 
 **_Front - end_**
 
@@ -321,6 +373,8 @@ npm install
 ```bash
 npm start
 ```
+
+_The front-end will be available at http://localhost:3000._
 
 ## Hình ảnh minh họa
 
@@ -398,11 +452,19 @@ MONGODB_URI=mongodb+srv://donalmun:eqia8yO1F0G3oBVx@tkpm.vufuh.mongodb.net/ex01?
 npm install
 ```
 
-3. Chạy chương trình:
+3. Run seed dữ liệu:
 
 ```bash
-npm start
+npm run seed
 ```
+
+4. Chạy chương trình:
+
+```bash
+npm run dev
+```
+
+_The back-end will be available at http://localhost:5000._
 
 **_Front - end_**
 
@@ -418,6 +480,8 @@ npm install
 npm start
 ```
 
+_The front-end will be available at http://localhost:3000._
+
 ## Hình ảnh minh họa
 
 ### **Unit Test**
@@ -425,3 +489,63 @@ npm start
 <img src="FeatureImg/Ex06/image1.png"  />
 <img src="FeatureImg/Ex06/image2.png"  />
 <img src="FeatureImg/Ex06/image3.png"  />
+
+# Version 7.0
+
+## Hướng dẫn cài đặt & chạy chương trình
+
+**_Back - end_**
+
+1. Sử dụng file cấu hình .env để thiết lập các biến môi trường.
+
+```properties
+PORT=5000
+MONGODB_URI=mongodb+srv://donalmun:eqia8yO1F0G3oBVx@tkpm.vufuh.mongodb.net/ex01?retryWrites=true&w=majority&appName=ex01
+```
+
+2. Cài đặt các package cần thiêt:
+
+```bash
+npm install
+```
+
+3. Run seed dữ liệu:
+
+```bash
+npm run seed
+```
+
+4. Chạy chương trình:
+
+```bash
+npm run dev
+```
+
+_The back-end will be available at http://localhost:5000._
+
+**_Front - end_**
+
+1. Cài đặt các package cần thiêt:
+
+```bash
+npm install --legacy-peer-deps
+```
+
+2. Chạy chương trình:
+
+```bash
+npm start
+```
+
+_The front-end will be available at http://localhost:3000._
+
+## Hình ảnh minh họa
+
+### **Chức năng đa ngôn ngữ**
+
+<img src="FeatureImg/FinalEx/image1.png"  />
+<img src="FeatureImg/FinalEx/image2.png"  />
+<img src="FeatureImg/FinalEx/image3.png"  />
+<img src="FeatureImg/FinalEx/image4.png"  />
+<img src="FeatureImg/FinalEx/image5.png"  />
+<img src="FeatureImg/FinalEx/image6.png"  />
