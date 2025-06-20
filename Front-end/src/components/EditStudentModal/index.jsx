@@ -18,6 +18,7 @@ import {
   updateStatus,
 } from "../../services/studentService";
 const { Option } = Select;
+
 const EditStudentModal = ({
   isModalVisible,
   setIsModalVisible,
@@ -25,22 +26,19 @@ const EditStudentModal = ({
   setStudents,
 }) => {
   const [form] = Form.useForm();
-  const { t } = useTranslation("student");
+  const { t, i18n } = useTranslation("student");
+  const currentLang = i18n.language;
+
   const [faculties, setFaculties] = useState([]);
   const [programs, setPrograms] = useState([]);
   const [statuses, setStatuses] = useState([]);
   const [documentType, setDocumentType] = useState("");
-  const [isAddFacultyModalVisible, setIsAddFacultyModalVisible] =
-    useState(false);
-  const [isAddProgramModalVisible, setIsAddProgramModalVisible] =
-    useState(false);
+  const [isAddFacultyModalVisible, setIsAddFacultyModalVisible] = useState(false);
+  const [isAddProgramModalVisible, setIsAddProgramModalVisible] = useState(false);
   const [isAddStatusModalVisible, setIsAddStatusModalVisible] = useState(false);
-  const [isEditFacultyModalVisible, setIsEditFacultyModalVisible] =
-    useState(false);
-  const [isEditProgramModalVisible, setIsEditProgramModalVisible] =
-    useState(false);
-  const [isEditStatusModalVisible, setIsEditStatusModalVisible] =
-    useState(false);
+  const [isEditFacultyModalVisible, setIsEditFacultyModalVisible] = useState(false);
+  const [isEditProgramModalVisible, setIsEditProgramModalVisible] = useState(false);
+  const [isEditStatusModalVisible, setIsEditStatusModalVisible] = useState(false);
   const [allowedEmails, setAllowedEmails] = useState([]);
   // State lưu dữ liệu nhập vào
   const [newFacultyName, setNewFacultyName] = useState("");
@@ -96,38 +94,38 @@ const EditStudentModal = ({
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const faculties = await getFaculty();
-        //console.log("Faculties:", faculties);
-        setFaculties(faculties.data || []);
+        const facultiesRes = await getFaculty();
+        setFaculties(facultiesRes.data || []);
       } catch (error) {
         console.log(error);
       }
 
       try {
-        const countries = await getCountries();
-        setCountries(countries || []);
-        // console.log(" danh sách quốc gia:", countries);
+        const countriesRes = await getCountries();
+        if (countriesRes && Array.isArray(countriesRes.data)) {
+          setCountries(countriesRes.data);
+        } else {
+          setCountries([]);
+        }
       } catch (error) {
+        setCountries([]);
         console.log("Lỗi khi lấy danh sách quốc gia:", error);
       }
 
       try {
-        const programs = await getProgram();
-        //console.log("Programs:", programs);
-        setPrograms(programs.data || []);
+        const programsRes = await getProgram();
+        setPrograms(programsRes.data || []);
       } catch (error) {
         console.log(error);
       }
       try {
-        const statuses = await getStatus();
-        //console.log("Statuses:", statuses);
-        setStatuses(statuses.data || []);
+        const statusesRes = await getStatus();
+        setStatuses(statusesRes.data || []);
       } catch (error) {
         console.log(error);
       }
       try {
         const email = await getAllowedEmails();
-        //console.log("Email:", email.data);
         if (email.data) {
           setAllowedEmails(email.data);
         }
@@ -138,6 +136,7 @@ const EditStudentModal = ({
 
     fetchData();
   }, [check]);
+
   const checkValidEmail = (email) => {
     const domain = email.split("@")[1];
     return allowedEmails.some((allowedEmail) => {
@@ -145,28 +144,14 @@ const EditStudentModal = ({
     });
   };
 
-  const handleCountryChange = async (country) => {
-    try {
-      const config = await getCountryConfig(country);
-      setPhoneRegex(config.regex); // Lưu regex đã được xử lý
-      //console.log("regex:", escapedRegex);
-      form.setFieldsValue({ phone: "" }); // Reset trường số điện thoại
-    } catch (error) {
-      console.log("Lỗi khi lấy cấu hình quốc gia:", error);
-    }
-  };
-
   const checkValidPhone = (phone) => {
     if (phoneRegex === "") {
-      //console.log("Regex chưa được thiết lập!");
       return true;
     }
     try {
       const regex = new RegExp(phoneRegex);
-      // console.log("regex sau:", regex);
       return regex.test(phone);
     } catch (error) {
-      // console.log("Lỗi khi tạo regex:", error);
       return false;
     }
   };
@@ -237,11 +222,9 @@ const EditStudentModal = ({
 
   // Xử lý thêm mới Khoa
   const handleAddFaculty = async () => {
-    const requestBody = { name: newFacultyName };
-    //console.log("Dữ liệu gửi lên backend:", requestBody);
+    const requestBody = { name: { vi: newFacultyName, en: newFacultyName } };
     try {
       const res = await addFaculty(requestBody);
-      //console.log(res.data);
       setFaculties([...faculties, res.data]);
       setIsAddFacultyModalVisible(false);
       setNewFacultyName("");
@@ -258,11 +241,12 @@ const EditStudentModal = ({
 
   // Xử lý thêm mới Chương trình học
   const handleAddProgram = async () => {
-    const requestBody = { name: newProgramName, duration: newProgramDuration };
-    //console.log("Dữ liệu gửi lên backend:", requestBody);
+    const requestBody = {
+      name: { vi: newProgramName, en: newProgramName },
+      duration: newProgramDuration,
+    };
     try {
       const res = await addProgram(requestBody);
-      //console.log(res.data);
       setPrograms([...programs, res.data]);
       setIsAddProgramModalVisible(false);
       setNewProgramName("");
@@ -280,13 +264,11 @@ const EditStudentModal = ({
 
   const handleAddStatus = async () => {
     const requestBody = {
-      name: newStatusName,
-      description: newStatusDescription,
+      name: { vi: newStatusName, en: newStatusName },
+      description: { vi: newStatusDescription, en: newStatusDescription },
     };
-    //console.log("Dữ liệu gửi lên backend:", requestBody);
     try {
       const res = await addStatus(requestBody);
-      //console.log(res.data);
       setStatuses([...statuses, res.data]);
       setIsAddStatusModalVisible(false);
       setNewStatusName("");
@@ -304,24 +286,21 @@ const EditStudentModal = ({
 
   const handleUpdateFaculty = async () => {
     if (!selectedFaculty._id) {
-      //return message.error("Vui lòng chọn một Khoa!");
       swal(t("addEditStudent.error"), t("addEditStudent.required"), "error");
       return;
     }
     const requestBody = {
-      newName: newFacultyName,
+      newName: { vi: newFacultyName, en: newFacultyName },
       facultyId: selectedFaculty.facultyId,
     };
-    //console.log("Dữ liệu gửi lên backend:", requestBody);
     try {
       const res = await updateFaculty(selectedFaculty._id, requestBody);
-      //console.log(res.data);
       setFaculties(
         faculties.map((f) =>
           f._id === selectedFaculty._id
             ? {
                 ...f,
-                name: newFacultyName,
+                name: { ...f.name, vi: newFacultyName, en: newFacultyName },
                 facultyId: selectedFaculty.facultyId,
               }
             : f,
@@ -342,24 +321,21 @@ const EditStudentModal = ({
 
   const handleUpdateProgram = async () => {
     if (!selectedProgram._id) {
-      //return message.error("Vui lòng chọn một Chương trình học!");
       swal(t("addEditStudent.error"), t("addEditStudent.required"), "error");
       return;
     }
     const requestBody = {
-      newName: newProgramName,
+      newName: { vi: newProgramName, en: newProgramName },
       programId: selectedProgram.programId,
     };
-    //console.log("Dữ liệu gửi lên backend:", requestBody);
     try {
       const res = await updateProgram(selectedProgram._id, requestBody);
-      //console.log(res.data);
       setPrograms(
         programs.map((p) =>
           p._id === selectedProgram._id
             ? {
                 ...p,
-                name: newProgramName,
+                name: { ...p.name, vi: newProgramName, en: newProgramName },
                 programId: selectedProgram.programId,
               }
             : p,
@@ -381,18 +357,20 @@ const EditStudentModal = ({
 
   const handleUpdateStatus = async () => {
     if (!selectedStatus) {
-      //return message.error("Vui lòng chọn một Trạng thái!");
       swal(t("addEditStudent.error"), t("addEditStudent.required"), "error");
       return;
     }
-    const requestBody = { newName: newStatusName, statusId: selectedStatus };
-    //console.log("Dữ liệu gửi lên backend:", requestBody);
+    const requestBody = {
+      newName: { vi: newStatusName, en: newStatusName },
+      statusId: selectedStatus,
+    };
     try {
       const res = await updateStatus(selectedStatus, requestBody);
-      //console.log(res.data);
       setStatuses(
         statuses.map((s) =>
-          s._id === selectedStatus ? { ...s, name: newStatusName } : s,
+          s._id === selectedStatus
+            ? { ...s, name: { ...s.name, vi: newStatusName, en: newStatusName } }
+            : s,
         ),
       );
       setIsEditStatusModalVisible(false);
@@ -472,34 +450,41 @@ const EditStudentModal = ({
           >
             <div className="d-flex align-items-center">
               <Select
-                placeholder={t("addEditStudent.selectNationality")}
+                placeholder={t("addEditStudent.selectCountryCode")}
                 className="me-2"
                 onChange={async (value) => {
-                  const config = await getCountryConfig(value);
-                  const escapedRegex = config.regex
-                    .replace(/\+/g, "\\+")
-                    .replace(/d/g, "\\d");
-                  setPhoneRegex(escapedRegex); // Lưu regex đã được xử lý
-                  //  console.log("regex:", escapedRegex);
-                  form.setFieldsValue({ phone: "" }); // Reset trường số điện thoại
+                  const selected = countries.find(
+                    (c) => c.country && c.country[currentLang] === value
+                  );
+                  if (selected) {
+                    const config = await getCountryConfig(selected.country.en);
+                    const regex = config?.regex || config?.data?.regex;
+                    if (regex) {
+                      const escapedRegex = regex
+                        .replace(/\+/g, "\\+")
+                        .replace(/d/g, "\\d");
+                      setPhoneRegex(escapedRegex);
+                    } else {
+                      setPhoneRegex("");
+                    }
+                    form.setFieldsValue({ phone: "" });
+                  }
                 }}
               >
-                {Array.isArray(countries) ? (
+                {Array.isArray(countries) && countries.length > 0 ? (
                   countries.map((country, index) => (
-                    <Option key={index} value={country.country}>
-                      {country.country}
+                    <Option key={index} value={country.country[currentLang]}>
+                      {country.country[currentLang]} ({country.countryCode.en})
                     </Option>
                   ))
                 ) : (
-                  <Option disabled>{t("noData")}</Option>
+                  <Option disabled>{t("addEditStudent.noData")}</Option>
                 )}
               </Select>
               <Input
-                // value={form.getFieldValue("phone")} // Hiển thị số điện thoại hiện tại
-                onChange={(e) => form.setFieldsValue({ phone: e.target.value })} // Cập nhật giá trị khi người dùng nhập
+                onChange={(e) => form.setFieldsValue({ phone: e.target.value })}
                 placeholder={t("addEditStudent.inputPhonePlaceholder")}
-              />{" "}
-              {/* Không cần value và onChange */}
+              />
             </div>
           </Form.Item>
           <Form.Item
@@ -508,19 +493,21 @@ const EditStudentModal = ({
             rules={[{ message: t("addEditStudent.required") }]}
           >
             <Select
-              placeholder={t("country")}
+              placeholder={t("addEditStudent.selectNationality")}
               onChange={(value) => {
-                form.setFieldsValue({ permanentAddress: { country: value } }); // Cập nhật giá trị quốc tịch trong form
+                form.setFieldsValue({ permanentAddress: { country: value } });
               }}
             >
-              {Array.isArray(countries) ? (
+              {Array.isArray(countries) && countries.length > 0 ? (
                 countries.map((country, index) => (
-                  <Select.Option key={index} value={country.country}>
-                    {country.country}
+                  <Select.Option key={index} value={country.country[currentLang]}>
+                    {country.country[currentLang]}
                   </Select.Option>
                 ))
               ) : (
-                <Select.Option disabled>{t("noData")}</Select.Option>
+                <Select.Option disabled>
+                  {t("addEditStudent.noData")}
+                </Select.Option>
               )}
             </Select>
           </Form.Item>
@@ -547,7 +534,9 @@ const EditStudentModal = ({
             >
               {faculties.map((faculty) => (
                 <Option key={faculty._id} value={faculty._id}>
-                  {faculty.name}
+                  {faculty.name && faculty.name[currentLang]
+                    ? faculty.name[currentLang]
+                    : faculty.name?.en || faculty.name?.vi || ""}
                 </Option>
               ))}
             </Select>
@@ -579,7 +568,9 @@ const EditStudentModal = ({
             >
               {programs.map((program) => (
                 <Option key={program._id} value={program._id}>
-                  {program.name}
+                  {program.name && program.name[currentLang]
+                    ? program.name[currentLang]
+                    : program.name?.en || program.name?.vi || ""}
                 </Option>
               ))}
             </Select>
@@ -611,16 +602,14 @@ const EditStudentModal = ({
             >
               {statuses.map((status) => (
                 <Option key={status._id} value={status._id}>
-                  {status.name}
+                  {status.name && status.name[currentLang]
+                    ? status.name[currentLang]
+                    : status.name?.en || status.name?.vi || ""}
                 </Option>
               ))}
             </Select>
           </Form.Item>
 
-          {/* <Form.Item label="Khóa học" name="academicYear">
-            <Input placeholder="Nhập khóa học (VD: 2020 - 2024)" />
-            <Form.Item label="Mã sinh viên" name="studentId"><Input disabled /></Form.Item>
-          </Form.Item> */}
           <Form.Item label={t("course")} name="course">
             <Input />
           </Form.Item>
@@ -633,8 +622,8 @@ const EditStudentModal = ({
                   addressType === "permanentAddress"
                     ? t("addEditStudent.permanentAddress")
                     : addressType === "temporaryAddress"
-                      ? t("addEditStudent.temporaryAddress")
-                      : t("addEditStudent.mailingAddress")
+                    ? t("addEditStudent.temporaryAddress")
+                    : t("addEditStudent.mailingAddress")
                 }
               >
                 <Input.Group compact>
@@ -715,7 +704,7 @@ const EditStudentModal = ({
                 label={t("addEditStudent.issuingCountry")}
                 name={["identityDocument", "issuingCountry"]}
               >
-                <Input placeholder="Nhập quốc gia cấp hộ chiếu" />
+                <Input placeholder={t("addEditStudent.issuingCountryPlaceholder")} />
               </Form.Item>
               <Form.Item
                 label={t("addEditStudent.notes")}
@@ -730,13 +719,13 @@ const EditStudentModal = ({
 
       {/* Modal Thêm Khoa */}
       <Modal
-        title="Thêm Khoa"
+        title={t("addEditStudent.addFaculty")}
         open={isAddFacultyModalVisible}
         onOk={handleAddFaculty}
         onCancel={() => setIsAddFacultyModalVisible(false)}
       >
         <Input
-          placeholder="Tên Khoa"
+          placeholder={t("addEditStudent.facultyNamePlaceholder")}
           value={newFacultyName}
           onChange={(e) => setNewFacultyName(e.target.value)}
         />
@@ -744,13 +733,13 @@ const EditStudentModal = ({
 
       {/* Modal Đổi Tên Khoa */}
       <Modal
-        title="Đổi Tên Khoa"
+        title={t("addEditStudent.editFaculty")}
         open={isEditFacultyModalVisible}
         onOk={handleUpdateFaculty}
         onCancel={() => setIsEditFacultyModalVisible(false)}
       >
         <Select
-          placeholder="Chọn Khoa"
+          placeholder={t("addEditStudent.selectFaculty")}
           value={selectedFaculty._id}
           onChange={(value) => {
             const faculty = faculties.find((f) => f._id === value);
@@ -763,12 +752,14 @@ const EditStudentModal = ({
         >
           {faculties.map((faculty) => (
             <Option key={faculty._id} value={faculty._id}>
-              {faculty.name}
+              {faculty.name && faculty.name[currentLang]
+                ? faculty.name[currentLang]
+                : faculty.name?.en || faculty.name?.vi || ""}
             </Option>
           ))}
         </Select>
         <Input
-          placeholder="Tên mới"
+          placeholder={t("addEditStudent.facultyNamePlaceholder")}
           value={newFacultyName}
           onChange={(e) => setNewFacultyName(e.target.value)}
         />
@@ -776,18 +767,18 @@ const EditStudentModal = ({
 
       {/* Modal Thêm Chương trình học */}
       <Modal
-        title="Thêm Chương trình học"
+        title={t("addEditStudent.addProgram")}
         open={isAddProgramModalVisible}
         onOk={handleAddProgram}
         onCancel={() => setIsAddProgramModalVisible(false)}
       >
         <Input
-          placeholder="Tên Chương trình"
+          placeholder={t("addEditStudent.programNamePlaceholder")}
           value={newProgramName}
           onChange={(e) => setNewProgramName(e.target.value)}
         />
         <Input
-          placeholder="Thời gian học (năm)"
+          placeholder={t("addEditStudent.programDurationPlaceholder")}
           value={newProgramDuration}
           onChange={(e) => setNewProgramDuration(e.target.value)}
         />
@@ -795,13 +786,13 @@ const EditStudentModal = ({
 
       {/* Modal Đổi Tên Chương Trình Học */}
       <Modal
-        title="Đổi Tên Chương trình học"
+        title={t("addEditStudent.editProgram")}
         open={isEditProgramModalVisible}
         onOk={handleUpdateProgram}
         onCancel={() => setIsEditProgramModalVisible(false)}
       >
         <Select
-          placeholder="Chọn Chương trình"
+          placeholder={t("addEditStudent.selectProgram")}
           value={selectedProgram._id}
           onChange={(value) => {
             const program = programs.find((p) => p._id === value);
@@ -814,12 +805,14 @@ const EditStudentModal = ({
         >
           {programs.map((program) => (
             <Option key={program._id} value={program._id}>
-              {program.name}
+              {program.name && program.name[currentLang]
+                ? program.name[currentLang]
+                : program.name?.en || program.name?.vi || ""}
             </Option>
           ))}
         </Select>
         <Input
-          placeholder="Tên mới"
+          placeholder={t("addEditStudent.programNamePlaceholder")}
           value={newProgramName}
           onChange={(e) => setNewProgramName(e.target.value)}
         />
@@ -827,18 +820,18 @@ const EditStudentModal = ({
 
       {/* Modal Thêm Trạng thái */}
       <Modal
-        title="Thêm Trạng thái"
+        title={t("addEditStudent.addStatus")}
         open={isAddStatusModalVisible}
         onOk={handleAddStatus}
         onCancel={() => setIsAddStatusModalVisible(false)}
       >
         <Input
-          placeholder="Tên Trạng thái"
+          placeholder={t("addEditStudent.statusNamePlaceholder")}
           value={newStatusName}
           onChange={(e) => setNewStatusName(e.target.value)}
         />
         <Input
-          placeholder="Mô tả"
+          placeholder={t("addEditStudent.statusDescriptionPlaceholder")}
           value={newStatusDescription}
           onChange={(e) => setNewStatusDescription(e.target.value)}
         />
@@ -846,25 +839,27 @@ const EditStudentModal = ({
 
       {/* Modal Đổi Tên Trạng Thái */}
       <Modal
-        title="Đổi Tên Trạng thái"
+        title={t("addEditStudent.editStatus")}
         open={isEditStatusModalVisible}
         onOk={handleUpdateStatus}
         onCancel={() => setIsEditStatusModalVisible(false)}
       >
         <Select
-          placeholder="Chọn Trạng thái"
+          placeholder={t("addEditStudent.selectStatus")}
           value={selectedStatus}
           onChange={(value) => setSelectedStatus(value)}
           style={{ width: "100%", marginBottom: 8 }}
         >
           {statuses.map((status) => (
             <Option key={status._id} value={status._id}>
-              {status.name}
+              {status.name && status.name[currentLang]
+                ? status.name[currentLang]
+                : status.name?.en || status.name?.vi || ""}
             </Option>
           ))}
         </Select>
         <Input
-          placeholder="Tên mới"
+          placeholder={t("addEditStudent.statusNamePlaceholder")}
           value={newStatusName}
           onChange={(e) => setNewStatusName(e.target.value)}
         />

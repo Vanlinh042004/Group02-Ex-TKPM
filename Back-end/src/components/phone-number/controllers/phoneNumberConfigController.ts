@@ -6,10 +6,22 @@ class PhoneNumberConfigController {
   async getAllPhoneNumberConfigs(req: Request, res: Response) {
     try {
       const countries = await phoneNumberService.getAllPhoneNumberConfigs();
+      
+      // Format data để hiển thị ngôn ngữ mặc định
+      const formattedCountries = countries.map(country => ({
+        _id: country._id,
+        country: country.country,
+        countryCode: country.countryCode,
+        regex: country.regex,
+        createdAt: country.createdAt,
+        updatedAt: country.updatedAt,
+        __v: country.__v
+      }));
+
       res.status(200).json({
         success: true,
         message: req.t('success:phone_numbers_retrieved'),
-        data: countries,
+        data: formattedCountries,
         timestamp: new Date().toISOString()
       });
     } catch (error: any) {

@@ -11,7 +11,7 @@ export interface IPhoneNumberConfigDTO {
 }
 
 export interface IUpdatePhoneNumberConfigDTO
-  extends Partial<Pick<IPhoneNumberConfig, "countryCode" | "regex">> {}
+  extends Partial<Pick<IPhoneNumberConfig, "country" | "countryCode" | "regex">> {}
 
 class PhoneNumberConfigService {
   /**
@@ -39,8 +39,14 @@ class PhoneNumberConfigService {
         throw new Error(i18next.t('errors:country_required'));
       }
 
+      // Tìm kiếm trong tất cả các ngôn ngữ
       const phoneConfig = await PhoneNumberConfig.findOne({
-        country: { $regex: new RegExp(country, "i") },
+        $or: Object.entries({
+          'country.vi': country,
+          'country.en': country
+        }).map(([field, value]) => ({
+          [field]: { $regex: new RegExp(value, "i") }
+        }))
       });
 
       if (!phoneConfig) {

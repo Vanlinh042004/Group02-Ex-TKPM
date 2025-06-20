@@ -28,11 +28,14 @@ const AddStudentModal = ({
   const [phoneRegex, setPhoneRegex] = useState("");
   const [phoneNumberConfig, setPphoneNumberConfig] = useState("");
 
+  // Đặt useTranslation và currentLang ở đây
+  const { t, i18n } = useTranslation("student");
+  const currentLang = i18n.language;
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         const faculties = await getFaculty();
-        //console.log("Faculties:", faculties);
         if (faculties.data) {
           setFaculties(faculties.data || []);
         }
@@ -42,7 +45,6 @@ const AddStudentModal = ({
 
       try {
         const programs = await getProgram();
-        //console.log("Programs:", programs);
         if (programs.data) {
           setPrograms(programs.data || []);
         }
@@ -51,7 +53,6 @@ const AddStudentModal = ({
       }
       try {
         const statuses = await getStatus();
-        //console.log("Statuses:", statuses);
         if (statuses.data) {
           setStatuses(statuses.data || []);
         }
@@ -60,23 +61,25 @@ const AddStudentModal = ({
       }
       try {
         const email = await getAllowedEmails();
-        //console.log("Email:", email.data);
         if (email.data) {
           setAllowedEmails(email.data);
         }
       } catch (error) {
         console.log(error);
       }
-      try {
-        const countries = await getCountries();
-        //console.log("Countries:", countries);
-        if (countries) {
-          setCountries(countries || []);
-        }
-      } catch (error) {
-        console.log(error);
+    try {
+      const countriesRes = await getCountries();
+      console.log(countriesRes);
+      if (countriesRes && Array.isArray(countriesRes.data)) {
+        setCountries(countriesRes.data);
+      } else {
+        setCountries([]);
       }
-    };
+    } catch (error) {
+      console.log(error);
+      setCountries([]);
+    }
+  };
 
     fetchData();
   }, []);
@@ -95,12 +98,10 @@ const AddStudentModal = ({
     const allowedPhone = new RegExp(phoneRegex);
     return allowedPhone.test(phone);
   };
-  const { t } = useTranslation("student");
 
   const handleAddStudent = async () => {
     try {
       const values = await form.getFieldsValue();
-      console.log(checkValidPhone(values.phone));
       if (checkIfIdExists(values.studentId)) {
         swal(t("addEditStudent.error"), t("addEditStudent.idExists"), "error");
         return;
@@ -226,74 +227,79 @@ const AddStudentModal = ({
           <Input />
         </Form.Item>
 
-        <Form.Item
-          label={`${t("phone")} *`}
-          name="phone"
-          rules={[
-            { required: true, message: "Trường này là bắt buộc" },
-            {
-              validator: (_, value) => {
-                if (!value) return Promise.resolve();
-                return checkValidPhone(value)
-                  ? Promise.resolve()
-                  : Promise.reject("Số điện thoại không hợp lệ");
-              },
-            },
-          ]}
-        >
-          <div className="d-flex align-items-center">
-            <Select
-              placeholder={t("addEditStudent.selectCountryCode")}
-              className="me-2"
-              onChange={async (value) => {
-                const config = await getCountryConfig(value);
-                const escapedRegex = config.regex
-                  .replace(/\+/g, "\\+")
-                  .replace(/d/g, "\\d");
+     <Form.Item
+  label={`${t("phone")} *`}
+  name="phone"
+  rules={[
+    { required: true, message: "Trường này là bắt buộc" },
+    {
+      validator: (_, value) => {
+        if (!value) return Promise.resolve();
+        return checkValidPhone(value)
+          ? Promise.resolve()
+          : Promise.reject("Số điện thoại không hợp lệ");
+      },
+    },
+  ]}
+>
+  <div className="d-flex align-items-center">
+   <Select
+  placeholder={t("addEditStudent.selectCountryCode")}
+  className="me-2"
+  onChange={async (value) => {
+    const selected = countries.find(
+      (c) => c.country && c.country[currentLang] === value
+    );
+    if (selected) {
+const config = await getCountryConfig(selected.country.en);
+  const escapedRegex = config.regex
+        .replace(/\+/g, "\\+")
+        .replace(/d/g, "\\d");
 
-                setPhoneRegex(escapedRegex);
-                setPphoneNumberConfig(config.country); // Lưu country (ví dụ: "Việt Nam")
-                form.setFieldsValue({ phoneNumberConfig: config.country }); // Lưu country vào form
-              }}
-            >
-              {Array.isArray(countries) ? (
-                countries.map((country, index) => (
-                  <Option key={index} value={country.country}>
-                    {country.country}
-                  </Option>
-                ))
-              ) : (
-                <Option disabled>{t("addEditStudent.noData")}</Option>
-              )}
-            </Select>
-            <Input placeholder={t("addEditStudent.inputPhonePlaceholder")} />
-          </div>
-        </Form.Item>
-        {/* Quốc tịch */}
-        <Form.Item
-          name={["permanentAddress", "country"]}
-          label={t("addEditStudent.nationality")}
-          rules={[{ message: t("addEditStudent.selectNationality") }]}
-        >
-          <Select
-            placeholder={t("addEditStudent.selectNationality")}
-            onChange={(value) => {
-              form.setFieldsValue({ permanentAddress: { country: value } });
-            }}
-          >
-            {Array.isArray(countries) ? (
-              countries.map((country, index) => (
-                <Select.Option key={index} value={country.country}>
-                  {country.country}
-                </Select.Option>
-              ))
-            ) : (
-              <Select.Option disabled>
-                {t("addEditStudent.noData")}
-              </Select.Option>
-            )}
-          </Select>
-        </Form.Item>
+      setPhoneRegex(escapedRegex);
+      setPphoneNumberConfig(selected.country.en);
+      form.setFieldsValue({ phoneNumberConfig: selected.country });
+    }
+  }}
+>
+  {Array.isArray(countries) && countries.length > 0 ? (
+    countries.map((country, index) => (
+      <Option key={index} value={country.country[currentLang]}>
+        {country.country[currentLang]} ({country.countryCode[currentLang]})
+      </Option>
+    ))
+  ) : (
+    <Option disabled>{t("addEditStudent.noData")}</Option>
+  )}
+</Select>
+    <Input placeholder={t("addEditStudent.inputPhonePlaceholder")} />
+  </div>
+</Form.Item>
+{/* Quốc tịch */}
+<Form.Item
+  name={["permanentAddress", "country"]}
+  label={t("addEditStudent.nationality")}
+  rules={[{ message: t("addEditStudent.selectNationality") }]}
+>
+  <Select
+    placeholder={t("addEditStudent.selectNationality")}
+    onChange={(value) => {
+      form.setFieldsValue({ permanentAddress: { country: value } });
+    }}
+  >
+    {Array.isArray(countries) && countries.length > 0 ? (
+      countries.map((country, index) => (
+        <Select.Option key={index} value={country.country[currentLang]}>
+          {country.country[currentLang]}
+        </Select.Option>
+      ))
+    ) : (
+      <Select.Option disabled>
+        {t("addEditStudent.noData")}
+      </Select.Option>
+    )}
+  </Select>
+</Form.Item>
 
         {/* Địa chỉ thường trú */}
         <Form.Item label={t("addEditStudent.permanentAddress")}>
@@ -408,46 +414,41 @@ const AddStudentModal = ({
         </Form.Item>
 
         {/* Khoa */}
-        <Form.Item
-          label={t("addEditStudent.faculty")}
-          name="faculty"
-          rules={[{ required: true, message: t("addEditStudent.required") }]}
-        >
-          <Select>
-            {Array.isArray(faculties) ? (
-              faculties.map((faculty) => (
-                <Option key={faculty._id} value={faculty._id}>
-                  {faculty.name}
-                </Option>
-              ))
-            ) : (
-              <Option disabled>{t("addEditStudent.noData")}</Option>
-            )}
-          </Select>
-        </Form.Item>
+      <Form.Item
+  label={t("addEditStudent.faculty")}
+  name="faculty"
+  rules={[{ required: true, message: t("addEditStudent.required") }]}
+>
+  <Select>
+    {Array.isArray(faculties) ? (
+      faculties.map((faculty) => (
+        <Option key={faculty._id} value={faculty._id}>
+          {faculty.name && faculty.name[currentLang]
+            ? faculty.name[currentLang]
+            : faculty.name?.en || faculty.name?.vi || ""}
+        </Option>
+      ))
+    ) : (
+      <Option disabled>{t("addEditStudent.noData")}</Option>
+    )}
+  </Select>
+</Form.Item>
 
-        <Form.Item
-          label={t("addEditStudent.course")}
-          name="course"
-          rules={[{ required: true, message: t("addEditStudent.required") }]}
-        >
-          <Input />
-        </Form.Item>
-
-        {/* Chương trình */}
-        <Form.Item
-          label={t("addEditStudent.program")}
-          name="program"
-          rules={[{ required: true, message: t("addEditStudent.required") }]}
-        >
-          <Select>
-            {programs.map((program) => (
-              <Option key={program._id} value={program._id}>
-                {program.name}
-              </Option>
-            ))}
-          </Select>
-        </Form.Item>
+<Form.Item
+  label={t("addEditStudent.program")}
+  name="program"
+  rules={[{ required: true, message: t("addEditStudent.required") }]}
+>
+  <Select>
+    {programs.map((program) => (
+      <Option key={program._id} value={program._id}>
+        {program.name && program.name[currentLang]
+          ? program.name[currentLang]
+          : program.name?.en || program.name?.vi || ""}
+      </Option>
+    ))}
+  </Select>
+</Form.Item>
 
         {/* Trạng thái */}
         <Form.Item
@@ -458,12 +459,13 @@ const AddStudentModal = ({
           <Select>
             {statuses.map((status) => (
               <Option key={status._id} value={status._id}>
-                {status.name}
+                {status.name && status.name[currentLang]
+                  ? status.name[currentLang]
+                  : status.name?.en || status.name?.vi || ""}
               </Option>
             ))}
           </Select>
         </Form.Item>
-
         {/* Giấy tờ tùy thân */}
         <Form.Item
           label={t("addEditStudent.identityType")}

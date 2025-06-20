@@ -59,7 +59,7 @@ function Student() {
       swal(t("swalNotFoundTitle"), t("swalNotFoundText"), "error");
     }
   };
-
+ 
   const handleDelete = async (id) => {
     try {
       await deleteStudent(id);
